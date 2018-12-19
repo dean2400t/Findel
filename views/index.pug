@@ -1,0 +1,20 @@
+extends layout
+
+block content
+  h1= title
+  button(onclick="location.href = '/loadFile/';") העלה קובץ חלוקה
+  br
+  br
+  br 
+  form(method='GET' action='/api/deliveries/getXLSX/')
+    p תחילת תאריכי חלוקה
+    input(type="text" id="dateStart" name="dateStart")
+    p סוף תאריכי חלוקה
+    input(type="text" id="dateEnd" name="dateEnd")
+    br
+    br 
+    button(type='submit') הורד נתוני חלוקה
+  br
+  br
+  br
+  button(onclick="location.href = '/api/auth/logout';") התנתק
