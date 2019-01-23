@@ -69,7 +69,7 @@ var numOfSites;
 						siteArr[numOfSites-1]=0;
 						for (var sIndex=0; sIndex<numOfSites; sIndex++)
 							siteArr[sIndex]=0;
-						var linkOBJ={"page": linksInLength[linkIndex], "hits": 1, siteArr};
+						var linkOBJ={"page": linksInLength[linkIndex], "hits": 1, "sitesHits": siteArr};
 						linksArrayOfLenght[patHash].push(linkOBJ);
 						console.log("pushed: " +patHash + " Page: " + linksInLength[linkIndex]);
 					}
@@ -85,7 +85,11 @@ var numOfSites;
 							}
 						if (isInArray==false)
 						{
-							var linkOBJ={"page": linksInLength[linkIndex], "hits": 1};
+							var siteArr=[];
+							siteArr[numOfSites-1]=0;
+							for (var sIndex=0; sIndex<numOfSites; sIndex++)
+							siteArr[sIndex]=0;
+							var linkOBJ={"page": linksInLength[linkIndex], "hits": 1, "sitesHits": siteArr};
 							linksArrayOfLenght[patHash].push(linkOBJ);
 						}
 					}
@@ -115,7 +119,7 @@ var numOfSites;
 							for (var indexInHash=0; indexInHash<linksArrayOfLenght[hashedSite[charIndexInSite]].length; indexInHash++)
 								if (site.substring(charIndexInSite, charIndexInSite+index+1)==linksArrayOfLenght[hashedSite[charIndexInSite]][indexInHash].page)
 									{
-										linksArrayOfLenght[hashedSite[charIndexInSite]][indexInHash].siteArr[siteIndex]++;
+										linksArrayOfLenght[hashedSite[charIndexInSite]][indexInHash].sitesHits[siteIndex]++;
 										siteHit[siteIndex].siteHits++;
 										//console.log("Hit: " + linksArrayOfLenght[hashedSite[charIndexInSite]][indexInHash].page);
 									}
@@ -139,10 +143,20 @@ var numOfSites;
 					for (var linkIndexInHash=0; linkIndexInHash<hashedLinkWords[patLengthIndex][index].length; linkIndexInHash++)
 					{
 						for (var topSiteIndex=0; topSiteIndex<5; topSiteIndex++)
-							if (hashedLinkWords[patLengthIndex][index][linkIndexInHash].siteArr[siteHit[topSiteIndex].siteOriginalIndex]!=null)
-								hashedLinkWords[patLengthIndex][index][linkIndexInHash].hits+=
-								hashedLinkWords[patLengthIndex][index][linkIndexInHash].siteArr[siteHit[topSiteIndex].siteOriginalIndex];
+						{
+							if (hashedLinkWords[patLengthIndex][index][linkIndexInHash]==undefined)
+								var x=3;
+							if (hashedLinkWords[patLengthIndex][index][linkIndexInHash].sitesHits==undefined)
+								var x=3;
+							if (siteHit[topSiteIndex]==undefined)
+								var x=3;
+							var topSiteCurHits= hashedLinkWords[patLengthIndex][index][linkIndexInHash].sitesHits[siteHit[topSiteIndex].siteOriginalIndex];
+							var curHits=hashedLinkWords[patLengthIndex][index][linkIndexInHash].hits;
+							if (topSiteCurHits!=null && topSiteCurHits>0)
+								hashedLinkWords[patLengthIndex][index][linkIndexInHash].hits= curHits + topSiteCurHits;
+						}
 						linksSum.push(hashedLinkWords[patLengthIndex][index][linkIndexInHash]);
+
 					}
 		linksSum.sort(function(a, b){
 			return b.hits - a.hits;
