@@ -4,7 +4,25 @@ const jwt=require('jsonwebtoken')
 const config = require('config');
 
 const userSchema = new mongoose.Schema({
-  name: {
+  email: {
+    type: String,
+    required: true,
+    minlength: 5,
+    maxlength: 255
+  },
+  userName:{
+    type: String,
+    required: true,
+    minlength: 2,
+    maxlength: 255
+  },
+  firstName: {
+    type: String,
+    required: true,
+    minlength: 2,
+    maxlength: 50
+  },
+  lastName: {
     type: String,
     required: true,
     minlength: 2,
@@ -13,27 +31,25 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-    minlength: 4,
+    minlength: 6,
     maxlength: 1024
   },
-  isAdmin: {
-    type: Boolean,
-    default: false
-  },
-  isDriver: {
-    type: Boolean,
-    default: true
-  },
-  phone: {
+  password: {
     type: String,
     required: true,
-    minlength: 5,
-    maxlength: 255
+    minlength: 6,
+    maxlength: 1024
+  },
+  position:
+  {
+    type: String,
+    minlength: 3,
+    maxlength: 20
   }
 });
 
 userSchema.methods.generateAuthToken = function() { 
-    const token = jwt.sign({ _id: this._id, password: this.password, isAdmin: this.isAdmin }, config.get('jwtPrivateKey'));
+    const token = jwt.sign({ _id: this._id, email: this.email, password: this.password, position: this.position}, config.get('jwtPrivateKey'));
     return token;
   }
   
@@ -41,13 +57,13 @@ userSchema.methods.generateAuthToken = function() {
   
   function validateUser(user) {
     const schema = {
-      name: Joi.string().min(2).max(50).required(),
+      email: Joi.string().min(5).max(50).required(),
+      userName: Joi.string().min(2).max(50).required(),
+      firstName: Joi.string().min(2).max(50).required(),
+      lastName: Joi.string().min(2).max(50).required(),
       password: Joi.string().min(4).max(255).required(),
-      phone: Joi.string().min(5).max(255).required(),
-      isDriver:Joi.boolean(),
-      isAdmin:Joi.boolean()
+      position: Joi.string().min(3).max(20)
     };
-  
     return Joi.validate(user, schema);
   }
   

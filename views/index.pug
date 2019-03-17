@@ -1,12 +1,21 @@
 doctype html
 html(dir="rtl")
   head
-    title= title
+    title= "Main Page"
     link(rel='stylesheet', href='/stylesheets/style.css')
-    script(type='text/javascript').
-      function findWords(deliveryID){
-        alert("here");
-      }
   body
-    h1= title
-    button(onclick="findWords();") מצא מילים  
+    form(action='http://localhost:3010/authPage')
+      input(type='submit' value="התחבר")
+    br
+    form(action='http://localhost:3010/api/auth/logout')
+      input(type='submit' value="התנתק")
+    br
+    br
+    form(action='http://localhost:3010/addAdmin')
+      input(type='submit' value="הוסף Admin")
+    br
+    form(action='http://localhost:3010/addStudent')
+      input(type='submit' value="הירשם כתלמיד")
+    br
+    form(action='http://localhost:3010/addTeacher')
+      input(type='submit' value="הירשם כמורה")

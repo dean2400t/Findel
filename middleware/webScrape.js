@@ -5,7 +5,7 @@ module.exports = async function getTextFromURL(url)
 {
   var uri = encodeURI(url); 
   var texts="";
-  console.log(url);
+  
   await axios.get(uri)
   .then((response) => {
 
@@ -14,7 +14,6 @@ module.exports = async function getTextFromURL(url)
       const $ = cheerio.load(html); 
       const $body=$("body");
       texts=$body.find("*").text();
-      return texts
   }
   }, (error) => {
     console.log(error);

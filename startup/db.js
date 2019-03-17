@@ -3,7 +3,7 @@ const mongoose=require("mongoose");
 
 module.exports= function()
 {
-    mongoose.connect('mongodb://localhost/LadyDianesDeliveries')
+    mongoose.connect('mongodb://localhost/findel')
     .then (()=> console.log("connected to mongodb"))
     
 }

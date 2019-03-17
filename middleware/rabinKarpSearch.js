@@ -102,6 +102,7 @@ var numOfSites;
 	{
 		var siteIndex=0;
 		siteHit=[];
+		var site;
 		sitesArray.forEach(siteInArray => {
 			site=siteInArray.text;
 			console.log("site "+ siteIndex);
@@ -144,16 +145,13 @@ var numOfSites;
 					{
 						for (var topSiteIndex=0; topSiteIndex<5; topSiteIndex++)
 						{
-							if (hashedLinkWords[patLengthIndex][index][linkIndexInHash]==undefined)
-								var x=3;
-							if (hashedLinkWords[patLengthIndex][index][linkIndexInHash].sitesHits==undefined)
-								var x=3;
-							if (siteHit[topSiteIndex]==undefined)
-								var x=3;
-							var topSiteCurHits= hashedLinkWords[patLengthIndex][index][linkIndexInHash].sitesHits[siteHit[topSiteIndex].siteOriginalIndex];
-							var curHits=hashedLinkWords[patLengthIndex][index][linkIndexInHash].hits;
-							if (topSiteCurHits!=null && topSiteCurHits>0)
-								hashedLinkWords[patLengthIndex][index][linkIndexInHash].hits= curHits + topSiteCurHits;
+							if(sitesHits[siteHit[topSiteIndex]]!==undefined)
+							{
+								var topSiteCurHits= hashedLinkWords[patLengthIndex][index][linkIndexInHash].sitesHits[siteHit[topSiteIndex].siteOriginalIndex];
+								var curHits=hashedLinkWords[patLengthIndex][index][linkIndexInHash].hits;
+								if (topSiteCurHits!=null && topSiteCurHits>0)
+									hashedLinkWords[patLengthIndex][index][linkIndexInHash].hits= curHits + topSiteCurHits;
+							}
 						}
 						linksSum.push(hashedLinkWords[patLengthIndex][index][linkIndexInHash]);
 

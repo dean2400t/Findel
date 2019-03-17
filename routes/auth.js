@@ -5,31 +5,29 @@ const {User} = require('../models/users');
 const express = require('express');
 const router = express.Router();
 
-router.get('/logout', async (req, res) => {
-  res.cookie('auth',null);
-  res.redirect(`/`);
-});
-
 router.post('/', async (req, res) => {
   const { error } = validate(req.body); 
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) return res.status(400).send("Missing field email or password");
 
-  let user = await User.findOne({ name: req.body.name });
-  if (!user) return res.status(400).send('Invalid name or password.');
+  let user = await User.findOne({ email: req.body.email });
+  if (!user) return res.status(400).send('Invalid email or password.');
 
   const validPassword = await bcrypt.compare(req.body.password, user.password);
-  if (!validPassword) return res.status(400).send('Invalid name or password.');
+  if (!validPassword) return res.status(400).send('Invalid email or password.');
 
   const token = user.generateAuthToken();
-  res.cookie('auth',token);
-  res.redirect(`/`);
-  res.send(token);
+  var dataToSend= {
+                      token:token,
+                      userID:user.id
+                    };
+  res.status(200);
+  res.send(dataToSend);
 });
 
 function validate(req) {
   const schema = {
-    name: Joi.string().min(3).max(255).required(),
-    password: Joi.string().min(4).max(255).required()
+    email: Joi.string().min(5).max(255).required(),
+    password: Joi.string().min(6).max(255).required()
   };
 
   return Joi.validate(req, schema);

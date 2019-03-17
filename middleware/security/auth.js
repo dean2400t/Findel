@@ -3,11 +3,10 @@ const config = require('config');
 
 module.exports = function (req, res, next) {
   var token;
-  if (req.cookies!=null)
-    token = req.cookies.auth;
+  if (req.headers['findel-auth-token']!=null)
+    token = req.headers['findel-auth-token'];
   if (!token)  
   {
-    res.redirect(`/authPage`);
     return res.status(401).send('Access denied. No token provided.');
   }
 
@@ -17,7 +16,7 @@ module.exports = function (req, res, next) {
     next();
   }
   catch (ex) {
-    res.redirect(`/authPage`);
+    //res.redirect(`/authPage`);
     return res.status(400).send('Invalid token.');
   }
 }

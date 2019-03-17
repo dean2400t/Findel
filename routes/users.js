@@ -1,5 +1,8 @@
-const auth = require('../middleware/auth');
-const admin=require('../middleware/admin');
+const auth = require('../middleware/security/auth');
+const isAdmin=require('../middleware/security/isAdmin');
+const isAdminOrTheUser=require('../middleware/security/isAdminOrTheUser')
+const isTeacher=require('../middleware/security/isTeacher');
+const isStudent=require('../middleware/security/isStudent');
 const bcrypt = require('bcrypt');
 const _ = require('lodash');
 const {User, validate} = require('../models/users');
@@ -7,19 +10,19 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/me', auth, async (req, res) => {
-  const user = await User.findById(req.user._id).select("name -_id");
+  const user = await User.findById(req.user._id).select("_id userName");
   res.send(user);
 });
 
-router.post('/', [auth, admin],async (req, res) => {
+router.post('/createAdminAccount',[auth, isAdmin], async (req, res) => {
 
   const { error } = validate(req.body); 
   if (error) return res.status(400).send(error.details[0].message);
 
-  var user = await User.findOne({ name: req.body.name });
+  var user = await User.findOne({ email: req.body.email });
   if (user) return res.status(400).send('User already registered.');
-
-  user = new User(_.pick(req.body, ['name', 'password', 'phone']));
+  req.body.position="Admin";
+  user = new User(_.pick(req.body, ['email', 'userName', 'firstName', 'lastName', 'password', 'position']));
   
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(user.password, salt);
@@ -27,10 +30,50 @@ router.post('/', [auth, admin],async (req, res) => {
   await user.save();
 
   const token = user.generateAuthToken();
-  res.header('x-auth-token', token).send(_.pick(user, ['_id', 'password', "isAdmin"]));
+  res.header('x-auth-token', token).send(_.pick(user, ['_id', 'email', 'password', 'position']));
 });
 
-router.put('/:id', [auth, admin],async (req, res) =>
+router.post('/createStudentAccount', async (req, res) => {
+
+  const { error } = validate(req.body); 
+  if (error) return res.status(400).send(error.details[0].message);
+
+  var user = await User.findOne({ email: req.body.email });
+  if (user) return res.status(400).send('User already registered.');
+  req.body.position="Student";
+  user = new User(_.pick(req.body, ['email', 'userName', 'firstName', 'lastName', 'password', 'position']));
+  
+  const salt = await bcrypt.genSalt(10);
+  user.password = await bcrypt.hash(user.password, salt);
+  
+  await user.save();
+
+  const token = user.generateAuthToken();
+  res.redirect('/');
+  res.header('x-auth-token', token).send(_.pick(user, ['_id', 'email', 'password', 'position']));
+});
+
+router.post('/createTeacherAccount', [auth, isAdmin],async (req, res) => {
+
+  const { error } = validate(req.body); 
+  if (error) return res.status(400).send(error.details[0].message);
+
+  var user = await User.findOne({ email: req.body.email });
+  if (user) return res.status(400).send('User already registered.');
+  req.body.position="Teacher";
+  user = new User(_.pick(req.body, ['email', 'userName', 'firstName', 'lastName', 'password', 'position']));
+  
+  const salt = await bcrypt.genSalt(10);
+  user.password = await bcrypt.hash(user.password, salt);
+  
+  await user.save();
+
+  const token = user.generateAuthToken();
+  res.header('x-auth-token', token).send(_.pick(user, ['_id', 'email','password', 'position']));
+  res.redirect('/');
+});
+
+router.put('/:id', [auth, isAdminOrTheUser], async (req, res) =>
 {
   const { error } = validate(req.body); 
   if (error) return res.status(400).send(error.details[0].message);
@@ -40,10 +83,12 @@ router.put('/:id', [auth, admin],async (req, res) =>
 
   const user = await User.findByIdAndUpdate(req.params.id,
     { 
-      name: req.body.name,
+      email: req.body.email,
+      userName: req.body.userName,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
       password: hashedPassword,
-      isAdmin: req.body.isAdmin,
-      isDriver: req.body.isDriver
+      postision: req.body.position
     }, { new: true });
   
   
@@ -52,7 +97,7 @@ router.put('/:id', [auth, admin],async (req, res) =>
   res.send(user);
 });
 
-router.delete('/:id', [auth, admin],async (req, res) =>
+router.delete('/:id', [auth, isAdminOrTheUser],async (req, res) =>
 {
   const user = await User.findByIdAndRemove(req.params.id);
 

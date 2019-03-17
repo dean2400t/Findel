@@ -1,9 +1,9 @@
 var wtf = require('wtf_wikipedia');
 const {google} = require('googleapis');
 var express = require('express');
-const extractDataFromRefLink=require('../middleware/basicSearch/searchFunctions');
-const rabinKarpSearch=require('../middleware/rabinKarpSearch');
-const getTextFromURL=require('../middleware/webScrape');
+//const extractDataFromRefLink=require('../../middleware/basicSearch/searchFunctions');
+const rabinKarpSearch=require('../../middleware/rabinKarpSearch');
+const getTextFromURL=require('../../middleware/webScrape');
 var router = express.Router();
 
 function function2() {
@@ -12,7 +12,15 @@ function function2() {
 }
 
 /* GET home page. */
-router.get('/:search', async function(req, res, next) {
+router.get('/', async function(req, res, next) {
+  res.render('index');
+  /*var search=req.query.search;
+  var result = await getTextFromURL(search);
+  res.send(result);*/
+});
+module.exports = router;
+  
+  /*
   if (req.url === '/favicon.ico') {
     res.writeHead(200, {'Content-Type': 'image/x-icon'} );
     res.end();
@@ -58,13 +66,24 @@ router.get('/:search', async function(req, res, next) {
       params.start=21;
       var results3= await cusSearch.cse.list(params);
       var texts=[];
-      for (var index=0; index<10; index++)
-      {
-        texts.push({"url": results1.data.items[index].formattedUrl,"text": await getTextFromURL(results1.data.items[index].formattedUrl)});
-        texts.push({"url": results2.data.items[index].formattedUrl,"text": await getTextFromURL(results2.data.items[index].formattedUrl)});
-        texts.push({"url": results3.data.items[index].formattedUrl,"text": await getTextFromURL(results3.data.items[index].formattedUrl)});
 
-      }
+      var allRes=[];
+      allRes.push(results1);
+      allRes.push(results2);
+      allRes.push(results3);
+      var siteNum=0;
+      for (var r=0; r<3; r++)
+        if (allRes[r]!=null)
+          for (var index=0; index<10; index++)
+              if (allRes[r].data.items[index]!=null)
+              {
+                console.log(siteNum +": "+allRes[r].data.items[index].formattedUrl);
+                texts.push({"url": allRes[r].data.items[index].formattedUrl,"text": await getTextFromURL(allRes[r].data.items[index].formattedUrl)});
+                siteNum++;
+              }
+
+      links.push({page: cusSearch, text: cusSearch})
+
       var linksSum=rabinKarpSearch(links, texts);
       action="links";
       data=links;
@@ -74,6 +93,7 @@ router.get('/:search', async function(req, res, next) {
       data=extractDataFromRefLink(referTo);
       action="wikipediaReferMenu";
     }
+    
   }
   
   
@@ -82,5 +102,4 @@ router.get('/:search', async function(req, res, next) {
 
   res.action = action;
   res.wikiData = data;
-});
-module.exports = router;
+  */

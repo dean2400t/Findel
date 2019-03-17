@@ -1,0 +1,18 @@
+html(class='rtlClass' dir="rtl")
+  head
+    title= "הוספת Admin"
+  body
+    form(method='post' action='/api/users/createAdminAccount')
+        p שם פרטי
+        input(type="text" id="firstName" name="firstName")
+        p שם משפחה
+        input(type="text" id="lastName" name="lastName")
+        p אימייל
+        input(type="email" id="email" name="email")
+        p סיסמא
+        input(type="password" id="password" name="password")
+        p כינוי
+        input(type="text" id="userName" name="userName")
+        br
+        br 
+        button(type='submit') הוסף Admin
