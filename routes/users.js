@@ -19,8 +19,15 @@ router.post('/createAdminAccount',[auth, isAdmin], async (req, res) => {
   const { error } = validate(req.body); 
   if (error) return res.status(400).send(error.details[0].message);
 
-  var user = await User.findOne({ email: req.body.email });
-  if (user) return res.status(400).send('User already registered.');
+  var user = await User.findOne({ userName: req.body.userName });
+  if (user) return res.status(400).send('userName already exist.');
+
+  if (req.body.email!="")
+  {
+    var user = await User.findOne({ email: req.body.email });
+    if (user) return res.status(400).send('email already exist.');
+  }
+
   req.body.position="Admin";
   user = new User(_.pick(req.body, ['email', 'userName', 'firstName', 'lastName', 'password', 'position']));
   
@@ -38,8 +45,15 @@ router.post('/createStudentAccount', async (req, res) => {
   const { error } = validate(req.body); 
   if (error) return res.status(400).send(error.details[0].message);
 
-  var user = await User.findOne({ email: req.body.email });
-  if (user) return res.status(400).send('User already registered.');
+  var user = await User.findOne({ userName: req.body.userName });
+  if (user) return res.status(400).send('userName already exist.');
+
+  if (req.body.email!="")
+  {
+    var user = await User.findOne({ email: req.body.email });
+    if (user) return res.status(400).send('email already exist.');
+  }
+  
   req.body.position="Student";
   user = new User(_.pick(req.body, ['email', 'userName', 'firstName', 'lastName', 'password', 'position']));
   
@@ -58,8 +72,15 @@ router.post('/createTeacherAccount', [auth, isAdmin],async (req, res) => {
   const { error } = validate(req.body); 
   if (error) return res.status(400).send(error.details[0].message);
 
-  var user = await User.findOne({ email: req.body.email });
-  if (user) return res.status(400).send('User already registered.');
+  var user = await User.findOne({ userName: req.body.userName });
+  if (user) return res.status(400).send('userName already exist.');
+
+  if (req.body.email!="")
+  {
+    var user = await User.findOne({ email: req.body.email });
+    if (user) return res.status(400).send('email already exist.');
+  }
+  
   req.body.position="Teacher";
   user = new User(_.pick(req.body, ['email', 'userName', 'firstName', 'lastName', 'password', 'position']));
   
