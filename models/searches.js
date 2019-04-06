@@ -6,23 +6,17 @@ const searchSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId, 
     ref: 'topics',
     required:true
-  },
-  user:{
-    type: mongoose.Schema.ObjectId, 
-    ref: 'users',
-    required:true
   }
-  
 });
   
   const Search = mongoose.model('searches', searchSchema);
   
   function validateSearch(search) {
     const schema = {
-      siteURL: Joi.string().min(4).max(512).required()
+        topic: Joi.string().min(2).max(100).required()
     };
     return Joi.validate(search, schema);
   }
-  
+  exports.searchSchema = searchSchema;
   exports.Search = Search; 
   exports.validateSearch = validateSearch;

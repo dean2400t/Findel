@@ -1,11 +1,10 @@
 let axios = require('axios');
 const cheerio = require('cheerio');
 
-module.exports = async function getTextFromURL(url)
+module.exports = async function webScrapeURL(url)
 {
   var uri = encodeURI(url); 
   var texts="";
-  
   await axios.get(uri)
   .then((response) => {
 
@@ -19,6 +18,5 @@ module.exports = async function getTextFromURL(url)
     console.log(error);
 
     } );
-  var x=3;
   return texts;
 }

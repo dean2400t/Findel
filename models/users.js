@@ -1,7 +1,8 @@
 const Joi = require('joi');
 const mongoose = require('mongoose');
-const jwt=require('jsonwebtoken')
+const jwt=require('jsonwebtoken');
 const config = require('config');
+const {searchSchema} = require('./searches');
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -44,10 +45,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     minlength: 3,
     maxlength: 20
-  }
-});
-
-userSchema.methods.generateAuthToken = function() { 
+  },
+  searches:[searchSchema]
+  });
+  
+  userSchema.methods.generateAuthToken = function() { 
     const token = jwt.sign({ _id: this._id, email: this.email, password: this.password, position: this.position}, config.get('jwtPrivateKey'));
     return token;
   }
@@ -61,7 +63,7 @@ userSchema.methods.generateAuthToken = function() {
       firstName: Joi.string().min(2).max(50).required(),
       lastName: Joi.string().min(2).max(50).required(),
       password: Joi.string().min(4).max(255).required(),
-      position: Joi.string().min(3).max(20)
+      position: Joi.string().min(3).max(20),
     };
     return Joi.validate(user, schema);
   }

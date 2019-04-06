@@ -5,6 +5,7 @@ const auth = require('../routes/auth');
 const authPage=require('../routes/pages/authPage');
 const addAdminPage=require('../routes/pages/addAdminPage');
 const topicsSitesData=require('../routes/topicsSitesData');
+const webScrapeSite=require('../routes/webScrapeSite')
 const error = require('../middleware/error');
 var cors = require('cors')
 
@@ -15,6 +16,8 @@ module.exports = function (app){
   app.use('/api/users', users);
   app.use('/api/auth', auth);
   app.use('/api/topicsSitesData', topicsSitesData);
+  app.use('/api/webScrape', webScrapeSite);
+  app.use('/addAdmin',addAdminPage);
   app.use('/authPage',authPage);
   app.use('/addAdmin',addAdminPage);
   app.use(error);
