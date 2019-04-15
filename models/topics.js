@@ -14,7 +14,7 @@ const topicSchema = new mongoose.Schema({
   },
   siteTopicEdges:[{
     type: mongoose.Schema.ObjectId, 
-    ref: 'siteTopicEdges'
+    ref: 'site-Topic-Edges'
   }]
 });
   

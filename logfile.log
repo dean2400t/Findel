@@ -1609,3 +1609,117 @@
 {"message":"Cannot read property 'siteURL' of undefined","stack":"TypeError: Cannot read property 'siteURL' of undefined\n    at findWhichUrlsNotInDataBase (C:\\Projects\\findel\\routes\\topicsSitesData.js:26:34)\n    at findNewSitesAndExistingSites (C:\\Projects\\findel\\routes\\topicsSitesData.js:47:23)\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-06T18:14:18.176Z"}
 {"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-06T18:16:49.251Z"}
 {"message":"Cannot read property 'siteURL' of undefined","stack":"TypeError: Cannot read property 'siteURL' of undefined\n    at findWhichUrlsNotInDataBase (c:\\Projects\\findel\\routes\\topicsSitesData.js:26:34)\n    at findNewSitesAndExistingSites (c:\\Projects\\findel\\routes\\topicsSitesData.js:47:23)\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-06T18:18:01.314Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-06T18:22:12.719Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-06T23:42:37.248Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-06T23:43:52.910Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-07T12:42:00.351Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-07T13:24:16.109Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-07T13:26:21.926Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-07T13:30:52.232Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-09T13:22:40.824Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-10T10:33:31.024Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-10T10:38:06.395Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-10T10:38:16.395Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-10T10:44:14.791Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-10T11:05:24.650Z"}
+{"message":"Cannot read property 'lastScrape' of null","stack":"TypeError: Cannot read property 'lastScrape' of null\n    at C:\\Projects\\findel\\routes\\webScrapeSite.js:10:18\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:05:33.840Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-10T11:07:00.600Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-10T11:13:28.790Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at c:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:13:42.594Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at c:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:13:49.548Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at c:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:13:53.480Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at c:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:13:53.480Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at c:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:13:53.481Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at c:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:13:53.876Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at c:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:13:54.024Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at c:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:13:57.519Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at c:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:13:57.951Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at c:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:13:58.181Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at c:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:13:58.773Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-10T11:14:13.588Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at C:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:14:17.068Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at C:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:14:18.270Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at C:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:14:18.788Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at C:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:14:19.083Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at C:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:14:19.602Z"}
+{"message":"Cannot read property 'lastScrape' of null","stack":"TypeError: Cannot read property 'lastScrape' of null\n    at C:\\Projects\\findel\\routes\\webScrapeSite.js:10:18","level":"error","timestamp":"2019-04-10T11:14:19.836Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at C:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:14:20.096Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at C:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:14:20.324Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at C:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:14:20.414Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at C:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:14:21.150Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at C:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:14:21.449Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at C:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:14:21.727Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at C:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:14:22.084Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at C:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:14:22.265Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at C:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:14:22.341Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at C:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:14:22.789Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at C:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:16:38.696Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at C:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:16:38.735Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at C:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:16:38.822Z"}
+{"message":"Cannot read property 'lastScrape' of null","stack":"TypeError: Cannot read property 'lastScrape' of null\n    at C:\\Projects\\findel\\routes\\webScrapeSite.js:10:18","level":"error","timestamp":"2019-04-10T11:16:38.828Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at C:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:16:39.107Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at C:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:16:39.180Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at C:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:16:39.357Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at C:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:16:39.449Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at C:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:16:39.456Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at C:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:16:39.713Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at C:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:16:39.970Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at C:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:16:40.063Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at C:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:16:40.395Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at C:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:16:40.584Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at C:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:16:40.620Z"}
+{"message":"siteInDB.upsert is not a function","stack":"TypeError: siteInDB.upsert is not a function\n    at C:\\Projects\\findel\\routes\\webScrapeSite.js:24:24\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:16:41.674Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-10T11:21:25.897Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-10T11:21:55.969Z"}
+{"message":"Cannot read property 'lastScrape' of null","stack":"TypeError: Cannot read property 'lastScrape' of null\n    at C:\\Projects\\findel\\routes\\webScrapeSite.js:10:18","level":"error","timestamp":"2019-04-10T11:22:02.722Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-10T11:23:40.824Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-10T11:24:19.666Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-10T11:25:17.222Z"}
+{"message":"Cannot read property '_id' of null","stack":"TypeError: Cannot read property '_id' of null\n    at C:\\Projects\\findel\\routes\\webScrapeSite.js:30:51\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:25:24.734Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-10T11:27:57.158Z"}
+{"message":"Cannot read property '_id' of null","stack":"TypeError: Cannot read property '_id' of null\n    at c:\\Projects\\findel\\routes\\webScrapeSite.js:30:51\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:28:13.786Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-10T11:29:39.254Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-10T11:32:49.378Z"}
+{"message":"Cannot read property '_id' of null","stack":"TypeError: Cannot read property '_id' of null\n    at C:\\Projects\\findel\\routes\\webScrapeSite.js:33:51\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-10T11:33:19.036Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-10T11:41:14.726Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-11T20:17:22.882Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-11T20:56:15.236Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-11T20:56:58.651Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-11T20:59:34.618Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-11T21:03:59.623Z"}
+{"message":"Cannot read property 'findOne' of undefined","stack":"TypeError: Cannot read property 'findOne' of undefined\n    at c:\\Projects\\findel\\routes\\userRankInput.js:43:55\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-11T21:04:50.484Z"}
+{"message":"Cannot read property 'findOne' of undefined","stack":"TypeError: Cannot read property 'findOne' of undefined\n    at c:\\Projects\\findel\\routes\\userRankInput.js:43:55\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-11T21:05:22.936Z"}
+{"message":"Cannot read property 'findOne' of undefined","stack":"TypeError: Cannot read property 'findOne' of undefined\n    at c:\\Projects\\findel\\routes\\userRankInput.js:43:55\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-11T21:05:25.155Z"}
+{"message":"Cannot read property 'findOne' of undefined","stack":"TypeError: Cannot read property 'findOne' of undefined\n    at c:\\Projects\\findel\\routes\\userRankInput.js:43:55\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-11T21:07:03.866Z"}
+{"message":"Cannot read property 'findOne' of undefined","stack":"TypeError: Cannot read property 'findOne' of undefined\n    at c:\\Projects\\findel\\routes\\userRankInput.js:43:55\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-11T21:07:17.534Z"}
+{"message":"Cannot read property 'findOne' of undefined","stack":"TypeError: Cannot read property 'findOne' of undefined\n    at c:\\Projects\\findel\\routes\\userRankInput.js:43:55\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-11T21:07:28.547Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-11T21:13:15.418Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-11T21:14:04.016Z"}
+{"message":"siteTopicEdge.usersRanking.findOne is not a function","stack":"TypeError: siteTopicEdge.usersRanking.findOne is not a function\n    at c:\\Projects\\findel\\routes\\userRankInput.js:43:55\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-11T21:14:19.390Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-11T21:23:18.793Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-11T21:24:07.883Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-11T21:24:20.730Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-11T21:25:16.777Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-11T21:33:23.964Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-11T21:34:33.518Z"}
+{"message":"siteTopicEdge.usersRanking.findOne is not a function","stack":"TypeError: siteTopicEdge.usersRanking.findOne is not a function\n    at c:\\Projects\\findel\\routes\\userRankInput.js:46:57\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-11T21:35:40.542Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-11T21:38:28.653Z"}
+{"message":"siteTopicEdge.usersRanking.$pull is not a function","stack":"TypeError: siteTopicEdge.usersRanking.$pull is not a function\n    at c:\\Projects\\findel\\routes\\userRankInput.js:46:57\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-11T21:38:43.172Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-11T21:38:59.342Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-11T21:42:32.188Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-11T21:47:38.801Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-11T21:48:20.501Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-11T21:50:34.448Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-11T21:51:46.925Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-11T21:53:48.993Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-15T11:46:59.834Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-15T11:50:08.065Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-15T11:53:10.515Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-15T11:59:53.762Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-15T12:01:20.070Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-15T12:04:09.682Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-15T12:07:03.754Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-15T12:10:31.241Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-15T17:11:57.023Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-15T17:28:00.587Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-15T17:29:46.336Z"}

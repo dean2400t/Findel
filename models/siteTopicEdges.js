@@ -1,5 +1,6 @@
 const Joi = require('joi');
 const mongoose = require('mongoose');
+const {UserRanking}=require('./userRanking');
 
 const siteTopicEdgeSchema = new mongoose.Schema({
   site: {
@@ -15,7 +16,8 @@ const siteTopicEdgeSchema = new mongoose.Schema({
   weight:{ 
     type: Number,
     required: true
-  }
+  },
+  usersRanking:[UserRanking.schema]
 });
   
   const SiteTopicEdge = mongoose.model('site-Topic-Edges', siteTopicEdgeSchema);

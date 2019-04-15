@@ -8,9 +8,15 @@ const siteSchema = new mongoose.Schema({
     minlength: 4,
     maxlength: 512
   },
+  lastScrape:{
+    type: Date
+  },
+  html:{
+    type: String
+  },
   siteTopicEdges:[{
     type: mongoose.Schema.ObjectId, 
-    ref: 'siteTopicEdges'
+    ref: 'site-Topic-Edges'
   }]
   
 });
