@@ -16,15 +16,14 @@ router.get('/', async function(req, res, next) {
             if (lastScrapeAge <= numOfDaysToLive*86400000)
                 return res.status(200).send(siteInDB.html);
         }
-        else
+        var text=await webScrapeURL(url);
+        if (text!="")
         {
-            var text=await webScrapeURL(url);
-            if (text!="")
-            {
-                await Site.findOneAndUpdate({_id:siteInDB._id}, {lastScrape:new Date(), html: text});
-                return res.status(200).send(text);
-            }
+            await Site.findOneAndUpdate({_id:siteInDB._id}, {lastScrape:new Date(), html: text});
+            return res.status(200).send(text);
         }
+        else
+            return res.status(404).send("Page can't be scraped");
     }
     else
     {

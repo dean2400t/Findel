@@ -10,20 +10,27 @@ const {UserRanking}=require('../models/userRanking');
 const {User} = require('../models/users');
 var router = express.Router();
 
-function findRankIDinEdge(usersRanking, userID)
+
+function checkAuthAndReturnUserID(token)
 {
-  usersRanking.forEach(ranking => {
-    if (ranking.userID==userID)
-      return ranking;
-    else
-      var x=3;      
-  });
-  return null;
+  try {
+    const decoded = jwt.verify(token, config.get('jwtPrivateKey'));
+    return decoded._id;
+  }
+  catch (ex) {
+    return "";
+  }
 }
 
-/* GET home page. */
+function findRankIDinEdge(usersRanking, userID)
+{
+  for (var index=0; index<usersRanking.length; index++)
+    if (usersRanking[index].userID.equals(userID))
+      return usersRanking[index];
+  return undefined;
+}
+
 router.post('/rankSite', auth, async function(req, res) {
-  //res.render('index');
   var topic=req.body.topic;
   var siteURL=req.body.siteURL;
   var rankCode=req.body.rankCode;
@@ -39,9 +46,9 @@ router.post('/rankSite', auth, async function(req, res) {
   var topicFromDB=await Topic.findOne({topicName: topic});
   var siteFromDB=await Site.findOne({siteURL: siteURL});
   if (!topicFromDB)
-    return res.status(400).send("topic not found in database");
+    return res.status(400).send("Topic not found in database");
   if (!siteFromDB)
-    return res.status(400).send("site not found in database");
+    return res.status(400).send("Site not found in database");
   
   var user=await User.findById(req.user._id);
   var siteTopicEdge=await SiteTopicEdge.findOne({topic: topicFromDB._id, site: siteFromDB._id});
@@ -51,26 +58,35 @@ router.post('/rankSite', auth, async function(req, res) {
   if (!siteTopicEdge)
     return res.status(400).send("Site to Topic edge not found in database");
   
-  if (siteTopicEdge.usersRanking.length==0)
-    var userRankInEdge=undefined;
-  else
-    var userRankInEdge
+  var userRankInEdge= findRankIDinEdge(siteTopicEdge.usersRanking, user._id);
 
   if (userRankInEdge)
   {
     if (rankCode==0)
     {
-      await SiteTopicEdge.findByIdAndUpdate(siteTopicEdge._id,{$pull: {usersRanking: userRankInEdge}});
+      var newWeight=siteTopicEdge.weight;
+      if (userRankInEdge.rankCode==1)
+        newWeight-=userRankInEdge.scoreAdded;
+      else if (userRankInEdge.rankCode==2)
+        newWeight+=userRankInEdge.scoreAdded;
+      userRankInEdge.remove();
+      siteTopicEdge.weight=newWeight;
+
+      await siteTopicEdge.save();
     }
     if (rankCode==1)
       if (userRankInEdge.rankCode==2)
       {
-        await SiteTopicEdge.findOneAndUpdate({_id: siteTopicEdge._id, "usersRanking._id": userRankInEdge._id},{ $set:  { 'usersRanking.$.rankCode': rankCode }});
+        userRankInEdge.$set({'rankCode': rankCode});
+        siteTopicEdge.weight+=userRankInEdge.scoreAdded*2;
+        await siteTopicEdge.save();
       }
     if (rankCode==2)
       if (userRankInEdge.rankCode==1)
       {
-        await SiteTopicEdge.findOneAndUpdate({_id: siteTopicEdge._id, "usersRanking._id": userRankInEdge._id},{ $set:  { 'usersRanking.$.rankCode': rankCode }});
+        userRankInEdge.$set({'rankCode': rankCode});
+        siteTopicEdge.weight-=userRankInEdge.scoreAdded*2;
+        await siteTopicEdge.save();
       }
   }
   else
@@ -82,7 +98,12 @@ router.post('/rankSite', auth, async function(req, res) {
       else
         user.userScore=0;
       userRankInEdge=new UserRanking({userID: user._id, rankCode: rankCode, scoreAdded: user.userScore});
-      await SiteTopicEdge.findByIdAndUpdate(siteTopicEdge._id,{$push: {usersRanking: userRankInEdge}});
+      siteTopicEdge.usersRanking.push(userRankInEdge);
+      if (rankCode==1)
+        siteTopicEdge.weight+=user.userScore;
+      else if (rankCode==2)
+        siteTopicEdge.weight-=user.userScore;
+      await siteTopicEdge.save();
     }
   
 

@@ -62,13 +62,17 @@ async function findNewSitesAndExistingSites(urlsFromGoogle)
 }
 
 //Function returns objectsIDs of the sites which are in the topic
-async function getSitesIDsFromTopicEdges(topic)
+async function getSitesIdsAndEdgesFromTopic(topic)
 {
   var edgesToSites=await SiteTopicEdge.find({topic: topic});
   var sitesID=[];
+  var siteToTopicEdges=[];
   for (var edgeIndex=0; edgeIndex<edgesToSites.length; edgeIndex++)
+  {
     sitesID.push(edgesToSites[edgeIndex].site);
-  return sitesID;
+    siteToTopicEdges.push(edgesToSites[edgeIndex])
+  }
+  return [sitesID, siteToTopicEdges];
 }
 
 /*
@@ -87,7 +91,7 @@ async function searchGoogleAndOrgenize(topic)
   //Get urls and remove sites, already connected with an edge, from sitesInDataBase array
   if (topic.siteTopicEdges.length>0)
   {
-    var sitesIDs=await getSitesIDsFromTopicEdges(topic);
+    var [sitesIDs, tEdges]=await getSitesIdsAndEdgesFromTopic(topic);
     for (var siteIndex=0; siteIndex<firstSitesFromDataBase.length; siteIndex++)
     {
       objID=firstSitesFromDataBase[siteIndex]._id;
@@ -131,7 +135,7 @@ async function searchGoogleAndOrgenize(topic)
   return sites;
 }
 
-async function checkAuthAndReturnUserID(token)
+function checkAuthAndReturnUserID(token)
 {
   try {
     const decoded = jwt.verify(token, config.get('jwtPrivateKey'));
@@ -142,14 +146,65 @@ async function checkAuthAndReturnUserID(token)
   }
 }
 
+function binaryFindEdgefromSiteByIDs(edges, site, start, end) { 
+       
+  // Base Condtion 
+  if (start > end) return null; 
+ 
+  // Find the middle index 
+  let mid=Math.floor((start + end)/2); 
+ 
+  // Compare mid with given key x 
+  if (edges[mid].site.equals(site._id)) return edges[mid]; 
+        
+  // If element at mid is greater than x, 
+  // search in the left half of mid 
+  if(edges[mid].site > site._id)  
+      return binaryFindEdgefromSiteByIDs(edges, site, start, mid-1); 
+  else
+
+      // If element at mid is smaller than x, 
+      // search in the right half of mid 
+      return binaryFindEdgefromSiteByIDs(edges, site, mid+1, end); 
+}
+
+async function getCorrespondingSiteAndEdgesDataFromTopic(topic, userID)
+{
+  var sites=[];
+  var [sitesID, siteTopicEdges]=await getSitesIdsAndEdgesFromTopic(topic);
+  var sitesFromEdges=await Site.find({_id: { $in: sitesID}}).sort();
+  siteTopicEdges.sort();
+  for (var siteIndex=0; siteIndex<sitesFromEdges.length; siteIndex++)
+  {
+    var edge= binaryFindEdgefromSiteByIDs(siteTopicEdges, sitesFromEdges[siteIndex], 0, sitesFromEdges.length-1);
+    var userRankCode=0;
+    if (userID!="")
+      for (var rankIndex=0; rankIndex<edge.usersRanking.length; rankIndex++)
+        if (edge.usersRanking[rankIndex].userID.equals(userID))
+        {
+          userRankCode=edge.usersRanking[rankIndex].rankCode;
+          if (userRankCode==1)
+            edge.weight-=edge.usersRanking[rankIndex].scoreAdded-1;
+          if (userRankCode==2)
+            edge.weight+=edge.usersRanking[rankIndex].scoreAdded-1;
+        }
+    sites.push({
+      siteURL: sitesFromEdges[siteIndex]['siteURL'],
+      userRankCode: userRankCode,
+      edgeWeight: edge.weight
+    });
+  }
+  return sites;
+}
+
 /* GET home page. */
-router.get('/', async function(req, res, next) {
+router.get('/', async function(req, res) {
   //res.render('index');
   var search=req.query.search;
   var token=req.headers['findel-auth-token'];
-  var userID=await checkAuthAndReturnUserID(token);
+  var userID= checkAuthAndReturnUserID(token);
   var topic=await Topic.findOne({topicName: search});
-  var sites=[];
+
   if (topic)
   {
     if (userID!="")
@@ -162,17 +217,11 @@ router.get('/', async function(req, res, next) {
 
     //Topic was google searched recently
     if(googleSearchAge<numOfDaysToLive*86400000)
-    {
-      var sitesID=await getSitesIDsFromTopicEdges(topic);
-      var sitesFromEdges=await Site.find({_id: { $in: sitesID}});
-      for (var siteIndex=0; siteIndex<sitesFromEdges.length; siteIndex++)
-        sites.push(sitesFromEdges[siteIndex]['siteURL']);
-      return res.status(200).send(sites);
-    }
+      return res.status(200).send(await getCorrespondingSiteAndEdgesDataFromTopic(topic, userID));
 
     //Topic needs to be google searched again
     sites= await searchGoogleAndOrgenize(topic);
-    return res.status(200).send(sites);
+    return res.status(200).send(await getCorrespondingSiteAndEdgesDataFromTopic(topic, userID));
   }
 
   //New topic
@@ -186,6 +235,6 @@ router.get('/', async function(req, res, next) {
       await User.updateOne({_id: userID}, {$push: {searches: search}});
     }
   sites= await searchGoogleAndOrgenize(topic);
-  return res.status(200).send(sites);
+  return res.status(200).send(await getCorrespondingSiteAndEdgesDataFromTopic(topic, userID));
 });
 module.exports = router;
