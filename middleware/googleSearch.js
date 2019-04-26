@@ -22,7 +22,7 @@ module.exports=async function googleSearch(search)
             for (var index=0; index<10; index++)
                 if (allRes[r].data.items[index]!=null)
                 {
-                urls.push(allRes[r].data.items[index].formattedUrl);
+                urls.push(allRes[r].data.items[index].link);
                 siteNum++;
                 }
     return urls;

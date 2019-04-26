@@ -10,7 +10,7 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/me', auth, async (req, res) => {
-  const user = await User.findById(req.user._id).select("_id userName");
+  const user = await User.findById(req.user._id).select("_id userName position");
   res.send(user);
 });
 
@@ -22,7 +22,7 @@ router.post('/createAdminAccount',[auth, isAdmin], async (req, res) => {
   var user = await User.findOne({ userName: req.body.userName });
   if (user) return res.status(400).send('userName already exist.');
 
-  if (req.body.email!="")
+  if (req.body.email!="" && req.body.email!=null)
   {
     var user = await User.findOne({ email: req.body.email });
     if (user) return res.status(400).send('email already exist.');
@@ -31,13 +31,15 @@ router.post('/createAdminAccount',[auth, isAdmin], async (req, res) => {
   req.body.position="Admin";
   user = new User(_.pick(req.body, ['email', 'userName', 'firstName', 'lastName', 'password', 'position']));
   
+  user.userScore=50;
+
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(user.password, salt);
   
   await user.save();
 
   const token = user.generateAuthToken();
-  res.header('x-auth-token', token).send(_.pick(user, ['_id', 'email', 'password', 'position']));
+  return res.status(200).send({token: token, userName: user.userName});
 });
 
 router.post('/createStudentAccount', async (req, res) => {
@@ -48,7 +50,7 @@ router.post('/createStudentAccount', async (req, res) => {
   var user = await User.findOne({ userName: req.body.userName });
   if (user) return res.status(400).send('userName already exist.');
 
-  if (req.body.email!="")
+  if (req.body.email!="" && req.body.email!=null)
   {
     var user = await User.findOne({ email: req.body.email });
     if (user) return res.status(400).send('email already exist.');
@@ -57,17 +59,18 @@ router.post('/createStudentAccount', async (req, res) => {
   req.body.position="Student";
   user = new User(_.pick(req.body, ['email', 'userName', 'firstName', 'lastName', 'password', 'position']));
   
+  user.userScore=1;
+
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(user.password, salt);
   
   await user.save();
 
   const token = user.generateAuthToken();
-  res.redirect('/');
-  res.header('x-auth-token', token).send(_.pick(user, ['_id', 'email', 'password', 'position']));
+  return res.status(200).send({token: token, userName: user.userName});
 });
 
-router.post('/createTeacherAccount', [auth, isAdmin],async (req, res) => {
+router.post('/createTeacherAccount', [auth, isTeacher],async (req, res) => {
 
   const { error } = validate(req.body); 
   if (error) return res.status(400).send(error.details[0].message);
@@ -75,7 +78,7 @@ router.post('/createTeacherAccount', [auth, isAdmin],async (req, res) => {
   var user = await User.findOne({ userName: req.body.userName });
   if (user) return res.status(400).send('userName already exist.');
 
-  if (req.body.email!="")
+  if (req.body.email!="" && req.body.email!=null)
   {
     var user = await User.findOne({ email: req.body.email });
     if (user) return res.status(400).send('email already exist.');
@@ -84,14 +87,15 @@ router.post('/createTeacherAccount', [auth, isAdmin],async (req, res) => {
   req.body.position="Teacher";
   user = new User(_.pick(req.body, ['email', 'userName', 'firstName', 'lastName', 'password', 'position']));
   
+  user.userScore=30;
+
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(user.password, salt);
   
   await user.save();
 
   const token = user.generateAuthToken();
-  res.header('x-auth-token', token).send(_.pick(user, ['_id', 'email','password', 'position']));
-  res.redirect('/');
+  return res.status(200).send({token: token, userName: user.userName});
 });
 
 router.put('/:id', [auth, isAdminOrTheUser], async (req, res) =>

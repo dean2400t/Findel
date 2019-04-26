@@ -50,7 +50,19 @@ const userSchema = new mongoose.Schema({
   {
     type: Number
   },
-  searches:[searchSchema]
+  searches:[searchSchema],
+  favorites: [{
+    type: mongoose.Schema.ObjectId, 
+    ref: 'site-Topic-Edges'}],
+  
+  disliked: [{
+    type: mongoose.Schema.ObjectId, 
+    ref: 'site-Topic-Edges'}],
+  
+  site_Topic_Edges_Added:[{
+    type: mongoose.Schema.ObjectId, 
+    ref: 'site-Topic-Edges'
+  }]
   });
   
   userSchema.methods.generateAuthToken = function() { 

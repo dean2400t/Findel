@@ -11,11 +11,11 @@ const {Search}=require('../models/searches');
 var router = express.Router();
 
 /*
-Function 'findWhichUrlsNotInDataBase' recieves an unsorted urls(A) found by google and sorted urls of sites from the
+Function 'find_which_urls_are_not_in_DataBase' recieves an unsorted urls(A) found by google and sorted urls of sites from the
 database(B) which contains the urls found from google.
 The function than returns the logical equivalent of A-B and returns only the new urls.
 */
-function findWhichUrlsNotInDataBase(urls, foundUrlInDB) {
+function find_which_urls_are_not_in_DataBase(urls, foundUrlInDB) {
   if (foundUrlInDB.length==0)
     return urls;
   var newUrls=[];
@@ -39,17 +39,17 @@ function findWhichUrlsNotInDataBase(urls, foundUrlInDB) {
 }
 
 /*
-Function 'findNewSitesAndExistingSites' returns two arrays, one of the sites from the
+Function 'find_new_sites_and_existing_sites' returns two arrays, one of the sites from the
 database corrosponding to the urls, and the second is the new sites which are not in the database
 */
-async function findNewSitesAndExistingSites(urlsFromGoogle)
+async function find_new_sites_and_existing_sites(urlsFromGoogle)
 {
   var checkedNewSites=[];
   var sitesInDataBase;
   if (urlsFromGoogle.length>0)
   {
     sitesInDataBase=await Site.find({siteURL: { $in: urlsFromGoogle }}).sort({siteURL:1});
-    var newSitesToAdd=findWhichUrlsNotInDataBase(urlsFromGoogle, sitesInDataBase);
+    var newSitesToAdd=find_which_urls_are_not_in_DataBase(urlsFromGoogle, sitesInDataBase);
     for (var newSiteIndex=0; newSiteIndex<newSitesToAdd.length; newSiteIndex++)
     {
       var site={siteURL: newSitesToAdd[newSiteIndex]};
@@ -62,7 +62,7 @@ async function findNewSitesAndExistingSites(urlsFromGoogle)
 }
 
 //Function returns objectsIDs of the sites which are in the topic
-async function getSitesIdsAndEdgesFromTopic(topic)
+async function get_sites_Ids_and_edges_from_topic(topic)
 {
   var edgesToSites=await SiteTopicEdge.find({topic: topic});
   var sitesID=[];
@@ -78,7 +78,7 @@ async function getSitesIdsAndEdgesFromTopic(topic)
 /*
 Function searches google by topic and update database accordingly
 */
-async function searchGoogleAndOrgenize(topic)
+async function search_Google_and_orgenize(topic)
 {
   var search=topic.topicName;
   var sites=[];
@@ -86,12 +86,12 @@ async function searchGoogleAndOrgenize(topic)
   var found;
   var objID;
   var urls=await googleSearch(search);
-  [checkedNewSites, firstSitesFromDataBase]= await findNewSitesAndExistingSites(urls);
+  [checkedNewSites, firstSitesFromDataBase]= await find_new_sites_and_existing_sites(urls);
   
   //Get urls and remove sites, already connected with an edge, from sitesInDataBase array
   if (topic.siteTopicEdges.length>0)
   {
-    var [sitesIDs, tEdges]=await getSitesIdsAndEdgesFromTopic(topic);
+    var [sitesIDs, tEdges]=await get_sites_Ids_and_edges_from_topic(topic);
     for (var siteIndex=0; siteIndex<firstSitesFromDataBase.length; siteIndex++)
     {
       objID=firstSitesFromDataBase[siteIndex]._id;
@@ -146,7 +146,7 @@ function checkAuthAndReturnUserID(token)
   }
 }
 
-function binaryFindEdgefromSiteByIDs(edges, site, start, end) { 
+function binary_find_edge_from_site_by_IDs(edges, site, start, end) { 
        
   // Base Condtion 
   if (start > end) return null; 
@@ -160,23 +160,24 @@ function binaryFindEdgefromSiteByIDs(edges, site, start, end) {
   // If element at mid is greater than x, 
   // search in the left half of mid 
   if(edges[mid].site > site._id)  
-      return binaryFindEdgefromSiteByIDs(edges, site, start, mid-1); 
+      return binary_find_edge_from_site_by_IDs(edges, site, start, mid-1); 
   else
 
       // If element at mid is smaller than x, 
       // search in the right half of mid 
-      return binaryFindEdgefromSiteByIDs(edges, site, mid+1, end); 
+      return binary_find_edge_from_site_by_IDs(edges, site, mid+1, end); 
 }
 
-async function getCorrespondingSiteAndEdgesDataFromTopic(topic, userID)
+async function get_Sites_Edges_data_from_topic(topic, userID)
 {
+  
   var sites=[];
-  var [sitesID, siteTopicEdges]=await getSitesIdsAndEdgesFromTopic(topic);
+  var [sitesID, siteTopicEdges]=await get_sites_Ids_and_edges_from_topic(topic);
   var sitesFromEdges=await Site.find({_id: { $in: sitesID}}).sort();
   siteTopicEdges.sort();
   for (var siteIndex=0; siteIndex<sitesFromEdges.length; siteIndex++)
   {
-    var edge= binaryFindEdgefromSiteByIDs(siteTopicEdges, sitesFromEdges[siteIndex], 0, sitesFromEdges.length-1);
+    var edge= binary_find_edge_from_site_by_IDs(siteTopicEdges, sitesFromEdges[siteIndex], 0, sitesFromEdges.length-1);
     var userRankCode=0;
     if (userID!="")
       for (var rankIndex=0; rankIndex<edge.usersRanking.length; rankIndex++)
@@ -217,11 +218,11 @@ router.get('/', async function(req, res) {
 
     //Topic was google searched recently
     if(googleSearchAge<numOfDaysToLive*86400000)
-      return res.status(200).send(await getCorrespondingSiteAndEdgesDataFromTopic(topic, userID));
+      return res.status(200).send(await get_Sites_Edges_data_from_topic(topic, userID));
 
     //Topic needs to be google searched again
-    sites= await searchGoogleAndOrgenize(topic);
-    return res.status(200).send(await getCorrespondingSiteAndEdgesDataFromTopic(topic, userID));
+    sites= await search_Google_and_orgenize(topic);
+    return res.status(200).send(await get_Sites_Edges_data_from_topic(topic, userID));
   }
 
   //New topic
@@ -234,7 +235,7 @@ router.get('/', async function(req, res) {
       var search=new Search({topic: topic._id})
       await User.updateOne({_id: userID}, {$push: {searches: search}});
     }
-  sites= await searchGoogleAndOrgenize(topic);
-  return res.status(200).send(await getCorrespondingSiteAndEdgesDataFromTopic(topic, userID));
+  sites= await search_Google_and_orgenize(topic);
+  return res.status(200).send(await get_Sites_Edges_data_from_topic(topic, userID));
 });
 module.exports = router;

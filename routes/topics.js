@@ -17,6 +17,10 @@ const topicSchema = new mongoose.Schema({
   siteTopicEdges:[{
     type: mongoose.Schema.ObjectId, 
     ref: 'site-Topic-Edges'
+  }],
+  topicTopicEdges:[{
+    type: mongoose.Schema.ObjectId, 
+    ref: 'topic-topic-edges'
   }]
 });
   

@@ -66,28 +66,36 @@ router.post('/rankSite', auth, async function(req, res) {
     {
       var newWeight=siteTopicEdge.weight;
       if (userRankInEdge.rankCode==1)
+      {
         newWeight-=userRankInEdge.scoreAdded;
+        user.favorites.pull(siteTopicEdge._id);
+      }
       else if (userRankInEdge.rankCode==2)
+      {
         newWeight+=userRankInEdge.scoreAdded;
+        user.disliked.pull(siteTopicEdge._id);
+      }
       userRankInEdge.remove();
-      siteTopicEdge.weight=newWeight;
-
-      await siteTopicEdge.save();
+      siteTopicEdge.weight=newWeight; 
     }
     if (rankCode==1)
       if (userRankInEdge.rankCode==2)
       {
         userRankInEdge.$set({'rankCode': rankCode});
         siteTopicEdge.weight+=userRankInEdge.scoreAdded*2;
-        await siteTopicEdge.save();
+        user.favorites.pull(siteTopicEdge._id);
+        user.disliked.push(siteTopicEdge._id);
       }
     if (rankCode==2)
       if (userRankInEdge.rankCode==1)
       {
         userRankInEdge.$set({'rankCode': rankCode});
         siteTopicEdge.weight-=userRankInEdge.scoreAdded*2;
-        await siteTopicEdge.save();
+        user.disliked.pull(siteTopicEdge._id);
+        user.favorites.push(siteTopicEdge._id);
       }
+    await siteTopicEdge.save();
+    await user.save();
   }
   else
     if (rankCode!=0)
@@ -100,10 +108,17 @@ router.post('/rankSite', auth, async function(req, res) {
       userRankInEdge=new UserRanking({userID: user._id, rankCode: rankCode, scoreAdded: user.userScore});
       siteTopicEdge.usersRanking.push(userRankInEdge);
       if (rankCode==1)
-        siteTopicEdge.weight+=user.userScore;
+        {
+          siteTopicEdge.weight+=user.userScore;
+          user.favorites.push(siteTopicEdge._id);
+        }
       else if (rankCode==2)
+      {
         siteTopicEdge.weight-=user.userScore;
+        user.disliked.push(siteTopicEdge._id);
+      }
       await siteTopicEdge.save();
+      await user.save();
     }
   
 

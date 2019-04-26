@@ -35,6 +35,6 @@
     "request-promise": "^4.2.2",
     "serve-favicon": "^2.5.0",
     "winston": "^2.4.0",
-    "wtf_wikipedia": "^7.2.1"
+    "wtf_wikipedia": "^7.3.0"
   }
 }
