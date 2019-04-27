@@ -1,0 +1,22 @@
+#searchBTN{
+    margin-right: 2px;
+}
+
+#exContents{
+    margin-top: 10px;
+}
+
+.search_box_div{
+    position: relative;
+}
+.add_site_to_topic_div{
+    position: absolute;
+    bottom:2px;
+    left:2px;
+}
+
+.add_topic_to_topic_div{
+    position: absolute;
+    bottom:2px;
+    right:2px;
+}

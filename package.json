@@ -1,15 +1,21 @@
 {
   "name": "Findel",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+
+    "start": "node app.js",
+    "server": "nodemon app.js",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
+  "author": "Dean Moravia, Ran Davidi",
+  "license": "Sapir College",
   "dependencies": {
     "axios": "^0.18.0",
     "bcrypt": "^3.0.2",
-    "cheerio": "^1.0.0-rc.2",
     "compression": "^1.7.3",
+    "concurrently": "^4.1.0",
     "config": "^1.29.4",
     "cookie-parser": "~1.4.3",
     "cors": "^2.8.5",
@@ -36,5 +42,8 @@
     "serve-favicon": "^2.5.0",
     "winston": "^2.4.0",
     "wtf_wikipedia": "^7.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.11"
   }
 }

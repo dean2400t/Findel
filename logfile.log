@@ -1890,3 +1890,7 @@
 {"message":"siteTopicEdges is not defined","stack":"ReferenceError: siteTopicEdges is not defined\n    at C:\\Projects\\findel\\routes\\users_content_adding.js:57:5\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-26T23:10:43.591Z"}
 {"message":"siteTopicEdges is not defined","stack":"ReferenceError: siteTopicEdges is not defined\n    at C:\\Projects\\findel\\routes\\users_content_adding.js:57:5\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-04-26T23:11:06.488Z"}
 {"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-26T23:11:41.487Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-27T15:18:40.955Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-27T15:19:35.143Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-27T15:21:18.217Z"}
+{"level":"info","message":"Listening on port 3010...","timestamp":"2019-04-27T15:22:09.300Z"}

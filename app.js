@@ -23,7 +23,6 @@ require("./startup/config")();
 require("./startup/validation")();
 require("./startup/prod")(app);
 
-//const port=process.env.port || 3010;
-const port= 3010;
+const port=process.env.port || 3010;
 app.listen(port, ()=>winston.info(`Listening on port ${port}...`));
 module.exports = app;
