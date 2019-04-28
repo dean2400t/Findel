@@ -1,4 +1,5 @@
 {
     "jwtPrivateKey":"LadyDianeDeliveries_jwtPrivateKey",
-    "adminKey": "LadyDianeAdminKey"
+    "adminKey": "LadyDianeAdminKey",
+    "db": "mongodb://dean2400t:Dm135135@ds147946.mlab.com:47946/heroku_b3ckh1g4"
 }
