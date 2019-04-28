@@ -13,8 +13,8 @@ router.get('/me', auth, async (req, res) => {
   const user = await User.findById(req.user._id).select("_id userName position");
   res.send(user);
 });
-//,[auth, isAdmin]
-router.post('/createAdminAccount', async (req, res) => {
+
+router.post('/createAdminAccount',[auth, isAdmin] , async (req, res) => {
 
   const { error } = validate(req.body); 
   if (error) return res.status(400).send(error.details[0].message);
