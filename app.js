@@ -23,6 +23,12 @@ require("./startup/config")();
 require("./startup/validation")();
 require("./startup/prod")(app);
 
+const root = require('path').join(__dirname, 'client', 'build')
+app.use(express.static(root));
+app.get("*", (req, res) => {
+    res.sendFile('index.html', { root });
+});
+
 const port=process.env.PORT || 1337;
 app.listen(port, ()=>winston.info(`Listening on port ${port}...`));
 module.exports = app;
