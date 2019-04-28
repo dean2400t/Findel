@@ -1,5 +1,5 @@
 const express = require('express');
-const index=require('../routes/pages/index');
+const index=require('../client/build/index.html');
 const users = require('../routes/users');
 const auth = require('../routes/auth');
 const authPage=require('../routes/pages/authPage');
