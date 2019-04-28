@@ -110,7 +110,7 @@ router.get('/favorites', auth, async function(req, res) {
       var site= binaryFindSiteByIDs(sites, edge.site._id, 0, sites.length);
       if (favorites[topic.topicName]==null)
         favorites[topic.topicName]=[];
-      favorites[topic.topicName].push({siteURL: site.siteURL});
+      favorites[topic.topicName].push({siteURL: site.siteURL, formatedURL: site.siteFormatedURL});
     });
     var favorites_array=[];
     Object.keys(favorites).forEach(topic => {

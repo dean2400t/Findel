@@ -31,7 +31,8 @@ class ArefSite extends Component {
     var redText={color: "red"};
     return (
           <div className="aSiteRef">
-            <text><a target="_blank" rel="noopener noreferrer" href={this.props.aRefSite.url}>{this.props.aRefSite.url}</a> 
+            <text><a target="_blank" rel="noopener noreferrer" href={this.props.aRefSite.url}>{this.props.aRefSite.formatedURL}</a> 
+            <br/><text>{this.props.aRefSite.siteSnap}</text>
             <br/>דירוג משתמשים: <FontAwesomeIcon icon={faArrowAltCircleUp} color={this.state.upArrowColor} onClick={() => this.upClick()}/> ({this.state.edgeWeight}) <FontAwesomeIcon icon={faArrowAltCircleDown} color={this.state.downArrowColor} onClick={() => this.downClick()}/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; דירוג אלגוריתם: ({this.props.aRefSite.hits})</text>
             <br/><text style={redText}>{this.state.rank_error}</text>
           </div>

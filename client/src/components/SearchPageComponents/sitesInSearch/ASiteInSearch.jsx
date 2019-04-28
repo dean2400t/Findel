@@ -7,7 +7,7 @@ class ASiteInSearch extends Component {
   render() {
     return (
       <div className="aSiteSR">
-          <p>{this.props.aSite.url} <i className={this.props.aSite.scrape}></i><i className={this.props.aSite.hash}></i><i className={this.props.aSite.searched}></i></p>
+          <p>{this.props.aSite.formatedURL} <i className={this.props.aSite.scrape}></i></p>
       </div>
     );
   }

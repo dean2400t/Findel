@@ -2,9 +2,8 @@ let axios = require('axios');
 
 module.exports = async function webScrapeURL(url)
 {
-  var uri = encodeURI(url); 
   var texts="";
-  await axios.get(uri)
+  await axios.get(url)
   .then((response) => {
 
       if(response.status === 200) {

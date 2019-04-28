@@ -66,18 +66,22 @@ class SearchPage extends Component {
                 <div id="exContents">
                     <ExpandedContent expandedContents={this.state.expandedContents}/>
                 </div>
-                <div className="add_site_to_topic_div" hidden={!this.state.was_add_site_button_clicked}>
-                    
-                    <text style={search_box_textStyle}>הוסף אתר לנושא: &nbsp;</text><input type="text" value={this.state.add_site_to_topic_input} onChange={evt => this.add_site_to_topic_change_function(evt)}/><button id="add_site_to_topic_button" onClick={() => this.add_site()}>+</button>
-                </div>
-                <div className="add_site_to_topic_div" hidden={this.state.was_add_site_button_clicked}>
-                    <button onClick= {() => this.add_site_button_clicked()}>הוסף אתר לנושא...</button>
-                </div>
+            </div>
+            <div className="add_content_and_sites_div" style={{backgroundColor:'#0587c3'}}>
                 <div className="add_topic_to_topic_div" hidden={!this.state.was_add_topic_button_clicked}>
                     <text style={search_box_textStyle}>הוסף תוכן לנושא: &nbsp;</text><input type="text" value={this.state.add_topic_to_topic_input} onChange={evt => this.add_topic_to_topic_change_function(evt)}/><button id="add_topic_to_topic_button">+</button>
                 </div>
                 <div className="add_topic_to_topic_div" hidden={!this.state.was_add_topic_button_clicked}>
                     <button onClick= {() => this.add_topic_button_clicked()}>הוסף תוכן לנושא...</button>
+                </div>
+                <div className="add_site_to_topic_div" hidden={!this.state.was_add_site_button_clicked}>
+                    <text style={search_box_textStyle}>הוסף אתר לנושא: &nbsp;</text>
+
+                    <input type="text" value={this.state.add_site_to_topic_input} onChange={evt => this.add_site_to_topic_change_function(evt)}/>
+                    <button id="add_site_to_topic_button" onClick={() => this.add_site()}>+</button>
+                </div>
+                <div className="add_site_to_topic_div" hidden={this.state.was_add_site_button_clicked}>
+                    <button onClick= {() => this.add_site_button_clicked()}>הוסף אתר לנושא...</button>
                 </div>
             </div>
         <div id="sites">
@@ -206,7 +210,12 @@ class SearchPage extends Component {
         var refS=[];
         for (var refSiteIndex=0; refSiteIndex<this.sites_from_server.length; refSiteIndex++)
         {
-            refS.push({id: this.id, url: this.sites_from_server[refSiteIndex].url, userRankCode: this.sites_from_server[refSiteIndex].userRankCode, edgeWeight: this.sites_from_server[refSiteIndex].edgeWeight, topic: this.curSearch, hits: 0});
+            refS.push({id: this.id, url: this.sites_from_server[refSiteIndex].url, 
+                formatedURL: this.sites_from_server[refSiteIndex].formatedURL,
+                siteSnap: this.sites_from_server[refSiteIndex].siteSnap,
+                userRankCode: this.sites_from_server[refSiteIndex].userRankCode, 
+                edgeWeight: this.sites_from_server[refSiteIndex].edgeWeight, 
+                topic: this.curSearch, hits: 0});
             this.id++;
         }
         this.setState({

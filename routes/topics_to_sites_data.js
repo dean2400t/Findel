@@ -15,44 +15,51 @@ Function 'find_which_urls_are_not_in_DataBase' recieves an unsorted urls(A) foun
 database(B) which contains the urls found from google.
 The function than returns the logical equivalent of A-B and returns only the new urls.
 */
-function find_which_urls_are_not_in_DataBase(urls, foundUrlInDB) {
+function find_which_sites_are_not_in_DataBase(sites, foundUrlInDB) {
   if (foundUrlInDB.length==0)
-    return urls;
-  var newUrls=[];
-  urls.sort();
+    return sites;
+  var newSites=[];
+  sites.sort((a,b)=>{if (a.siteURL>b.siteURL) return 1; else return -1;});
   var dbIndex=0;
-  for (var urlsIndex=0; urlsIndex<urls.length; urlsIndex++)
+  for (var sitesIndex=0; sitesIndex<sites.length; sitesIndex++)
   {
     if (dbIndex==foundUrlInDB.length)
-      newUrls.push(urls[urlsIndex])
+      newSites.push(sites[sitesIndex])
     else
     {
-      while (foundUrlInDB[dbIndex].siteURL!=urls[urlsIndex] && dbIndex<foundUrlInDB.length && urlsIndex<urls.length)
+      while (foundUrlInDB[dbIndex].siteURL!=sites[sitesIndex] && dbIndex<foundUrlInDB.length && sitesIndex<sites.length)
       {
-        newUrls.push(urls[urlsIndex]);
-        urlsIndex++;
+        newSites.push(sites[sitesIndex]);
+        sitesIndex++;
       }
       dbIndex++;
     }
   }
-  return newUrls;
+  return newSites;
 }
 
 /*
 Function 'find_new_sites_and_existing_sites' returns two arrays, one of the sites from the
 database corrosponding to the urls, and the second is the new sites which are not in the database
 */
-async function find_new_sites_and_existing_sites(urlsFromGoogle)
+async function find_new_sites_and_existing_sites(sites)
 {
   var checkedNewSites=[];
   var sitesInDataBase;
+  var urlsFromGoogle=[];
+  sites.forEach(site => {
+    urlsFromGoogle.push(site.siteURL);
+  });
   if (urlsFromGoogle.length>0)
   {
     sitesInDataBase=await Site.find({siteURL: { $in: urlsFromGoogle }}).sort({siteURL:1});
-    var newSitesToAdd=find_which_urls_are_not_in_DataBase(urlsFromGoogle, sitesInDataBase);
+    var newSitesToAdd=find_which_sites_are_not_in_DataBase(sites, sitesInDataBase);
     for (var newSiteIndex=0; newSiteIndex<newSitesToAdd.length; newSiteIndex++)
     {
-      var site={siteURL: newSitesToAdd[newSiteIndex]};
+      var site={siteURL: newSitesToAdd[newSiteIndex].siteURL,
+        siteFormatedURL: newSitesToAdd[newSiteIndex].formattedUrl,
+        siteSnap:  newSitesToAdd[newSiteIndex].snippet
+      };
       let { error } = validateSite(site); 
       if (!error)
         checkedNewSites.push(new Site(site));
@@ -85,10 +92,10 @@ async function search_Google_and_orgenize(topic)
   var sitesInDataBase=[];
   var found;
   var objID;
-  var urls=await googleSearch(search);
-  [checkedNewSites, firstSitesFromDataBase]= await find_new_sites_and_existing_sites(urls);
+  var sites=await googleSearch(search);
+  [checkedNewSites, firstSitesFromDataBase]= await find_new_sites_and_existing_sites(sites);
   
-  //Get urls and remove sites, already connected with an edge, from sitesInDataBase array
+  //Get sites and remove sites, already connected with an edge, from sitesInDataBase array
   if (topic.siteTopicEdges.length>0)
   {
     var [sitesIDs, tEdges]=await get_sites_Ids_and_edges_from_topic(topic);
@@ -191,6 +198,8 @@ async function get_Sites_Edges_data_from_topic(topic, userID)
         }
     sites.push({
       siteURL: sitesFromEdges[siteIndex]['siteURL'],
+      siteFormatedURL: sitesFromEdges[siteIndex]['siteFormatedURL'],
+      siteSnap: sitesFromEdges[siteIndex]['siteSnap'],
       userRankCode: userRankCode,
       edgeWeight: edge.weight
     });

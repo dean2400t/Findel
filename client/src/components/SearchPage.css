@@ -6,17 +6,16 @@
     margin-top: 10px;
 }
 
-.search_box_div{
-    position: relative;
+.add_content_and_sites_div{
+    text-align: right;
 }
+
 .add_site_to_topic_div{
-    position: absolute;
-    bottom:2px;
-    left:2px;
+    margin-right: 2px;
+    padding-bottom: 2px;
 }
 
 .add_topic_to_topic_div{
-    position: absolute;
-    bottom:2px;
-    right:2px;
+    margin-right: 2px;
+    margin-bottom: 2px;
 }

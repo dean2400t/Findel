@@ -43,13 +43,18 @@ class Search_functions{
                 return result.data;
             }).then((sites) => {
                 // Do something with the result
-                var urlsWithIndex=[];
+                var sitesArray=[];
                 var index=0;
                 sites.forEach(site => {
-                    urlsWithIndex.push({index: index, url:site.siteURL, userRankCode: site.userRankCode, edgeWeight: site.edgeWeight});
+                    sitesArray.push({index: index, 
+                                        url:site.siteURL, 
+                                        formatedURL: site.siteFormatedURL,
+                                        siteSnap: site.siteSnap,
+                                        userRankCode: site.userRankCode, 
+                                        edgeWeight: site.edgeWeight});
                     index++;
                 });
-                this_of_searchPage.sites_from_server=urlsWithIndex;
+                this_of_searchPage.sites_from_server=sitesArray;
             }).catch((error) => {
                 if (error.message==="Network Error")
                     this_of_searchPage.setState({
@@ -67,7 +72,7 @@ class Search_functions{
         var stats="fa fa-spinner fa-spin";
         for (var index=0; index<this_of_searchPage.sites_from_server.length; index++)
             {
-                siteToSearchArray.push({id: this_of_searchPage.id, url: this_of_searchPage.sites_from_server[index].url, scrape: stats, hash: "", searched: ""});
+                siteToSearchArray.push({id: this_of_searchPage.id, url: this_of_searchPage.sites_from_server[index].url, formatedURL: this_of_searchPage.sites_from_server[index].formatedURL, scrape: stats});
                 this_of_searchPage.id++;
             }
         this_of_searchPage.setState({
@@ -84,14 +89,12 @@ class Search_functions{
         if (this_of_searchPage.texts[index]!=undefined)
         {
             if (this_of_searchPage.texts[index].siteText==="")
-                this_of_searchPage.sitesTempState[index].scrape= "fa fa-times-circle-o";
+                return false;
             else
-                this_of_searchPage.sitesTempState[index].scrape="fa fa-check-circle-o";
+                return true;
         }
         else
-            this_of_searchPage.sitesTempState[index].scrape= "fa fa-times-circle-o";
-        this_of_searchPage.sitesTempState[index].hash="fa fa-spinner fa-spin";
-        this_of_searchPage.sitesFinishedScrape++;
+            return false;
     }
     
     hashAndSearchSites= (index, this_of_searchPage)=>
@@ -99,17 +102,11 @@ class Search_functions{
         if (this_of_searchPage.texts[index].siteText.length>20)
         {
             this_of_searchPage.rabinKarp.creatHashTables(this_of_searchPage.texts[index].siteText,index);
-            this_of_searchPage.sitesTempState[index].hash="fa fa-check-circle-o";
             this_of_searchPage.rabinKarp.addHitsFromSite(index);
-            this_of_searchPage.sitesTempState[index].searched="fa fa-check-circle-o";
+            return true;
         }
         else
-        {
-            this_of_searchPage.sitesTempState[index].hash="fa fa-times-circle-o";
-            this_of_searchPage.sitesTempState[index].searched="fa fa-times-circle-o";
-        }
-
-        
+            return false;
     }
 
     request_WebScraping_for_sites= async (this_of_searchPage) =>{
@@ -118,13 +115,20 @@ class Search_functions{
             return axios.get("/api/webScrape/?urlToScrape="+url.url,{
             })
             .then((result) => {
-                this.finishedSiteFetch(url.url, result.data, result.status, url.index, this_of_searchPage);
-                this.hashAndSearchSites(url.index, this_of_searchPage);
+                var did_finish_scrape = this.finishedSiteFetch(url.url, result.data, result.status, url.index, this_of_searchPage);
+                if (did_finish_scrape)
+                {
+                    var did_finish_rabin_search= this.hashAndSearchSites(url.index, this_of_searchPage);
+                    if (did_finish_rabin_search)
+                        this_of_searchPage.sitesTempState[url.index].scrape="fa fa-check-circle-o";
+                    else
+                        this_of_searchPage.sitesTempState[url.index].scrape= "fa fa-times-circle-o";
+                }
+                else
+                    this_of_searchPage.sitesTempState[url.index].scrape= "fa fa-times-circle-o";
             }).catch( () => {
                 this_of_searchPage.texts.push({url: url.url, siteText: ""});
                 this_of_searchPage.sitesTempState[url.index].scrape= "fa fa-times-circle-o";
-                this_of_searchPage.sitesTempState[url.index].hash="fa fa-times-circle-o";
-                this_of_searchPage.sitesTempState[url.index].searched="fa fa-times-circle-o";
                 this_of_searchPage.sitesFinishedScrape++;
             });
           });
@@ -143,7 +147,14 @@ class Search_functions{
         
         var topSites=[];
         for (var siteIndex=0; siteIndex<this_of_searchPage.sites_from_server.length; siteIndex++)
-            topSites.push({url: this_of_searchPage.sites_from_server[siteIndex].url, userRankCode: this_of_searchPage.sites_from_server[siteIndex].userRankCode, edgeWeight: this_of_searchPage.sites_from_server[siteIndex].edgeWeight, numOfHits: 0, numOfContent: 0, score: 0});
+            topSites.push({url: this_of_searchPage.sites_from_server[siteIndex].url,
+                formatedURL: this_of_searchPage.sites_from_server[siteIndex].formatedURL,
+                siteSnap: this_of_searchPage.sites_from_server[siteIndex].siteSnap,
+                userRankCode: this_of_searchPage.sites_from_server[siteIndex].userRankCode, 
+                edgeWeight: this_of_searchPage.sites_from_server[siteIndex].edgeWeight, 
+                numOfHits: 0, 
+                numOfContent: 0, 
+                score: 0});
 
         linksWithSitesHit.forEach(linksInLength => {
             linksInLength.forEach(link => {
@@ -173,7 +184,14 @@ class Search_functions{
         var refS=[];
         for (var refSiteIndex=0; refSiteIndex<topSites.length; refSiteIndex++)
         {
-            refS.push({id: this_of_searchPage.id, url: topSites[refSiteIndex].url, userRankCode: topSites[refSiteIndex].userRankCode, edgeWeight: topSites[refSiteIndex].edgeWeight, topic: this_of_searchPage.curSearch, hits: topSites[refSiteIndex].numOfHits});
+            refS.push({id: this_of_searchPage.id, 
+                url: topSites[refSiteIndex].url, 
+                formatedURL: topSites[refSiteIndex].formatedURL,
+                siteSnap: topSites[refSiteIndex].siteSnap,
+                userRankCode: topSites[refSiteIndex].userRankCode, 
+                edgeWeight: topSites[refSiteIndex].edgeWeight, 
+                topic: this_of_searchPage.curSearch, 
+                hits: topSites[refSiteIndex].numOfHits});
             this_of_searchPage.id++;
         }
         this_of_searchPage.setState({

@@ -6,7 +6,8 @@ var router = express.Router();
 
 router.get('/', async function(req, res, next) {
     var url=req.query.urlToScrape;
-    var siteInDB=await Site.findOne({siteURL:url});
+    var uri = encodeURI(url);
+    var siteInDB=await Site.findOne({siteURL:uri});
     if (siteInDB)
     {
         if (siteInDB.lastScrape!=null && siteInDB.html!=null)
@@ -16,9 +17,11 @@ router.get('/', async function(req, res, next) {
             if (lastScrapeAge <= numOfDaysToLive*86400000)
                 return res.status(200).send(siteInDB.html);
         }
-        var text=await webScrapeURL(url);
+        var text=await webScrapeURL(uri);
         if (text!="")
         {
+            siteInDB.lastScrape=new Date();
+            siteInDB.html=text;
             await Site.findOneAndUpdate({_id:siteInDB._id}, {lastScrape:new Date(), html: text});
             return res.status(200).send(text);
         }
@@ -27,10 +30,10 @@ router.get('/', async function(req, res, next) {
     }
     else
     {
-        var text=await webScrapeURL(url);
+        var text=await webScrapeURL(uri);
         if (text!="")
         {
-        siteInDB=new Site({siteURL: url});
+        siteInDB=new Site({siteURL: uri, siteFormatedURL: url});
         siteInDB.lastScrape=new Date();
         siteInDB.html=text;
         await siteInDB.save();

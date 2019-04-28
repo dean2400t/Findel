@@ -9,8 +9,8 @@ var router = express.Router();
 router.post('/addSite', auth, async function(req, res) {
   
     var topicName=req.body.topicName;
-    var siteURL=req.body.siteURL;
-
+    var siteFormatedURL=req.body.siteURL;
+    var siteURL=encodeURI(siteFormatedURL);
     if (!topicName)
         return res.status(400).send("אין נושא בגוף הבקשה");
     if (topicName=="")
@@ -27,7 +27,8 @@ router.post('/addSite', auth, async function(req, res) {
     var site= await Site.findOne({siteURL: siteURL});
     if (!site)
     {
-        site=new Site({siteURL: siteURL});
+
+        site=new Site({siteURL: siteURL, siteFormatedURL: siteFormatedURL});
         is_site_or_topic_new=true;
     }
 

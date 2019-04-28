@@ -8,6 +8,16 @@ const siteSchema = new mongoose.Schema({
     minlength: 4,
     maxlength: 512
   },
+  siteFormatedURL:{
+    type: String,
+    required: true,
+    minlength: 4,
+    maxlength: 512
+  },
+  siteSnap:{
+    type: String,
+    maxlength: 1024
+  },
   lastScrape:{
     type: Date
   },
@@ -25,7 +35,9 @@ const siteSchema = new mongoose.Schema({
   
   function validateSite(site) {
     const schema = {
-      siteURL: Joi.string().min(4).max(512).required()
+      siteURL: Joi.string().min(4).max(512).required(),
+      siteFormatedURL: Joi.string().min(4).max(512).required(),
+      siteSnap: Joi.string().max(1024)
     };
     return Joi.validate(site, schema);
   }
