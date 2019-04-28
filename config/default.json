@@ -1,4 +1,4 @@
 {
-    "jwtPrivateKey":"tru",
-    "adminKey": "admin"
+    "jwtPrivateKey":"",
+    "db_connection": ""
 }
