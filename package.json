@@ -10,6 +10,10 @@
   },
   "author": "Dean Moravia, Ran Davidi",
   "license": "Sapir College",
+  "engines": {
+    "node": ">=10.9.0",
+    "npm": ">=6.2.0"
+  },
   "dependencies": {
     "axios": "^0.18.0",
     "bcrypt": "^3.0.2",
