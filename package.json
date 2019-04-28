@@ -10,6 +10,7 @@
   },
   "author": "Dean Moravia, Ran Davidi",
   "license": "Sapir College",
+  "homepage": "https://findel-site.herokuapp.com/",
   "engines": {
     "node": ">=10.9.0",
     "npm": ">=6.2.0"

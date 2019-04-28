@@ -2,6 +2,7 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://findel-site.herokuapp.com/",
   "dependencies": {
     "@babel/plugin-proposal-export-default-from": "^7.2.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.17",
