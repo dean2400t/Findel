@@ -43,7 +43,7 @@ class UserSearchHistory extends Component {
       return (
         
         <div>
-            <div className="App" style={{ height: '100px', backgroundColor:'#0587c3'}}>
+            <div className="App" style={{ backgroundColor:'#0587c3'}}>
             <h1 style={{fontSize:'10', textAlign: 'center', color: 'white'}}>
             היסטורית חיפוש</h1>
         </div>

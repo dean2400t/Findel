@@ -52,36 +52,38 @@ class SearchPage extends Component {
       return (
         
         <div className="SearchPage">
-            <div className="search_box_div" style={{ height: '200px', backgroundColor:'#0587c3'}}>
-                <h1 style={{fontSize:'10', textAlign: 'center', color: 'white'}}>
-                Findel</h1>
-                <div>
-                    <input id="search_text_box" type="text" value={this.state.inputValue} onChange={evt => this.updateTXT(evt)}></input>
-                    <button id="searchBTN" name="searchBTN" onClick={this.state.search_button_function}>{this.state.search_button_text} <i className={this.state.search_button_iconClass}></i></button>
-                    <button hidden="true" id="simple_search_BTN" name="simple_search_BTN" onClick={this.state.simple_search_button_function}>{this.state.simple_search_button_text} <i className={this.state.search_button_iconClass}></i></button>
+            <div style={{ backgroundColor:'#0587c3'}}>
+                <div className="search_box_div">
+                    <h1 style={{fontSize:'10', textAlign: 'center', color: 'white'}}>
+                    Findel</h1>
+                    <div>
+                        <input id="search_text_box" type="text" value={this.state.inputValue} onChange={evt => this.updateTXT(evt)}></input>
+                        <button id="searchBTN" name="searchBTN" onClick={this.state.search_button_function}>{this.state.search_button_text} <i className={this.state.search_button_iconClass}></i></button>
+                        <button hidden="true" id="simple_search_BTN" name="simple_search_BTN" onClick={this.state.simple_search_button_function}>{this.state.simple_search_button_text} <i className={this.state.search_button_iconClass}></i></button>
+                    </div>
+                    <div id="exContents">
+                        <text color='white'>{this.state.server_message}</text>
+                    </div>
+                    <div id="exContents">
+                        <ExpandedContent expandedContents={this.state.expandedContents}/>
+                    </div>
                 </div>
-                <div id="exContents">
-                    <text color='white'>{this.state.server_message}</text>
-                </div>
-                <div id="exContents">
-                    <ExpandedContent expandedContents={this.state.expandedContents}/>
-                </div>
-            </div>
-            <div className="add_content_and_sites_div" style={{backgroundColor:'#0587c3'}}>
-                <div className="add_topic_to_topic_div" hidden={!this.state.was_add_topic_button_clicked}>
-                    <text style={search_box_textStyle}>הוסף תוכן לנושא: &nbsp;</text><input type="text" value={this.state.add_topic_to_topic_input} onChange={evt => this.add_topic_to_topic_change_function(evt)}/><button id="add_topic_to_topic_button">+</button>
-                </div>
-                <div className="add_topic_to_topic_div" hidden={!this.state.was_add_topic_button_clicked}>
-                    <button onClick= {() => this.add_topic_button_clicked()}>הוסף תוכן לנושא...</button>
-                </div>
-                <div className="add_site_to_topic_div" hidden={!this.state.was_add_site_button_clicked}>
-                    <text style={search_box_textStyle}>הוסף אתר לנושא: &nbsp;</text>
+                <div className="add_content_and_sites_div" style={{backgroundColor:'#0587c3'}}>
+                    <div className="add_topic_to_topic_div" hidden={!this.state.was_add_topic_button_clicked}>
+                        <text style={search_box_textStyle}>הוסף תוכן לנושא: &nbsp;</text><input type="text" value={this.state.add_topic_to_topic_input} onChange={evt => this.add_topic_to_topic_change_function(evt)}/><button id="add_topic_to_topic_button">+</button>
+                    </div>
+                    <div className="add_topic_to_topic_div" hidden={!this.state.was_add_topic_button_clicked}>
+                        <button onClick= {() => this.add_topic_button_clicked()}>הוסף תוכן לנושא...</button>
+                    </div>
+                    <div className="add_site_to_topic_div" hidden={!this.state.was_add_site_button_clicked}>
+                        <text style={search_box_textStyle}>הוסף אתר לנושא: &nbsp;</text>
 
-                    <input type="text" value={this.state.add_site_to_topic_input} onChange={evt => this.add_site_to_topic_change_function(evt)}/>
-                    <button id="add_site_to_topic_button" onClick={() => this.add_site()}>+</button>
-                </div>
-                <div className="add_site_to_topic_div" hidden={this.state.was_add_site_button_clicked}>
-                    <button onClick= {() => this.add_site_button_clicked()}>הוסף אתר לנושא...</button>
+                        <input type="text" value={this.state.add_site_to_topic_input} onChange={evt => this.add_site_to_topic_change_function(evt)}/>
+                        <button id="add_site_to_topic_button" onClick={() => this.add_site()}>+</button>
+                    </div>
+                    <div className="add_site_to_topic_div" hidden={this.state.was_add_site_button_clicked}>
+                        <button onClick= {() => this.add_site_button_clicked()}>הוסף אתר לנושא...</button>
+                    </div>
                 </div>
             </div>
         <div id="sites">

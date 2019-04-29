@@ -6,6 +6,10 @@
     margin-top: 10px;
 }
 
+.search_box_div{
+    min-height: 170px;
+}
+
 .add_content_and_sites_div{
     text-align: right;
 }
