@@ -52,12 +52,12 @@ class rabinKarpSearch {
 
 	
 	for (index=0; index<wikiLinks.length; index++)
-		if (wikiLinks[index].page!=null)
-			if (wikiLinks[index].page.length<this.numOfChars)
+		if (wikiLinks[index]!=null)
+			if (wikiLinks[index].length<this.numOfChars)
 			{
 				var sitesHits=[];
 				sitesHits[this.numOfSites-1]=null;
-				var page=wikiLinks[index].page;
+				var page=wikiLinks[index];
 				var patLength=page.length-1;
 				wikiLinksHashesToWordByLength[patLength].push({linkName: page, hash: -1, sitesHits: sitesHits});
 			}
@@ -115,11 +115,12 @@ class rabinKarpSearch {
 		this.texts[siteIndex]=text;
 	}
 
-	addHitsFromSite(siteIndex)
+	addHitsFromSite(siteIndex, site)
 	{
 		var siteText=this.texts[siteIndex];
 		var siteHashes=this.sitesHashes[siteIndex]
 		var stringFromText;
+		var numOfHits=0;
 		//siteHit[siteIndex]={"siteHits": 0, "siteOriginalIndex": siteIndex};
 		for (var curNumOfChars=0; curNumOfChars<this.numOfChars; curNumOfChars++)
 		{
@@ -135,6 +136,7 @@ class rabinKarpSearch {
 							if (this.wikiLinksHashesToWordByLength[curNumOfChars][element.linkIndex].sitesHits[siteIndex]==null)
 							{
 								this.wikiLinksHashesToWordByLength[curNumOfChars][element.linkIndex].sitesHits[siteIndex]=1;
+								numOfHits++;
 							}
 							else{
 								this.wikiLinksHashesToWordByLength[curNumOfChars][element.linkIndex].sitesHits[siteIndex]++;
@@ -144,6 +146,7 @@ class rabinKarpSearch {
 				textIndex++;
 			});
 		}
+		site.numOfHits=numOfHits;
 		
 	}
 

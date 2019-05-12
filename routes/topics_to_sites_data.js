@@ -185,24 +185,27 @@ async function get_Sites_Edges_data_from_topic(topic, userID)
   for (var siteIndex=0; siteIndex<sitesFromEdges.length; siteIndex++)
   {
     var edge= binary_find_edge_from_site_by_IDs(siteTopicEdges, sitesFromEdges[siteIndex], 0, sitesFromEdges.length-1);
-    var userRankCode=0;
-    if (userID!="")
-      for (var rankIndex=0; rankIndex<edge.usersRanking.length; rankIndex++)
-        if (edge.usersRanking[rankIndex].userID.equals(userID))
-        {
-          userRankCode=edge.usersRanking[rankIndex].rankCode;
-          if (userRankCode==1)
-            edge.weight-=edge.usersRanking[rankIndex].scoreAdded-1;
-          if (userRankCode==2)
-            edge.weight+=edge.usersRanking[rankIndex].scoreAdded-1;
-        }
-    sites.push({
-      siteURL: sitesFromEdges[siteIndex]['siteURL'],
-      siteFormatedURL: sitesFromEdges[siteIndex]['siteFormatedURL'],
-      siteSnap: sitesFromEdges[siteIndex]['siteSnap'],
-      userRankCode: userRankCode,
-      edgeWeight: edge.weight
-    });
+    if (edge)
+    {
+      var userRankCode=0;
+      if (userID!="")
+        for (var rankIndex=0; rankIndex<edge.usersRanking.length; rankIndex++)
+          if (edge.usersRanking[rankIndex].userID.equals(userID))
+          {
+            userRankCode=edge.usersRanking[rankIndex].rankCode;
+            if (userRankCode==1)
+              edge.weight-=edge.usersRanking[rankIndex].scoreAdded-1;
+            if (userRankCode==2)
+              edge.weight+=edge.usersRanking[rankIndex].scoreAdded-1;
+          }
+      sites.push({
+        siteURL: sitesFromEdges[siteIndex]['siteURL'],
+        siteFormatedURL: sitesFromEdges[siteIndex]['siteFormatedURL'],
+        siteSnap: sitesFromEdges[siteIndex]['siteSnap'],
+        userRankCode: userRankCode,
+        edgeWeight: edge.weight
+      });
+    }
   }
   return sites;
 }
@@ -217,11 +220,7 @@ router.get('/', async function(req, res) {
 
   if (topic)
   {
-    if (userID!="")
-    {
-      var search=new Search({topic: topic._id})
-      await User.updateOne({_id: userID}, {$push: {searches: search}});
-    }
+    
     var googleSearchAge=new Date() - topic.lastGoogleUpdate;
     var numOfDaysToLive=3;
 

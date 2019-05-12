@@ -1,9 +1,17 @@
+#findelTheme{
+    margin-bottom: 5px;
+}
+
 #searchBTN{
     margin-right: 2px;
 }
 
 #exContents{
     margin-top: 10px;
+}
+
+#add_site_to_topic_url_input{
+    text-align: left;
 }
 
 .search_box_div{

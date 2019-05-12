@@ -30,10 +30,11 @@ class SearchPage extends Component {
           server_message:"",
           add_site_to_topic_input:"",
           add_topic_to_topic_input:"",
+          add_site_to_topic_description: "",
           was_add_site_button_clicked:false,
           was_add_topic_button_clicked: false
         };
-        this.texts=[];
+        this.sites_and_texts=[];
         this.sitesFinishedScrape=0;
         this.sites_from_server=[];
         this.token=cookies.get('findel-auth-token') || "";
@@ -54,8 +55,7 @@ class SearchPage extends Component {
         <div className="SearchPage">
             <div style={{ backgroundColor:'#0587c3'}}>
                 <div className="search_box_div">
-                    <h1 style={{fontSize:'10', textAlign: 'center', color: 'white'}}>
-                    Findel</h1>
+                    <img id="findelTheme" src="/publicComponents/findelTheme" height="100" width="400"/>
                     <div>
                         <input id="search_text_box" type="text" value={this.state.inputValue} onChange={evt => this.updateTXT(evt)}></input>
                         <button id="searchBTN" name="searchBTN" onClick={this.state.search_button_function}>{this.state.search_button_text} <i className={this.state.search_button_iconClass}></i></button>
@@ -76,9 +76,9 @@ class SearchPage extends Component {
                         <button onClick= {() => this.add_topic_button_clicked()}>הוסף תוכן לנושא...</button>
                     </div>
                     <div className="add_site_to_topic_div" hidden={!this.state.was_add_site_button_clicked}>
-                        <text style={search_box_textStyle}>הוסף אתר לנושא: &nbsp;</text>
-
-                        <input type="text" value={this.state.add_site_to_topic_input} onChange={evt => this.add_site_to_topic_change_function(evt)}/>
+                        <text style={search_box_textStyle}>הוסף אתר לנושא: &nbsp;</text><br/>
+                        <input type="text" id="add_site_to_topic_url_input" placeholder=".....//:https" value={this.state.add_site_to_topic_input} onChange={evt => this.add_site_to_topic_change_function(evt)}/><br></br>
+                        <textarea value={this.state.add_site_to_topic_description} placeholder="תאור האתר" onChange={evt => this.add_site_to_topic_change_description_function(evt)}/><br/>
                         <button id="add_site_to_topic_button" onClick={() => this.add_site()}>+</button>
                     </div>
                     <div className="add_site_to_topic_div" hidden={this.state.was_add_site_button_clicked}>
@@ -115,6 +115,16 @@ class SearchPage extends Component {
             }
         );
     }
+
+    add_site_to_topic_change_description_function(evt)
+    {
+        this.setState(
+            {
+                add_site_to_topic_description: evt.target.value
+            }
+        );
+    }
+
     add_site_button_clicked()
     {
         this.setState(
@@ -127,8 +137,9 @@ class SearchPage extends Component {
     add_site()
     {
         var opts={
-            topicName: this.curSearch,
-            siteURL: this.state.add_site_to_topic_input
+            topicName: this.state.inputValue,
+            siteURL: this.state.add_site_to_topic_input,
+            siteDescription: this.state.add_site_to_topic_description
           };
         Axios.post('/api/addContent/addSite', opts, {
         headers: {'findel-auth-token': this.token}}
@@ -208,7 +219,7 @@ class SearchPage extends Component {
 
     async simple_search()
     {
-        await search_functions.request_links_and_sites_from_Server(this.curSearch, this);
+        await search_functions.request_sites_from_Server(this.curSearch, this);
         var refS=[];
         for (var refSiteIndex=0; refSiteIndex<this.sites_from_server.length; refSiteIndex++)
         {
@@ -233,13 +244,15 @@ class SearchPage extends Component {
             ambigousData: []
         });
         Axios.get("/api/topicsToTopicsData/?search="+this.curSearch,{
+                headers: {'findel-auth-token': this.token}
         })
         .then((result) => {
-            if (result.data.links!=null)
+            if (result.data.wikiText!=null)
             {
-                this.texts=[];
-                search_functions.search_using_wikipedia_links(result.data.links, this);
+                this.sites_and_texts=[];
+                search_functions.search_using_wikipedia(result.data.connected_topics_and_edges, result.data.wikiText, result.data.is_search_requiered, this);
             }
+            
             else if (result.data.ambig!=null)
             {
                 result.data.ambig.forEach(category => {

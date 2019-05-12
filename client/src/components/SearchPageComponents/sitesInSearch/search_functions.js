@@ -1,15 +1,22 @@
 import axios from 'axios';
 import rabinKarpSearch from "./rabinKarpSearch";
+import Jaccard_similarity from './jaccard_similarity';
+import cheerio from 'cheerio';
 
 class Search_functions{
     Search_functions(){}
 
     
-    async search_using_wikipedia_links(links, this_of_searchPage){
-        await this.request_links_and_sites_from_Server(this_of_searchPage.curSearch, this_of_searchPage);
+    async search_using_wikipedia(connected_topics_and_edges, wikiText, is_search_requiered ,this_of_searchPage){
+        await this.request_sites_from_Server(this_of_searchPage.curSearch, this_of_searchPage);
         await this.initSiteSearch(this_of_searchPage);
+        var links=[];
+        connected_topics_and_edges.forEach(topic_and_edge => {
+            links.push(topic_and_edge.topic.topicName);
+        });
         this_of_searchPage.rabinKarp= new rabinKarpSearch(3001, 20, this_of_searchPage.sites_from_server.length);
         this_of_searchPage.rabinKarp.hashWikiLinks(links);
+        this_of_searchPage.jaccard_similarity=new Jaccard_similarity(3001, 7, wikiText)
         this_of_searchPage.sitesTempState=this_of_searchPage.state.sitesBeingSearched;
         
         var timeToRefresh=750;
@@ -33,7 +40,7 @@ class Search_functions{
         //start scraping asynchronously
         this.request_WebScraping_for_sites(this_of_searchPage);
     }
-    request_links_and_sites_from_Server= async (search, this_of_searchPage)=>{
+    request_sites_from_Server= async (search, this_of_searchPage)=>{
         await axios.get("/api/topicsToSitesData/?search="+search,{
             headers: {'findel-auth-token': this_of_searchPage.token}
         })
@@ -47,11 +54,14 @@ class Search_functions{
                 var index=0;
                 sites.forEach(site => {
                     sitesArray.push({index: index, 
-                                        url:site.siteURL, 
-                                        formatedURL: site.siteFormatedURL,
-                                        siteSnap: site.siteSnap,
-                                        userRankCode: site.userRankCode, 
-                                        edgeWeight: site.edgeWeight});
+                                     url:site.siteURL, 
+                                     formatedURL: site.siteFormatedURL,
+                                     siteSnap: site.siteSnap,
+                                     userRankCode: site.userRankCode, 
+                                     edgeWeight: site.edgeWeight,
+                                     num_of_links_in_Site: site.num_of_links_in_Site,
+                                     jaccard_similarity: site.jaccard_similarity
+                                    });
                     index++;
                 });
                 this_of_searchPage.sites_from_server=sitesArray;
@@ -81,14 +91,14 @@ class Search_functions{
         
     }
 
-    finishedSiteFetch= (url, text, resStatus, index, this_of_searchPage) =>
+    finishedSiteFetch= (site, text, resStatus, index, this_of_searchPage) =>
     {
         if (resStatus!=200)
             text="";
-        this_of_searchPage.texts[index]=({url: url, siteText: text});
-        if (this_of_searchPage.texts[index]!=undefined)
+        this_of_searchPage.sites_and_texts[index]=({site: site, siteText: text});
+        if (this_of_searchPage.sites_and_texts[index]!=undefined)
         {
-            if (this_of_searchPage.texts[index].siteText==="")
+            if (this_of_searchPage.sites_and_texts[index].siteText==="")
                 return false;
             else
                 return true;
@@ -97,12 +107,16 @@ class Search_functions{
             return false;
     }
     
-    hashAndSearchSites= (index, this_of_searchPage)=>
+    hashAndSearchSites= (index, site, this_of_searchPage)=>
     {
-        if (this_of_searchPage.texts[index].siteText.length>20)
+        if (this_of_searchPage.sites_and_texts[index].siteText.length>20)
         {
-            this_of_searchPage.rabinKarp.creatHashTables(this_of_searchPage.texts[index].siteText,index);
-            this_of_searchPage.rabinKarp.addHitsFromSite(index);
+            this_of_searchPage.rabinKarp.creatHashTables(this_of_searchPage.sites_and_texts[index].siteText,index);
+            this_of_searchPage.rabinKarp.addHitsFromSite(index, site);
+
+            var $ = cheerio.load(this_of_searchPage.sites_and_texts[index].siteText)
+            var text= $.text();
+            site.jaccard_similarity = this_of_searchPage.jaccard_similarity.compute_site_similarity(text);
             return true;
         }
         else
@@ -111,24 +125,35 @@ class Search_functions{
 
     request_WebScraping_for_sites= async (this_of_searchPage) =>{
         
-        var promiseArray = this_of_searchPage.sites_from_server.map(url=>{
-            return axios.get("/api/webScrape/?urlToScrape="+url.url,{
+        var promiseArray = this_of_searchPage.sites_from_server.map(site=>{
+            return axios.get("/api/webScrape/?urlToScrape="+site.url,{
             })
             .then((result) => {
-                var did_finish_scrape = this.finishedSiteFetch(url.url, result.data, result.status, url.index, this_of_searchPage);
-                if (did_finish_scrape)
+                if (result.data.site!=null && result.data.siteText==null)
                 {
-                    var did_finish_rabin_search= this.hashAndSearchSites(url.index, this_of_searchPage);
-                    if (did_finish_rabin_search)
-                        this_of_searchPage.sitesTempState[url.index].scrape="fa fa-check-circle-o";
-                    else
-                        this_of_searchPage.sitesTempState[url.index].scrape= "fa fa-times-circle-o";
+                    this_of_searchPage.sites_and_texts.push({site: site, siteText: "", was_ok: true});
+                    this_of_searchPage.sitesTempState[site.index].scrape="fa fa-check-circle-o";
                 }
                 else
-                    this_of_searchPage.sitesTempState[url.index].scrape= "fa fa-times-circle-o";
+                {
+                    var did_finish_scrape = this.finishedSiteFetch(site, result.data.siteText, result.status, site.index, this_of_searchPage);
+                    if (did_finish_scrape)
+                    {
+                        var did_finish_rabin_search= this.hashAndSearchSites(site.index, site, this_of_searchPage);
+                        if (did_finish_rabin_search)
+                        {
+                            this_of_searchPage.sitesTempState[site.index].scrape="fa fa-check-circle-o";
+
+                        }
+                        else
+                            this_of_searchPage.sitesTempState[site.index].scrape= "fa fa-times-circle-o";
+                    }
+                    else
+                        this_of_searchPage.sitesTempState[site.index].scrape= "fa fa-times-circle-o";
+                }
             }).catch( () => {
-                this_of_searchPage.texts.push({url: url.url, siteText: ""});
-                this_of_searchPage.sitesTempState[url.index].scrape= "fa fa-times-circle-o";
+                this_of_searchPage.sites_and_texts.push({site: site, siteText: "", was_ok: false});
+                this_of_searchPage.sitesTempState[site.index].scrape= "fa fa-times-circle-o";
                 this_of_searchPage.sitesFinishedScrape++;
             });
           });
@@ -142,57 +167,38 @@ class Search_functions{
 
 
     rankSites=(this_of_searchPage)=>
-    {
-        var linksWithSitesHit=this_of_searchPage.rabinKarp.wikiLinksHashesToWordByLength;
-        
-        var topSites=[];
-        for (var siteIndex=0; siteIndex<this_of_searchPage.sites_from_server.length; siteIndex++)
-            topSites.push({url: this_of_searchPage.sites_from_server[siteIndex].url,
-                formatedURL: this_of_searchPage.sites_from_server[siteIndex].formatedURL,
-                siteSnap: this_of_searchPage.sites_from_server[siteIndex].siteSnap,
-                userRankCode: this_of_searchPage.sites_from_server[siteIndex].userRankCode, 
-                edgeWeight: this_of_searchPage.sites_from_server[siteIndex].edgeWeight, 
-                numOfHits: 0, 
-                numOfContent: 0, 
-                score: 0});
-
-        linksWithSitesHit.forEach(linksInLength => {
-            linksInLength.forEach(link => {
-                if (link.linkName.length>2)
-                    for (var siteHitIndex=0; siteHitIndex<link.sitesHits.length; siteHitIndex++)
-                        if (link.sitesHits[siteHitIndex]!=null)
-                        {
-                            topSites[siteHitIndex].numOfHits+=link.sitesHits[siteHitIndex];
-                            topSites[siteHitIndex].numOfContent++;
-                        }
-            });
-        });
+    {   
         this_of_searchPage.setState({sitesBeingSearched:[]});
 
-        topSites.sort(function(site1, site2){return site2.numOfHits - site1.numOfHits});
-        topSites.sort(function(site1, site2){return site2.edgeWeight - site1.edgeWeight});
+        var topSites=this_of_searchPage.sites_and_texts;
+        topSites.sort(function(site1, site2){return site2.site.numOfHits - site1.site.numOfHits});
+        topSites.sort(function(site1, site2){return site2.site.jaccard_similarity - site1.site.jaccard_similarity});
+        topSites.sort(function(site1, site2){return site2.site.edgeWeight - site1.site.edgeWeight});
         topSites.sort(function(site1, site2){
-            if (site2.userRankCode==site1.userRankCode)
+            if (site2.site.userRankCode==site1.site.userRankCode)
                 return 0;
-            if (site2.userRankCode==1 && site1.userRankCode!=1)
+            if (site2.site.userRankCode==1 && site1.site.userRankCode!=1)
                 return 1;
-            else if (site2.userRankCode!=1 && site1.userRankCode==1)
+            else if (site2.site.userRankCode!=1 && site1.site.userRankCode==1)
                 return -1;
-            else if (site2.userRankCode==2 && site1.userRankCode==0)
+            else if (site2.site.userRankCode==2 && site1.site.userRankCode==0)
                 return -1;
         });
         var refS=[];
         for (var refSiteIndex=0; refSiteIndex<topSites.length; refSiteIndex++)
         {
-            refS.push({id: this_of_searchPage.id, 
-                url: topSites[refSiteIndex].url, 
-                formatedURL: topSites[refSiteIndex].formatedURL,
-                siteSnap: topSites[refSiteIndex].siteSnap,
-                userRankCode: topSites[refSiteIndex].userRankCode, 
-                edgeWeight: topSites[refSiteIndex].edgeWeight, 
-                topic: this_of_searchPage.curSearch, 
-                hits: topSites[refSiteIndex].numOfHits});
-            this_of_searchPage.id++;
+            if (topSites[refSiteIndex]!=null)
+            {
+                refS.push({id: this_of_searchPage.id, 
+                    url: topSites[refSiteIndex].site.url, 
+                    formatedURL: topSites[refSiteIndex].site.formatedURL,
+                    siteSnap: topSites[refSiteIndex].site.siteSnap,
+                    userRankCode: topSites[refSiteIndex].site.userRankCode, 
+                    edgeWeight: topSites[refSiteIndex].site.edgeWeight, 
+                    topic: this_of_searchPage.curSearch, 
+                    hits: topSites[refSiteIndex].site.numOfHits});
+                this_of_searchPage.id++;
+            }
         }
         this_of_searchPage.setState({
             refSites: refS

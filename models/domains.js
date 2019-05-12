@@ -1,40 +1,29 @@
 const Joi = require('joi');
 const mongoose = require('mongoose');
+const {UserRanking}=require('./userRanking');
 
-const siteSchema = new mongoose.Schema({
-  siteURL: {
+const domainSchema = new mongoose.Schema({
+  domainURL: {
     type: String,
     required: true,
     minlength: 4,
     maxlength: 512
   },
-  siteFormatedURL:{
-    type: String,
-    required: true,
-    minlength: 4,
-    maxlength: 512
-  },
-  siteSnap:{
-    type: String,
-    maxlength: 1024
-  },
-  lastScrape:{
-    type: Date
-  },
-  num_of_links_in_site:{
+
+  score:{
   type: Number
   },
-  jaccard_similarity:{
-    type: Number
+
+  is_verified:{
+    type: Boolean
   },
-  domain:{
+
+  sites:[{
     type: mongoose.Schema.ObjectId, 
-    ref: 'domains'
-  },
-  siteTopicEdges:[{
-    type: mongoose.Schema.ObjectId, 
-    ref: 'site-Topic-Edges'
-  }]
+    ref: 'sites'
+  }],
+
+  userRankings: [UserRanking]
   
 });
   
