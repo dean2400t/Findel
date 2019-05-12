@@ -6,35 +6,43 @@ const {Topic, validateTopic} = require('../models/topics');
 const {SiteTopicEdge} = require('../models/siteTopicEdges');
 const {Site, validateSite} = require('../models/sites');
 const googleSearch=require('../middleware/googleSearch');
+const {Domain} = require('../models/domains');
 const {User} = require('../models/users');
 const {Search}=require('../models/searches');
+const parseDomain = require("parse-domain");
 var router = express.Router();
 
-/*
-Function 'find_which_urls_are_not_in_DataBase' recieves an unsorted urls(A) found by google and sorted urls of sites from the
-database(B) which contains the urls found from google.
-The function than returns the logical equivalent of A-B and returns only the new urls.
-*/
-function find_which_sites_are_not_in_DataBase(sites, foundUrlInDB) {
-  if (foundUrlInDB.length==0)
+function binary_find_site_in_sites_by_url(sites, site, start, end) {    
+  // Base Condtion 
+  if (start > end) return null; 
+ 
+  // Find the middle index 
+  let mid=Math.floor((start + end)/2); 
+ 
+  // Compare mid with given key x 
+  if (sites[mid].siteURL == site.siteURL) return sites[mid]; 
+        
+  // If element at mid is greater than x, 
+  // search in the left half of mid 
+  if(sites[mid].siteURL > site.siteURL)  
+      return binary_find_site_in_sites_by_url(sites, site, start, mid-1); 
+  else
+
+      // If element at mid is smaller than x, 
+      // search in the right half of mid 
+      return binary_find_site_in_sites_by_url(sites, site, mid+1, end); 
+}
+
+function find_which_sites_are_not_in_DataBase(sites, found_sites_in_db) {
+  if (found_sites_in_db.length==0)
     return sites;
   var newSites=[];
-  sites.sort((a,b)=>{if (a.siteURL>b.siteURL) return 1; else return -1;});
-  var dbIndex=0;
-  for (var sitesIndex=0; sitesIndex<sites.length; sitesIndex++)
-  {
-    if (dbIndex==foundUrlInDB.length)
-      newSites.push(sites[sitesIndex])
-    else
-    {
-      while (foundUrlInDB[dbIndex].siteURL!=sites[sitesIndex] && dbIndex<foundUrlInDB.length && sitesIndex<sites.length)
-      {
-        newSites.push(sites[sitesIndex]);
-        sitesIndex++;
-      }
-      dbIndex++;
-    }
-  }
+  found_sites_in_db.sort((site1, site2) => {if (site2.siteURL>site1.siteURL) return -1; else return 1;});
+  sites.forEach(site => {
+    var found_site = binary_find_site_in_sites_by_url(found_sites_in_db, site, 0, found_sites_in_db.length-1);
+    if (!found_site)
+      newSites.push(site);
+  });
   return newSites;
 }
 
@@ -46,13 +54,13 @@ async function find_new_sites_and_existing_sites(sites)
 {
   var checkedNewSites=[];
   var sitesInDataBase;
-  var urlsFromGoogle=[];
+  var sites_from_google=[];
   sites.forEach(site => {
-    urlsFromGoogle.push(site.siteURL);
+    sites_from_google.push(site.siteURL);
   });
-  if (urlsFromGoogle.length>0)
+  if (sites_from_google.length>0)
   {
-    sitesInDataBase=await Site.find({siteURL: { $in: urlsFromGoogle }}).sort({siteURL:1});
+    sitesInDataBase=await Site.find({siteURL: { $in: sites_from_google }}).sort({siteURL:1});
     var newSitesToAdd=find_which_sites_are_not_in_DataBase(sites, sitesInDataBase);
     for (var newSiteIndex=0; newSiteIndex<newSitesToAdd.length; newSiteIndex++)
     {
@@ -60,27 +68,41 @@ async function find_new_sites_and_existing_sites(sites)
         siteFormatedURL: newSitesToAdd[newSiteIndex].formattedUrl,
         siteSnap:  newSitesToAdd[newSiteIndex].snippet
       };
-      let { error } = validateSite(site); 
-      if (!error)
-        checkedNewSites.push(new Site(site));
+      checkedNewSites.push(new Site(site));
     }
   }
   return [checkedNewSites, sitesInDataBase];
 }
 
 //Function returns objectsIDs of the sites which are in the topic
-async function get_sites_Ids_and_edges_from_topic(topic)
+async function get_populated_edges_to_sites(topic)
 {
-  var edgesToSites=await SiteTopicEdge.find({topic: topic});
-  var sitesID=[];
-  var siteToTopicEdges=[];
-  for (var edgeIndex=0; edgeIndex<edgesToSites.length; edgeIndex++)
-  {
-    sitesID.push(edgesToSites[edgeIndex].site);
-    siteToTopicEdges.push(edgesToSites[edgeIndex])
-  }
-  return [sitesID, siteToTopicEdges];
+  var edgesToSites=await SiteTopicEdge.find({topic: topic}).populate('site');
+  return edgesToSites;
 }
+
+
+
+async function add_and_update_domains(new_sites)
+{
+  var sites_index_to_domain_array=[];
+  sites_index_to_domain_array[new_sites.length-1]=undefined;
+  if (new_sites.length>0)
+  {
+    for (var newSiteIndex=0; newSiteIndex<new_sites.length; newSiteIndex++)
+    {
+      var site_domainURL = parseDomain(new_sites[newSiteIndex].siteURL);
+      site_domainURL = site_domainURL.domain + '.' + site_domainURL.tld;
+      var domain = await Domain.findOne({domainURL: site_domainURL});
+      if (!domain)
+          domain = new Domain({domainURL: site_domainURL, score: 1});
+      domain.sites.push(new_sites[newSiteIndex]._id);
+      new_sites[newSiteIndex].domain = domain._id;
+      await domain.save();
+    }
+  }
+}
+
 
 /*
 Function searches google by topic and update database accordingly
@@ -89,54 +111,53 @@ async function search_Google_and_orgenize(topic)
 {
   var search=topic.topicName;
   var sites=[];
-  var sitesInDataBase=[];
-  var found;
-  var objID;
-  var sites=await googleSearch(search);
-  [checkedNewSites, firstSitesFromDataBase]= await find_new_sites_and_existing_sites(sites);
+  var sites_from_google=await googleSearch(search);
+  [new_sites, sites_in_database]= await find_new_sites_and_existing_sites(sites_from_google);
   
   //Get sites and remove sites, already connected with an edge, from sitesInDataBase array
+  var sites=[];
   if (topic.siteTopicEdges.length>0)
   {
-    var [sitesIDs, tEdges]=await get_sites_Ids_and_edges_from_topic(topic);
-    for (var siteIndex=0; siteIndex<firstSitesFromDataBase.length; siteIndex++)
-    {
-      objID=firstSitesFromDataBase[siteIndex]._id;
-      found=sitesIDs.find(function(element) {
-        return element = objID;
-      });
-      if (!found)
-        sitesInDataBase.push(firstSitesFromDataBase[siteIndex]);
-      else
-        sites.push(firstSitesFromDataBase[siteIndex].siteURL);
-    }
+    var sites_edges = await get_populated_edges_to_sites(topic);
+    var already_connected_sites=[];
+    sites_edges.forEach(edge => {
+      already_connected_sites.push(edge.site);
+    });
+    already_connected_sites.sort((site1, site2) => {if (site2.siteURL>site1.siteURL) return -1; else return 1;});
+    
+    var sites_in_db_which_are_not_connected=[];
+    sites_in_database.forEach(site_in_database => {
+      var is_already_connected_sites_found = binary_find_site_in_sites_by_url(already_connected_sites, site_in_database, 0, already_connected_sites.length-1);
+      if (!is_already_connected_sites_found)
+        sites_in_db_which_are_not_connected.push(site_in_database);
+    });
   }
 
   //Build edges for current topic to found google sites
   var edge;
   var edges=[];
-  for (var siteIndex=0; siteIndex<sitesInDataBase.length; siteIndex++)
+  for (var siteIndex=0; siteIndex<sites_in_db_which_are_not_connected.length; siteIndex++)
   {
-    edge=new SiteTopicEdge({site: sitesInDataBase[siteIndex]._id, topic: topic._id, weight: 1});
+    edge=new SiteTopicEdge({site: sites_in_db_which_are_not_connected[siteIndex]._id, topic: topic._id, weight: 1});
     topic.siteTopicEdges.push(edge._id);
-    edges.push(edge);
-    await Site.updateOne({_id: sitesInDataBase[siteIndex].id}, {$push: {siteTopicEdges: edge._id}});
-    sites.push(sitesInDataBase[siteIndex].siteURL);
+    await edge.save();
+    await Site.updateOne({_id: sites_in_db_which_are_not_connected[siteIndex].id}, {$push: {siteTopicEdges: edge._id}});
+    sites.push(sites_in_db_which_are_not_connected[siteIndex]);
   }
-  if (checkedNewSites.length>0)
+  if (new_sites.length>0)
   {
-    for (siteIndex=0; siteIndex<checkedNewSites.length; siteIndex++)
+    for (siteIndex=0; siteIndex<new_sites.length; siteIndex++)
     {
-      edge=new SiteTopicEdge({site: checkedNewSites[siteIndex]._id, topic: topic._id, weight: 1});
-      checkedNewSites[siteIndex].siteTopicEdges.push(edge._id);
+      edge=new SiteTopicEdge({site: new_sites[siteIndex]._id, topic: topic._id, weight: 1});
+      new_sites[siteIndex].siteTopicEdges.push(edge._id);
       topic.siteTopicEdges.push(edge._id);
       edges.push(edge);
-      sites.push(checkedNewSites[siteIndex].siteURL);
+      sites.push(new_sites[siteIndex]);
     }
-    
-    Site.insertMany(checkedNewSites);
+    await add_and_update_domains(new_sites);
+    Site.insertMany(new_sites);
+    SiteTopicEdge.insertMany(edges);
   }
-  SiteTopicEdge.insertMany(edges);
   topic.lastGoogleUpdate=Date.now();
   await topic.save();
   return sites;
@@ -179,34 +200,28 @@ async function get_Sites_Edges_data_from_topic(topic, userID)
 {
   
   var sites=[];
-  var [sitesID, siteTopicEdges]=await get_sites_Ids_and_edges_from_topic(topic);
-  var sitesFromEdges=await Site.find({_id: { $in: sitesID}}).sort();
-  siteTopicEdges.sort();
-  for (var siteIndex=0; siteIndex<sitesFromEdges.length; siteIndex++)
-  {
-    var edge= binary_find_edge_from_site_by_IDs(siteTopicEdges, sitesFromEdges[siteIndex], 0, sitesFromEdges.length-1);
-    if (edge)
-    {
-      var userRankCode=0;
-      if (userID!="")
-        for (var rankIndex=0; rankIndex<edge.usersRanking.length; rankIndex++)
-          if (edge.usersRanking[rankIndex].userID.equals(userID))
-          {
-            userRankCode=edge.usersRanking[rankIndex].rankCode;
-            if (userRankCode==1)
-              edge.weight-=edge.usersRanking[rankIndex].scoreAdded-1;
-            if (userRankCode==2)
-              edge.weight+=edge.usersRanking[rankIndex].scoreAdded-1;
-          }
-      sites.push({
-        siteURL: sitesFromEdges[siteIndex]['siteURL'],
-        siteFormatedURL: sitesFromEdges[siteIndex]['siteFormatedURL'],
-        siteSnap: sitesFromEdges[siteIndex]['siteSnap'],
-        userRankCode: userRankCode,
-        edgeWeight: edge.weight
-      });
-    }
-  }
+  var edges_to_sites = await SiteTopicEdge.find({topic: topic}).populate('site');
+  for (var index=0; index<edges_to_sites.length; index++)
+    edges_to_sites[index].site.domain = await Domain.findById(edges_to_sites[index].site.domain).select('-sites -userRankings');
+
+  edges_to_sites.forEach(edge_to_site => {
+    var userRankCode=0;
+    if (userID!="")
+      for (var rankIndex=0; rankIndex<edge_to_site.usersRanking.length; rankIndex++)
+        if (edge_to_site.usersRanking[rankIndex].userID.equals(userID))
+          userRankCode=edge_to_site.usersRanking[rankIndex].rankCode;
+    sites.push({
+      siteID: edge_to_site.site._id,
+      edgeID: edge_to_site._id,
+      siteURL: edge_to_site.site['siteURL'],
+      siteFormatedURL: edge_to_site.site['siteFormatedURL'],
+      siteSnap: edge_to_site.site['siteSnap'],
+      domain: edge_to_site.site['domain'],
+      userRankCode: userRankCode,
+      edgeWeight: edge_to_site.weight
+    });
+  });
+  
   return sites;
 }
 

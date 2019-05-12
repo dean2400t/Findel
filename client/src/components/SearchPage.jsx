@@ -99,6 +99,7 @@ class SearchPage extends Component {
       );
 
     }
+
     updateTXT(evt){
         this.setState(
             {

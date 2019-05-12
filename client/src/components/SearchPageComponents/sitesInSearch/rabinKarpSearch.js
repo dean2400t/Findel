@@ -115,12 +115,12 @@ class rabinKarpSearch {
 		this.texts[siteIndex]=text;
 	}
 
-	addHitsFromSite(siteIndex, site)
+	addHitsFromSite(site, siteIndex)
 	{
 		var siteText=this.texts[siteIndex];
 		var siteHashes=this.sitesHashes[siteIndex]
 		var stringFromText;
-		var numOfHits=0;
+		var num_of_links_in_site=0;
 		//siteHit[siteIndex]={"siteHits": 0, "siteOriginalIndex": siteIndex};
 		for (var curNumOfChars=0; curNumOfChars<this.numOfChars; curNumOfChars++)
 		{
@@ -136,7 +136,7 @@ class rabinKarpSearch {
 							if (this.wikiLinksHashesToWordByLength[curNumOfChars][element.linkIndex].sitesHits[siteIndex]==null)
 							{
 								this.wikiLinksHashesToWordByLength[curNumOfChars][element.linkIndex].sitesHits[siteIndex]=1;
-								numOfHits++;
+								num_of_links_in_site++;
 							}
 							else{
 								this.wikiLinksHashesToWordByLength[curNumOfChars][element.linkIndex].sitesHits[siteIndex]++;
@@ -146,7 +146,7 @@ class rabinKarpSearch {
 				textIndex++;
 			});
 		}
-		site.numOfHits=numOfHits;
+		site.num_of_links_in_site=num_of_links_in_site;
 		
 	}
 

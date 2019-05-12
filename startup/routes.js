@@ -9,6 +9,7 @@ const users_content_addind=require('../routes/users_content_adding');
 const webScrapeSite=require('../routes/webScrapeSite');
 const userRankInput=require('../routes/userRankInput');
 const publicComponents = require('../routes/publicComponents');
+const tests = require('../routes/tests');
 const user_data=require('../routes/user_data');
 const error = require('../middleware/error');
 var cors = require('cors')
@@ -28,5 +29,6 @@ module.exports = function (app){
   app.use('/publicComponents', publicComponents);
   app.use('/api/userRanking', userRankInput);
   app.use('/api/userData', user_data);
+  app.use('/tests', tests);
   app.use(error);
 }

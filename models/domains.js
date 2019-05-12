@@ -23,20 +23,18 @@ const domainSchema = new mongoose.Schema({
     ref: 'sites'
   }],
 
-  userRankings: [UserRanking]
+  userRankings: [UserRanking.schema]
   
 });
   
-  const Site = mongoose.model('sites', siteSchema);
+  const Domain = mongoose.model('domains', domainSchema);
   
-  function validateSite(site) {
+  function validateDomain(domain) {
     const schema = {
-      siteURL: Joi.string().min(4).max(512).required(),
-      siteFormatedURL: Joi.string().min(4).max(512).required(),
-      siteSnap: Joi.string().max(1024)
+      domainURL: Joi.string().min(4).max(512).required()
     };
-    return Joi.validate(site, schema);
+    return Joi.validate(domain, schema);
   }
   
-  exports.Site = Site; 
-  exports.validateSite = validateSite;
+  exports.Domain = Domain;
+  exports.validateDomain = validateDomain;

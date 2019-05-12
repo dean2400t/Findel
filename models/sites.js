@@ -18,15 +18,6 @@ const siteSchema = new mongoose.Schema({
     type: String,
     maxlength: 1024
   },
-  lastScrape:{
-    type: Date
-  },
-  num_of_links_in_site:{
-  type: Number
-  },
-  jaccard_similarity:{
-    type: Number
-  },
   domain:{
     type: mongoose.Schema.ObjectId, 
     ref: 'domains'
@@ -44,6 +35,7 @@ const siteSchema = new mongoose.Schema({
     const schema = {
       siteURL: Joi.string().min(4).max(512).required(),
       siteFormatedURL: Joi.string().min(4).max(512).required(),
+      domain: Joi.string().min(4).max(512).required(),
       siteSnap: Joi.string().max(1024)
     };
     return Joi.validate(site, schema);

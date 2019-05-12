@@ -2333,3 +2333,92 @@
 {"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-10T09:00:19.874Z"}
 {"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-10T10:48:55.236Z"}
 {"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T06:02:14.870Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T10:20:13.834Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T10:23:29.490Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T10:24:17.494Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T10:27:25.335Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T10:27:46.089Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T10:32:10.081Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T11:35:35.425Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T11:37:45.753Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T11:39:12.853Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T11:39:54.977Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T11:45:05.849Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T11:48:11.159Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T11:49:15.689Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T11:50:22.584Z"}
+{"message":"newSitesToAdd is not defined","stack":"ReferenceError: newSitesToAdd is not defined\n    at add_and_update_domains (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:110:3)\n    at search_Google_and_orgenize (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:186:11)\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-05-12T11:50:29.511Z"}
+{"message":"newSitesToAdd is not defined","stack":"ReferenceError: newSitesToAdd is not defined\n    at add_and_update_domains (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:110:3)\n    at search_Google_and_orgenize (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:186:11)\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-05-12T11:51:35.525Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T11:51:50.673Z"}
+{"message":"newSitesToAdd is not defined","stack":"ReferenceError: newSitesToAdd is not defined\n    at add_and_update_domains (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:110:3)\n    at search_Google_and_orgenize (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:186:11)\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-05-12T11:52:14.508Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T11:52:28.389Z"}
+{"message":"Cannot read property 'tld' of undefined","stack":"TypeError: Cannot read property 'tld' of undefined\n    at add_and_update_domains (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:115:51)\n    at search_Google_and_orgenize (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:186:11)\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-05-12T11:52:40.353Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T11:53:22.612Z"}
+{"message":"newSitesToAdd is not defined","stack":"ReferenceError: newSitesToAdd is not defined\n    at add_and_update_domains (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:117:7)\n    at search_Google_and_orgenize (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:186:11)\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-05-12T11:53:47.678Z"}
+{"message":"newSitesToAdd is not defined","stack":"ReferenceError: newSitesToAdd is not defined\n    at add_and_update_domains (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:117:7)\n    at search_Google_and_orgenize (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:186:11)\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-05-12T11:54:09.863Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T11:56:59.325Z"}
+{"message":"domain.push is not a function","stack":"TypeError: domain.push is not a function\n    at add_and_update_domains (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:128:16)\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-05-12T11:57:58.971Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T11:58:55.029Z"}
+{"message":"insertMany is not defined","stack":"ReferenceError: insertMany is not defined\n    at add_and_update_domains (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:132:5)\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-05-12T11:59:26.768Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T12:00:48.099Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T12:01:38.069Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T12:04:19.004Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T12:07:05.507Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T12:08:02.576Z"}
+{"message":"domains[mid].domainURL.equals is not a function","stack":"TypeError: domains[mid].domainURL.equals is not a function\n    at binary_find_domain_from_domainURL (C:\\Projects\\findel\\routes\\topics_to_sites_data.js:94:30)\n    at add_and_update_domains (C:\\Projects\\findel\\routes\\topics_to_sites_data.js:125:20)\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-05-12T12:09:42.397Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T12:10:19.059Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T12:15:43.313Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T12:16:05.536Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T12:19:34.314Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T12:22:14.248Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T12:30:45.870Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T12:36:35.303Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T12:43:07.327Z"}
+{"message":"domainURL is not defined","stack":"ReferenceError: domainURL is not defined\n    at add_and_update_domains (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:117:25)\n    at search_Google_and_orgenize (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:189:11)\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-05-12T12:43:13.772Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T12:43:33.732Z"}
+{"message":"domainURL is not defined","stack":"ReferenceError: domainURL is not defined\n    at add_and_update_domains (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:117:25)\n    at search_Google_and_orgenize (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:189:11)\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-05-12T12:43:49.042Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T12:44:28.662Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T12:44:53.418Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T16:43:48.321Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T20:21:29.889Z"}
+{"message":"siteTopicEdges.sort is not a function","stack":"TypeError: siteTopicEdges.sort is not a function\n    at get_Sites_Edges_data_from_topic (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:215:18)\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-05-12T20:22:00.509Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T20:23:23.249Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T20:24:24.733Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T20:26:31.870Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T20:31:07.469Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T20:32:20.797Z"}
+{"message":"Cannot read property 'siteURL' of undefined","stack":"TypeError: Cannot read property 'siteURL' of undefined\n    at find_which_sites_are_not_in_DataBase (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:32:63)\n    at find_new_sites_and_existing_sites (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:58:23)\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-05-12T20:32:37.107Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T20:33:24.307Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T20:44:08.574Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T20:53:17.871Z"}
+{"message":"The comparison function must be either a function or undefined","stack":"TypeError: The comparison function must be either a function or undefined\n    at Array.sort (native)\n    at find_which_sites_are_not_in_DataBase (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:40:21)\n    at find_new_sites_and_existing_sites (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:64:23)\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-05-12T20:53:30.160Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T20:54:51.630Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T20:56:43.734Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T20:57:12.530Z"}
+{"message":"sitesIndex is not defined","stack":"ReferenceError: sitesIndex is not defined\n    at sites.forEach.site (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:44:27)\n    at Array.forEach (<anonymous>)\n    at find_which_sites_are_not_in_DataBase (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:41:9)\n    at find_new_sites_and_existing_sites (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:64:23)\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-05-12T20:57:27.605Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T21:00:05.344Z"}
+{"message":"[object Array] is not a function","stack":"TypeError: [object Array] is not a function\n    at Array.filter (<anonymous>)\n    at search_Google_and_orgenize (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:129:46)\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-05-12T21:00:55.725Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T21:02:40.670Z"}
+{"message":"[object Array] is not a function","stack":"TypeError: [object Array] is not a function\n    at Array.filter (<anonymous>)\n    at search_Google_and_orgenize (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:129:46)\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-05-12T21:02:58.465Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T21:22:54.519Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T21:37:07.919Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T21:38:24.825Z"}
+{"message":"siteTopicEdges is not defined","stack":"ReferenceError: siteTopicEdges is not defined\n    at get_Sites_Edges_data_from_topic (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:207:3)\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-05-12T21:38:31.231Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T21:40:29.376Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T21:41:05.419Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T21:51:35.965Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T21:52:25.493Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T21:53:10.900Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T21:53:47.198Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T21:54:41.915Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T21:56:55.327Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T21:57:18.526Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T21:59:53.090Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T22:02:13.241Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T22:05:05.707Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T22:07:22.304Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T22:10:17.350Z"}
+{"message":"siteIndex is not defined","stack":"ReferenceError: siteIndex is not defined\n    at edges_to_sites.forEach.edge_to_site (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:214:34)\n    at Array.forEach (<anonymous>)\n    at get_Sites_Edges_data_from_topic (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:207:18)\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-05-12T22:10:20.664Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T22:11:08.445Z"}
+{"message":"domain is not defined","stack":"ReferenceError: domain is not defined\n    at edges_to_sites.forEach.edge_to_site (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:217:15)\n    at Array.forEach (<anonymous>)\n    at get_Sites_Edges_data_from_topic (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:207:18)\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-05-12T22:11:11.802Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-12T22:11:39.821Z"}
