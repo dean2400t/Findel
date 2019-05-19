@@ -22,7 +22,7 @@ router.get('/', async function(req, res, next) {
         return res.status(400).send("Topic to Site edge not in database");
 
     var url = site.siteURL
-    if (edge.lastCalculated != null && force_scrape == false)
+    if (edge.lastCalculated != null && force_scrape == "false")
     {
         var lastCalculated=new Date() - edge.lastCalculated;
         var numOfDaysToLive=2;

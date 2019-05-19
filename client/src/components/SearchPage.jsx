@@ -32,11 +32,13 @@ class SearchPage extends Component {
           add_topic_to_topic_input:"",
           add_site_to_topic_description: "",
           was_add_site_button_clicked:false,
-          was_add_topic_button_clicked: false
+          was_add_topic_button_clicked: false,
+          is_more_sites_button_hidden: true
         };
         this.sites_and_texts=[];
         this.sitesFinishedScrape=0;
-        this.sites_from_server=[];
+        this.sites_from_server_to_use=[];
+        this.full_sites_list_from_server=[];
         this.token=cookies.get('findel-auth-token') || "";
         this.sitesTempState=[];
         this.siteSearchFinished=false;
@@ -47,6 +49,7 @@ class SearchPage extends Component {
         this.wikiLinksHashesToWordByLength=[];
         this.wordsMatriciesByLength=[];
         this.id=1;
+        this.site_displayed_so_far_index=0;
       }
     render() {
         var search_box_textStyle={color: '#F0F8FF'};
@@ -86,15 +89,16 @@ class SearchPage extends Component {
                     </div>
                 </div>
             </div>
+        <div id="refSites">
+            <RefSites refSites={this.state.refSites}/>
+            <button onClick= {() => this.more_sites_clicked()} hidden={this.state.is_more_sites_button_hidden}>אתרים נוספים...</button>
+        </div>
         <div id="sites">
             <SitesToSearch sitesBeingSearched={this.state.sitesBeingSearched}/>
         </div>
-        <div id="refSites">
-            <RefSites refSites={this.state.refSites}/>
-        </div>
         <div id="ambigous">
             <Ambigous ambigousData={this.state.ambigousData}/>
-        </div>    
+        </div>
         </div>
       );
 
@@ -182,6 +186,14 @@ class SearchPage extends Component {
         this.search_button_function_deep_search();
     }
 
+    more_sites_clicked(){
+        this.sites_from_server_to_use=[];
+        var num_of_sites_to_add=10;
+        for (var index=this.site_displayed_so_far_index+1; index< this.site_displayed_so_far_index+1+num_of_sites_to_add && index<this.full_sites_list_from_server.length; index++)
+            this.sites_from_server_to_use.push(this.full_sites_list_from_server[index]);
+        search_functions.rankSites(this);
+    }
+
     search_button_function_deep_search= async () => {
         this.did_user_ended_seach=false;
         this.setState({
@@ -218,24 +230,48 @@ class SearchPage extends Component {
         });
     }
 
-    async simple_search()
+    simple_search= async () =>
     {
-        await search_functions.request_sites_from_Server(this.curSearch, this);
-        var refS=[];
-        for (var refSiteIndex=0; refSiteIndex<this.sites_from_server.length; refSiteIndex++)
-        {
-            refS.push({id: this.id, url: this.sites_from_server[refSiteIndex].url, 
-                formatedURL: this.sites_from_server[refSiteIndex].formatedURL,
-                siteSnap: this.sites_from_server[refSiteIndex].siteSnap,
-                userRankCode: this.sites_from_server[refSiteIndex].userRankCode, 
-                edgeWeight: this.sites_from_server[refSiteIndex].edgeWeight, 
-                topic: this.curSearch, hits: 0});
-            this.id++;
-        }
-        this.setState({
-            refSites: refS
-        });
-        this.search_button_function_stop_search();
+        Axios.get("/api/topicsToTopicsData/?search="+this.curSearch,{
+            headers: {'findel-auth-token': this.token}
+        })
+        .then(async (result) => {
+            if (result.data.ambig!=null)
+            {
+                result.data.ambig.forEach(category => {
+                    category.id=this.id;
+                    this.id++;
+                    category.subID=this.id;
+                    this.id++;
+                    category["subjects"].forEach(subject => {
+                        subject.id=this.id;
+                        this.id++;
+                    });
+                });
+                this.setState({
+                    ambigousData: result.data.ambig
+                });
+                this.search_button_function_stop_search();
+            }
+            else
+            {
+                this.connected_topics_edges=result.data.connected_topics_edges;
+                await search_functions.request_sites_from_Server_to_use(this.curSearch, this);
+                await search_functions.rankSites(this);
+                await search_functions.display_expended_content(this);
+                this.search_button_function_stop_search();
+            }
+            
+        }).catch( (error) => {
+            if (error.respnse!=null)
+                this.setState({
+                    server_message: error.respnse.data
+                });
+            else
+                this.setState({
+                    server_message: "בעיה עם חיבור לשרת"
+                });
+            this.search_button_function_stop_search();});
     }
 
     deep_search= async () => {
@@ -250,8 +286,8 @@ class SearchPage extends Component {
         .then((result) => {
             if (result.data.wikiText!=null)
             {
-                this.sites_and_texts=[];
-                search_functions.search_using_wikipedia(result.data.connected_topics_and_edges, result.data.wikiText, result.data.is_search_requiered, this);
+                this.connected_topics_edges=result.data.connected_topics_edges;
+                search_functions.search_using_wikipedia(result.data.wikiText, this);
             }
             
             else if (result.data.ambig!=null)
@@ -272,7 +308,10 @@ class SearchPage extends Component {
                 this.search_button_function_stop_search();
             }
             else
+            {
+                this.connected_topics_and_edges=result.data.connected_topics_and_edges;
                 this.simple_search();
+            }
             
         }).catch( (error) => {
             if (error.respnse!=null)

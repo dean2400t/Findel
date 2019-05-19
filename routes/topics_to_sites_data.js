@@ -116,6 +116,7 @@ async function search_Google_and_orgenize(topic)
   
   //Get sites and remove sites, already connected with an edge, from sitesInDataBase array
   var sites=[];
+  var sites_in_db_which_are_not_connected=[];
   if (topic.siteTopicEdges.length>0)
   {
     var sites_edges = await get_populated_edges_to_sites(topic);
@@ -125,7 +126,6 @@ async function search_Google_and_orgenize(topic)
     });
     already_connected_sites.sort((site1, site2) => {if (site2.siteURL>site1.siteURL) return -1; else return 1;});
     
-    var sites_in_db_which_are_not_connected=[];
     sites_in_database.forEach(site_in_database => {
       var is_already_connected_sites_found = binary_find_site_in_sites_by_url(already_connected_sites, site_in_database, 0, already_connected_sites.length-1);
       if (!is_already_connected_sites_found)

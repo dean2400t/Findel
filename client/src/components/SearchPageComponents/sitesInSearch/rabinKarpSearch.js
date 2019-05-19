@@ -52,14 +52,17 @@ class rabinKarpSearch {
 
 	
 	for (index=0; index<wikiLinks.length; index++)
-		if (wikiLinks[index]!=null)
-			if (wikiLinks[index].length<this.numOfChars)
+		if (wikiLinks[index].topicName!=null)
+			if (wikiLinks[index].topicName.length<this.numOfChars)
 			{
 				var sitesHits=[];
 				sitesHits[this.numOfSites-1]=null;
-				var page=wikiLinks[index];
+				var page=wikiLinks[index].topicName;
 				var patLength=page.length-1;
-				wikiLinksHashesToWordByLength[patLength].push({linkName: page, hash: -1, sitesHits: sitesHits});
+				wikiLinksHashesToWordByLength[patLength].push({linkName: page, 
+					index_in_connected_topics_edges: wikiLinks[index].index_in_connected_topics_edges, 
+					hash: -1, 
+					sitesHits: sitesHits});
 			}
 	var curLength=1;
 		wikiLinksHashesToWordByLength.forEach(linksInLength => {

@@ -7,40 +7,47 @@ class Search_functions{
     Search_functions(){}
 
     
-    async search_using_wikipedia(connected_topics_and_edges, wikiText, is_search_requiered ,this_of_searchPage){
-        await this.request_sites_from_Server(this_of_searchPage.curSearch, this_of_searchPage);
-        await this.initSiteSearch(this_of_searchPage);
-        var links=[];
-        connected_topics_and_edges.forEach(topic_and_edge => {
-            links.push(topic_and_edge.topic.topicName);
-        });
-        this_of_searchPage.rabinKarp= new rabinKarpSearch(3001, 20, this_of_searchPage.sites_from_server.length);
-        this_of_searchPage.rabinKarp.hashWikiLinks(links);
-        this_of_searchPage.jaccard_similarity=new Jaccard_similarity(3001, 10, wikiText)
-        this_of_searchPage.sitesTempState=this_of_searchPage.state.sitesBeingSearched;
-        
-        var timeToRefresh=750;
-
-        let refreshSearchStatus=setInterval(
-        () => {
-            if (this_of_searchPage.siteSearchFinished==false && this_of_searchPage.did_user_ended_seach==false)
-                this_of_searchPage.setState({sitesBeingSearched: this_of_searchPage.sitesTempState});
-            else
+    async search_using_wikipedia(wikiText ,this_of_searchPage){
+        await this.request_sites_from_Server_to_use(this_of_searchPage.curSearch, this_of_searchPage);
+        if (this_of_searchPage.sites_from_server_to_use!=null)
+        {
+            await this.initSiteSearch(this_of_searchPage);
+            var links=[];
+            for (var index=0; index<this_of_searchPage.connected_topics_edges.length; index++)
             {
-                clearInterval(refreshSearchStatus);
-                this_of_searchPage.siteSearchFinished=false;
-                this.rankSites(this_of_searchPage);
-                this.expandedContent(this_of_searchPage);
-                this_of_searchPage.search_button_function_stop_search();
+                this_of_searchPage.connected_topics_edges[index].linkHits=0;
+                links.push({topicName: this_of_searchPage.connected_topics_edges[index].topic1.topicName, index_in_connected_topics_edges:index});
             }
-        }
-        ,timeToRefresh
-        );
+            this_of_searchPage.rabinKarp= new rabinKarpSearch(3001, 20, this_of_searchPage.sites_from_server_to_use.length);
+            this_of_searchPage.rabinKarp.hashWikiLinks(links);
+            this_of_searchPage.jaccard_similarity=new Jaccard_similarity(3001, 10, wikiText)
+            this_of_searchPage.sitesTempState=this_of_searchPage.state.sitesBeingSearched;
+            
+            var timeToRefresh=750;
 
-        //start scraping asynchronously
-        this.request_WebScraping_for_sites(this_of_searchPage);
+            let refreshSearchStatus=setInterval(
+            () => {
+                if (this_of_searchPage.siteSearchFinished==false && this_of_searchPage.did_user_ended_seach==false)
+                    this_of_searchPage.setState({sitesBeingSearched: this_of_searchPage.sitesTempState});
+                else
+                {
+                    clearInterval(refreshSearchStatus);
+                    this_of_searchPage.siteSearchFinished=false;
+                    this.rankSites(this_of_searchPage);
+                    this.search_expended_content(this_of_searchPage);
+                    this_of_searchPage.search_button_function_stop_search();
+                }
+            }
+            ,timeToRefresh
+            );
+
+            //start scraping asynchronously
+            this.request_WebScraping_for_sites(this_of_searchPage);
+        }
+        else
+            this_of_searchPage.search_button_function_stop_search();
     }
-    request_sites_from_Server= async (search, this_of_searchPage)=>{
+    request_sites_from_Server_to_use= async (search, this_of_searchPage)=>{
         await axios.get("/api/topicsToSitesData/?search="+search,{
             headers: {'findel-auth-token': this_of_searchPage.token}
         })
@@ -51,21 +58,34 @@ class Search_functions{
             }).then((sites) => {
                 // Do something with the result
                 var sitesArray=[];
-                var index=0;
-                sites.forEach(site => {
-                    sitesArray.push({index: index, 
-                                    siteID: site.siteID,
-                                    edgeID: site.edgeID,
-                                    siteURL: site.siteURL,
-                                    siteFormatedURL: site.siteFormatedURL,
-                                    siteSnap: site.siteSnap,
-                                    domain: site.domain,
-                                    userRankCode_for_edge: site.userRankCode,
-                                    edgeWeight: site.edgeWeight
+                var full_sites_array=[];
+                var num_of_initial_sites=15;
+                for (var index=0; index<sites.length; index++)
+                {
+                    if (index < num_of_initial_sites)
+                        sitesArray.push({index: index, 
+                                    siteID: sites[index].siteID,
+                                    edgeID: sites[index].edgeID,
+                                    siteURL: sites[index].siteURL,
+                                    formatedURL: sites[index].siteFormatedURL,
+                                    siteSnap: sites[index].siteSnap,
+                                    domain: sites[index].domain,
+                                    userRankCode_for_edge: sites[index].userRankCode,
+                                    edgeWeight: sites[index].edgeWeight
                                     });
-                    index++;
-                });
-                this_of_searchPage.sites_from_server=sitesArray;
+                    full_sites_array.push({index: index, 
+                        siteID: sites[index].siteID,
+                        edgeID: sites[index].edgeID,
+                        siteURL: sites[index].siteURL,
+                        formatedURL: sites[index].siteFormatedURL,
+                        siteSnap: sites[index].siteSnap,
+                        domain: sites[index].domain,
+                        userRankCode_for_edge: sites[index].userRankCode,
+                        edgeWeight: sites[index].edgeWeight
+                        });
+                }
+                this_of_searchPage.sites_from_server_to_use=sitesArray;
+                this_of_searchPage.full_sites_list_from_server=full_sites_array;
             }).catch((error) => {
                 if (error.message==="Network Error")
                     this_of_searchPage.setState({
@@ -81,9 +101,9 @@ class Search_functions{
     initSiteSearch= (this_of_searchPage)=>{
         var siteToSearchArray=[];
         var stats="fa fa-spinner fa-spin";
-        for (var index=0; index<this_of_searchPage.sites_from_server.length; index++)
+        for (var index=0; index<this_of_searchPage.sites_from_server_to_use.length; index++)
             {
-                siteToSearchArray.push({id: this_of_searchPage.id, url: this_of_searchPage.sites_from_server[index].siteURL, formatedURL: this_of_searchPage.sites_from_server[index].formatedURL, scrape: stats});
+                siteToSearchArray.push({id: this_of_searchPage.id, siteURL: this_of_searchPage.sites_from_server_to_use[index].siteURL, formatedURL: this_of_searchPage.sites_from_server_to_use[index].formatedURL, scrape: stats});
                 this_of_searchPage.id++;
             }
         this_of_searchPage.setState({
@@ -108,15 +128,28 @@ class Search_functions{
             return false;
     }
     
-    hashAndSearchSites= (site, html, this_of_searchPage)=>
+    hashAndSearchSites= async (site, html, this_of_searchPage)=>
     {
         var $ = cheerio.load(html);
         var text= $.text();
         if (text.length>20)
         {
-            this_of_searchPage.rabinKarp.creatHashTables(text, index);
-            this_of_searchPage.rabinKarp.addHitsFromSite(site, index);
+            this_of_searchPage.rabinKarp.creatHashTables(text, site.index);
+            this_of_searchPage.rabinKarp.addHitsFromSite(site, site.index);
             site.jaccard_similarity = this_of_searchPage.jaccard_similarity.compute_site_similarity(text);
+            site.was_site_searched=true;
+            var opts={
+                edgeID: site.edgeID,
+                jaccard_similarity: site.jaccard_similarity,
+                num_of_links_in_site: site.num_of_links_in_site
+              };
+            await axios.post('/api/userInsertData/insertSiteTopicEdgeScores', opts, {
+            headers: {'findel-auth-token': this.token}}
+                ).then(response => {
+                    console.log("edge successfuly added");
+                }).catch(error=> {
+                    console.log("edge could not be added");
+            });
             return true;
         }
         else
@@ -124,14 +157,14 @@ class Search_functions{
     }
 
     request_WebScraping_for_sites= async (this_of_searchPage) =>{
-        var promiseArray = this_of_searchPage.sites_from_server.map(site=>{
-            return axios.get("/api/webScrape/?siteID="+site.siteID + "&edgeID=" + site.edgeID,{
+        var promiseArray = this_of_searchPage.sites_from_server_to_use.map(site=>{
+            return axios.get("/api/webScrape/?siteID="+site.siteID + "&edgeID=" + site.edgeID + "&force_scrape=false",{
             })
             .then((result) => {
-                if (result.data.site.is_edge_up_to_date == true)
+                if (result.data.is_edge_up_to_date == true)
                 {
-                    site.jaccard_similarity= result.data.site.jaccard_similarity;
-                    site.num_of_links_in_site= result.data.site.num_of_links_in_site;
+                    site.jaccard_similarity= result.data.jaccard_similarity;
+                    site.num_of_links_in_site= result.data.num_of_links_in_site;
                     this_of_searchPage.sitesTempState[site.index].scrape="fa fa-check-circle-o";
                 }
                 else
@@ -159,13 +192,11 @@ class Search_functions{
 
     rankSites=(this_of_searchPage)=>
     {   
-        this_of_searchPage.setState({sitesBeingSearched:[]});
-
-        var topSites=this_of_searchPage.sites_from_server;
+        var topSites = this_of_searchPage.sites_from_server_to_use;
         topSites.sort(function(site1, site2){return site2.num_of_links_in_site - site1.num_of_links_in_site});
         topSites.sort(function(site1, site2){return site2.jaccard_similarity - site1.jaccard_similarity});
         topSites.sort(function(site1, site2){return site2.edgeWeight - site1.edgeWeight});
-        topSites.sort(function(site1, site2){return site2.domain.s - site1.edgeWeight});
+        topSites.sort(function(site1, site2){return site2.domain.score - site1.domain.score});
         topSites.sort(function(site1, site2){
             if (site2.userRankCode==site1.userRankCode)
                 return 0;
@@ -176,61 +207,149 @@ class Search_functions{
             else if (site2.userRankCode==2 && site1.userRankCode==0)
                 return -1;
         });
-        var refS=[];
+        var refS=this_of_searchPage.state.refSites;
         for (var refSiteIndex=0; refSiteIndex<topSites.length; refSiteIndex++)
         {
             if (topSites[refSiteIndex]!=null)
             {
                 refS.push({id: this_of_searchPage.id, 
-                    url: topSites[refSiteIndex].url, 
+                    siteID: topSites[refSiteIndex].siteID,
+                    edgeID: topSites[refSiteIndex].edgeID,  
+                    siteURL: topSites[refSiteIndex].siteURL, 
                     formatedURL: topSites[refSiteIndex].formatedURL,
                     siteSnap: topSites[refSiteIndex].siteSnap,
+                    domain: topSites[refSiteIndex].domain,
                     userRankCode: topSites[refSiteIndex].userRankCode, 
-                    edgeWeight: topSites[refSiteIndex].edgeWeight, 
-                    topic: this_of_searchPage.curSearch, 
-                    hits: topSites[refSiteIndex].numOfHits});
+                    edgeWeight: topSites[refSiteIndex].edgeWeight});
                 this_of_searchPage.id++;
             }
         }
+        var is_more_sites_button_hidden=false;
+        if (refS.length>=this_of_searchPage.full_sites_list_from_server.length)
+            is_more_sites_button_hidden=true;
         this_of_searchPage.setState({
-            refSites: refS
+            refSites: refS,
+            sitesBeingSearched: [],
+            is_more_sites_button_hidden:is_more_sites_button_hidden
         });
+        this_of_searchPage.site_displayed_so_far_index=refS.length-1;
         this_of_searchPage.topSites=topSites;
     }
 
-    expandedContent=(this_of_searchPage)=>
+    display_expended_content = (this_of_searchPage) =>
     {
-        var linksWithSitesHit=this_of_searchPage.rabinKarp.wikiLinksHashesToWordByLength;
-        var topSites=this_of_searchPage.topSites;
-        var linksScore=[];
-        var linkIndex=0;
-        linksWithSitesHit.forEach(linksInLength => {
-            linksInLength.forEach(link => {
-                if (link.linkName.length>2)
-                {
-                    link.score=0;
-                    linksScore.push(link);
-                    for (var siteHitIndex=0; siteHitIndex<topSites.length && siteHitIndex<5; siteHitIndex++)
-                        if (link.sitesHits[siteHitIndex]!=null)      
-                            linksScore[linkIndex].score+=link.sitesHits[siteHitIndex];
-                    linkIndex++;
-                }
-            });
+        var connected_topics_edges=this_of_searchPage.connected_topics_edges;
+        connected_topics_edges.sort(function(edge1, edge2){return edge2.linkHits - edge1.linkHits});
+        connected_topics_edges.sort(function(edge1, edge2){if (edge2.topic1.topicName.length<3 && edge1.topic1.topicName.length>=3) return -1;});
+        connected_topics_edges.sort(function(edge1, edge2){return edge2.edgeWeight - edge1.edgeWeight});
+        connected_topics_edges.sort(function(edge1, edge2){
+            if (edge2.userRankCode==edge1.userRankCode)
+                return 0;
+            if (edge2.userRankCode==1 && edge1.userRankCode!=1)
+                return 1;
+            else if (edge2.userRankCode!=1 && edge1.userRankCode==1)
+                return -1;
+            else if (edge2.userRankCode==2 && edge1.userRankCode==0)
+                return -1;
         });
-        linksScore.sort(function(link1, link2){return link2.score - link1.score});
-
+        
         var expandedCon=[];
-        for (var content=0; content<linksScore.length && content<10; content++)
+        for (var content=0; content<connected_topics_edges.length && content<10; content++)
         {
             var partition=" | ";
-            if (content+1==linksScore.length && content+1==10)
+            if (content+1==connected_topics_edges.length || content+1==10)
                 partition="";
-            expandedCon.push({id: this_of_searchPage.id, page: linksScore[content].linkName, partition: partition, clicked: this_of_searchPage.expandedContentClicked.bind(this_of_searchPage)});
+            expandedCon.push({id: this_of_searchPage.id, 
+                page: connected_topics_edges[content].topic1.topicName, 
+                partition: partition, 
+                clicked: this_of_searchPage.expandedContentClicked.bind(this_of_searchPage)});
             this_of_searchPage.id++;
         }
         this_of_searchPage.setState({
             expandedContents: expandedCon
         });
+    }
+
+    async best_sites_results(this_of_searchPage, rk_results)
+    {
+        var topSites=this_of_searchPage.topSites;
+        var num_of_top_sites_to_use=6;
+        var num_of_top_sites_used=0;
+        for (var index=0; index<topSites.length && num_of_top_sites_used<num_of_top_sites_to_use; index++)
+            if (topSites[index].was_site_searched!=true)
+            {
+                await axios.get("/api/webScrape/?siteID="+topSites[index].siteID + "&edgeID=" + topSites[index].edgeID + "&force_scrape=true",{
+                })
+                .then(async (result) => {
+                    await this.hashAndSearchSites(topSites[index], result.data.siteHTML, this_of_searchPage); 
+                    topSites[index].was_site_searched=true;
+                    await rk_results.forEach(words_in_length => {
+                        words_in_length.forEach(word => {
+                            var num_of_hits=word.sitesHits[topSites[index].index];
+                            if (num_of_hits != undefined)
+                                this_of_searchPage.connected_topics_edges[word.index_in_connected_topics_edges].linkHits += num_of_hits;
+                        });
+                    });
+                    num_of_top_sites_used++;
+                }).catch( () => {
+                    console.log("site failed searched");
+                });
+            }
+            else if (topSites[index].was_site_searched==true)
+            {
+                rk_results.forEach(words_in_length => {
+                    words_in_length.forEach(word => {
+                        var num_of_hits=word.sitesHits[topSites[index].index];
+                        if (num_of_hits != undefined)
+                            this_of_searchPage.connected_topics_edges[word.index_in_connected_topics_edges].linkHits += num_of_hits;
+                    });
+                });
+                num_of_top_sites_used++;
+            }
+    }
+
+    search_expended_content(this_of_searchPage)
+    {
+        var connected_topics_edges_to_search=[];
+        this_of_searchPage.connected_topics_edges.forEach(topic_edge => {
+            if (topic_edge.last_web_scrape==null)
+                connected_topics_edges_to_search.push(topic_edge);
+            else
+                {
+                    var edge_scrape_age = new Date() - topic_edge.last_web_scrape;
+                    var numOfDaysToLive=3;
+
+                    if(edge_scrape_age>numOfDaysToLive*86400000)
+                        connected_topics_edges_to_search.push(topic_edge);
+                }
+        });
+        if (connected_topics_edges_to_search.length>0)
+        {
+            var rk_results = this_of_searchPage.rabinKarp.wikiLinksHashesToWordByLength;
+            this.best_sites_results(this_of_searchPage, rk_results)
+            .then(()=>{
+                this.display_expended_content(this_of_searchPage);
+                connected_topics_edges_to_search.forEach(connected_topic_edge_to_search => {
+                    var opts={
+                        id_of_edge_to_update: connected_topic_edge_to_search._id,
+                        web_scrape_score: connected_topic_edge_to_search.linkHits
+                      };
+                    axios.post('/api/userInsertData/insertTopicTopicEdgeScores', opts
+                        ).then(response => {
+                            console.log(response.data);})
+                        }).catch(error=> {
+                            if (error.response==undefined)
+                            console.log("אין חיבור לשרת");
+                            else
+                            console.log(error.response.data);
+                    });
+                })
+            .catch(() => {console.log("Search content failed");});
+        }
+        else
+            this.display_expended_content(this_of_searchPage);
+
+        
     }
 }
 export default Search_functions;

@@ -5,8 +5,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faArrowAltCircleUp} from '@fortawesome/free-solid-svg-icons';
 import {faArrowAltCircleDown} from '@fortawesome/free-solid-svg-icons';
 import Cookies from 'universal-cookie';
-import axios from 'axios';
+import Ref_site_functions from './ref_site_functions';
+
 const cookies = new Cookies();
+const ref_site_functions=new Ref_site_functions();
 
 class ArefSite extends Component {
   constructor(props) {
@@ -31,7 +33,7 @@ class ArefSite extends Component {
     var redText={color: "red"};
     return (
           <div className="aSiteRef">
-            <text><a target="_blank" rel="noopener noreferrer" href={this.props.aRefSite.url}>{this.props.aRefSite.formatedURL}</a> 
+            <text><a target="_blank" rel="noopener noreferrer" href={this.props.aRefSite.siteURL}>{this.props.aRefSite.formatedURL}</a> 
             <br/><text>{this.props.aRefSite.siteSnap}</text>
             <br/>דירוג משתמשים: <FontAwesomeIcon icon={faArrowAltCircleUp} color={this.state.upArrowColor} onClick={() => this.upClick()}/> ({this.state.edgeWeight}) <FontAwesomeIcon icon={faArrowAltCircleDown} color={this.state.downArrowColor} onClick={() => this.downClick()}/></text>
             <br/><text style={redText}>{this.state.rank_error}</text>
@@ -40,109 +42,14 @@ class ArefSite extends Component {
   }
   cancelRank()
   {
-    var topic=this.props.aRefSite.topic;
-    var siteURL=this.props.aRefSite.url;
-    var opts={
-      topic: topic,
-      siteURL: siteURL,
-      rankCode: 0
-    };
-    if (this.token=="")
-      this.setState({rank_error: "יש להתחבר על מנת לדרג"});
-    else{
-    axios.post("/api/userRanking/rankSite", opts, {
-        headers: {'findel-auth-token': this.token}
-     })
-        .then((result) => {
-            var newWeight=this.state.edgeWeight;
-            if (this.state.rankCode==1)
-              newWeight--;
-            else
-              newWeight++
-            this.setState({
-              upArrowColor: 'black',
-              downArrowColor: 'black',
-              rank_error: "",
-              edgeWeight: newWeight,
-              rankCode: 0
-            })
-        }).catch((error) => {
-            this.setState({rank_error: error.response.data});
-        });
-    }
+    ref_site_functions.cancelRank(this);
   }
 
   upClick= () => {
-    if (this.state.upArrowColor=='green')
-      this.cancelRank();
-    else
-    {
-      var topic=this.props.aRefSite.topic;
-      var siteURL=this.props.aRefSite.url;
-      var opts={
-        topic: topic,
-        siteURL: siteURL,
-        rankCode: 1
-      };
-      if (this.token=="")
-        this.setState({rank_error: "יש להתחבר על מנת לדרג"});
-      else{
-      axios.post("/api/userRanking/rankSite", opts, {
-          headers: {'findel-auth-token': this.token}
-      })
-          .then((result) => {
-              var newWeight=this.state.edgeWeight;
-              if (this.state.rankCode==2)
-                newWeight++;
-              newWeight++;
-              this.setState({
-                upArrowColor: 'green',
-                downArrowColor: 'black',
-                rank_error: "",
-                edgeWeight:newWeight,
-                rankCode: 1
-              })
-            }).catch((error) => {
-              this.setState({rank_error: error.response.data});
-          });
-      }
-    }
+    ref_site_functions.upClick(this);
   }
   downClick= () => {
-    if (this.state.downArrowColor=='red')
-      this.cancelRank();
-    else
-    {
-      var topic=this.props.aRefSite.topic;
-      var siteURL=this.props.aRefSite.url;
-      var opts={
-        topic: topic,
-        siteURL: siteURL,
-        rankCode: 2
-      };
-      if (this.token=="")
-        this.setState({rank_error: "יש להתחבר על מנת לדרג"});
-      else{
-      axios.post("/api/userRanking/rankSite", opts, {
-          headers: {'findel-auth-token': this.token}
-      })
-          .then((result) => {
-            var newWeight=this.state.edgeWeight;
-            if (this.state.rankCode==1)
-              newWeight--;
-            newWeight--;
-            this.setState({
-                upArrowColor: 'black',
-                downArrowColor: 'red',
-                rank_error: "",
-                edgeWeight:newWeight,
-                rankCode: 2
-              });
-            }).catch((error) => {
-              this.setState({rank_error: error.response.data});
-          });
-      }
-    }
+    ref_site_functions.downClick(this);
   }
 }
 ArefSite.PropsTypes={

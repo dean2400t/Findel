@@ -17,7 +17,15 @@ const topicTopicEdgeSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
+  web_scrape_score:{
+    type: Number,
+    required: true
+  },
+  last_web_scrape:{
+    type: Date
+  },
   usersRanking:[UserRanking.schema]
+  
 });
   
   const TopicTopicEdge = mongoose.model('topic-topic-edges', topicTopicEdgeSchema);
