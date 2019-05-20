@@ -55,7 +55,7 @@ class SearchPage extends Component {
         this.site_displayed_so_far_index=0;
       }
     render() {
-        var search_box_textStyle={color: '#F0F8FF'};
+        var search_box_textStyle={color: '#F0F8FF', cursor: 'pointer'};
         var more_content_textStyle={color: '#F0F8FF'};
       return (
         
@@ -80,19 +80,20 @@ class SearchPage extends Component {
                 </div>
                 <div className="add_content_and_sites_div" style={{backgroundColor:'#0587c3'}}>
                     <div className="add_topic_to_topic_div" hidden={!this.state.was_add_topic_button_clicked}>
-                        <text style={search_box_textStyle}>הוסף תוכן לנושא: &nbsp;</text><input type="text" value={this.state.add_topic_to_topic_input} onChange={evt => this.add_topic_to_topic_change_function(evt)}/><button id="add_topic_to_topic_button">+</button>
+                        <text style={search_box_textStyle} onClick= {() => this.add_topic_button_clicked(false)}>-הוסף תוכן לנושא: &nbsp;</text><br/>
+                        <input type="text" value={this.state.add_topic_to_topic_input} onChange={evt => this.add_topic_to_topic_change_function(evt)}/><button id="add_topic_to_topic_button">+</button>
                     </div>
-                    <div className="add_topic_to_topic_div" hidden={!this.state.was_add_topic_button_clicked}>
-                        <button onClick= {() => this.add_topic_button_clicked()}>הוסף תוכן לנושא...</button>
+                    <div className="add_topic_to_topic_div" hidden={this.state.was_add_topic_button_clicked}>
+                        <text onClick= {() => this.add_topic_button_clicked(true)} style={search_box_textStyle}>+הוסף תוכן לנושא...</text>
                     </div>
                     <div className="add_site_to_topic_div" hidden={!this.state.was_add_site_button_clicked}>
-                        <text style={search_box_textStyle}>הוסף אתר לנושא: &nbsp;</text><br/>
+                        <text onClick= {() => this.add_site_button_clicked(false)} style={search_box_textStyle}>-הוסף אתר לנושא: &nbsp;</text><br/>
                         <input type="text" id="add_site_to_topic_url_input" placeholder=".....//:https" value={this.state.add_site_to_topic_input} onChange={evt => this.add_site_to_topic_change_function(evt)}/><br></br>
                         <textarea value={this.state.add_site_to_topic_description} placeholder="תאור האתר" onChange={evt => this.add_site_to_topic_change_description_function(evt)}/><br/>
                         <button id="add_site_to_topic_button" onClick={() => this.add_site()}>+</button>
                     </div>
                     <div className="add_site_to_topic_div" hidden={this.state.was_add_site_button_clicked}>
-                        <button onClick= {() => this.add_site_button_clicked()}>הוסף אתר לנושא...</button>
+                        <text onClick= {() => this.add_site_button_clicked(true)} style={search_box_textStyle}>+הוסף אתר לנושא...</text>
                     </div>
                 </div>
             </div>
@@ -155,11 +156,11 @@ class SearchPage extends Component {
         );
     }
 
-    add_site_button_clicked()
+    add_site_button_clicked(hidden_value)
     {
         this.setState(
             {
-                was_add_site_button_clicked: true
+                was_add_site_button_clicked: hidden_value
             }
         );
     }
@@ -191,11 +192,11 @@ class SearchPage extends Component {
             }
         );
     }
-    add_topic_button_clicked()
+    add_topic_button_clicked(hidden_value)
     {
         this.setState(
             {
-                was_add_topic_button_clicked: true
+                was_add_topic_button_clicked: hidden_value
             }
         );
     }

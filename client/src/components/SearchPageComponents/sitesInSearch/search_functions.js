@@ -61,7 +61,7 @@ class Search_functions{
                 var full_sites_array=[];
                 var num_of_initial_sites=15;
                 for (var index=0; index<sites.length; index++)
-                    full_sites_array.push({index: index, 
+                    full_sites_array.push({
                         siteID: sites[index].siteID,
                         edgeID: sites[index].edgeID,
                         siteURL: sites[index].siteURL,
@@ -73,26 +73,20 @@ class Search_functions{
                         });
                 full_sites_array.sort(function(site1, site2){return site2.domain.score - site1.domain.score});
                 full_sites_array.sort(function(site1, site2){return site2.edgeWeight - site1.edgeWeight});
-                full_sites_array.sort(function(site1, site2){
-                    if (site2.userRankCode==site1.userRankCode)
-                        return 0;
-                    if (site2.userRankCode==1 && site1.userRankCode!=1)
-                        return 1;
-                    else if (site2.userRankCode!=1 && site1.userRankCode==1)
-                        return -1;
-                    else if (site2.userRankCode==2 && site1.userRankCode==0)
-                        return -1;
-                });
+                
+                for (var index=0; index<full_sites_array.length; index++)
+                    full_sites_array[index].index=index;
+                
                 for (var index=0; index<full_sites_array.length && index<num_of_initial_sites; index++)
                     sitesArray.push({index: index, 
-                                siteID: sites[index].siteID,
-                                edgeID: sites[index].edgeID,
-                                siteURL: sites[index].siteURL,
-                                formatedURL: sites[index].siteFormatedURL,
-                                siteSnap: sites[index].siteSnap,
-                                domain: sites[index].domain,
-                                userRankCode_for_edge: sites[index].userRankCode,
-                                edgeWeight: sites[index].edgeWeight
+                                siteID: full_sites_array[index].siteID,
+                                edgeID: full_sites_array[index].edgeID,
+                                siteURL: full_sites_array[index].siteURL,
+                                formatedURL: full_sites_array[index].formatedURL,
+                                siteSnap: full_sites_array[index].siteSnap,
+                                domain: full_sites_array[index].domain,
+                                userRankCode_for_edge: full_sites_array[index].userRankCode,
+                                edgeWeight: full_sites_array[index].edgeWeight
                                 });
                 this_of_searchPage.sites_from_server_to_use=sitesArray;
                 this_of_searchPage.full_sites_list_from_server=full_sites_array;
@@ -253,16 +247,6 @@ class Search_functions{
         connected_topics_edges.sort(function(edge1, edge2){return edge2.linkHits - edge1.linkHits});
         connected_topics_edges.sort(function(edge1, edge2){if (edge2.topic1.topicName.length<3 && edge1.topic1.topicName.length>=3) return -1;});
         connected_topics_edges.sort(function(edge1, edge2){return edge2.weight - edge1.weight});
-        connected_topics_edges.sort(function(edge1, edge2){
-            if (edge2.userRankCode==edge1.userRankCode)
-                return 0;
-            if (edge2.userRankCode==1 && edge1.userRankCode!=1)
-                return 1;
-            else if (edge2.userRankCode!=1 && edge1.userRankCode==1)
-                return -1;
-            else if (edge2.userRankCode==2 && edge1.userRankCode==0)
-                return -1;
-        });
         
         var expandedCon=[];
         for (var content=0; content<connected_topics_edges.length && content<10; content++)
