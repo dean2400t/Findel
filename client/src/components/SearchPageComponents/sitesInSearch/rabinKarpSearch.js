@@ -52,14 +52,17 @@ class rabinKarpSearch {
 
 	
 	for (index=0; index<wikiLinks.length; index++)
-		if (wikiLinks[index].page!=null)
-			if (wikiLinks[index].page.length<this.numOfChars)
+		if (wikiLinks[index].topicName!=null)
+			if (wikiLinks[index].topicName.length<this.numOfChars)
 			{
 				var sitesHits=[];
 				sitesHits[this.numOfSites-1]=null;
-				var page=wikiLinks[index].page;
+				var page=wikiLinks[index].topicName;
 				var patLength=page.length-1;
-				wikiLinksHashesToWordByLength[patLength].push({linkName: page, hash: -1, sitesHits: sitesHits});
+				wikiLinksHashesToWordByLength[patLength].push({linkName: page, 
+					index_in_connected_topics_edges: wikiLinks[index].index_in_connected_topics_edges, 
+					hash: -1, 
+					sitesHits: sitesHits});
 			}
 	var curLength=1;
 		wikiLinksHashesToWordByLength.forEach(linksInLength => {
@@ -115,11 +118,12 @@ class rabinKarpSearch {
 		this.texts[siteIndex]=text;
 	}
 
-	addHitsFromSite(siteIndex)
+	addHitsFromSite(site, siteIndex)
 	{
 		var siteText=this.texts[siteIndex];
 		var siteHashes=this.sitesHashes[siteIndex]
 		var stringFromText;
+		var num_of_links_in_site=0;
 		//siteHit[siteIndex]={"siteHits": 0, "siteOriginalIndex": siteIndex};
 		for (var curNumOfChars=0; curNumOfChars<this.numOfChars; curNumOfChars++)
 		{
@@ -135,6 +139,7 @@ class rabinKarpSearch {
 							if (this.wikiLinksHashesToWordByLength[curNumOfChars][element.linkIndex].sitesHits[siteIndex]==null)
 							{
 								this.wikiLinksHashesToWordByLength[curNumOfChars][element.linkIndex].sitesHits[siteIndex]=1;
+								num_of_links_in_site++;
 							}
 							else{
 								this.wikiLinksHashesToWordByLength[curNumOfChars][element.linkIndex].sitesHits[siteIndex]++;
@@ -144,6 +149,7 @@ class rabinKarpSearch {
 				textIndex++;
 			});
 		}
+		site.num_of_links_in_site=num_of_links_in_site;
 		
 	}
 

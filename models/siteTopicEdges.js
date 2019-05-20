@@ -8,11 +8,25 @@ const siteTopicEdgeSchema = new mongoose.Schema({
     ref: 'sites',
     required: true
   },
+
   topic: {
     type: mongoose.Schema.ObjectId, 
     ref: 'topics',
     required: true
   },
+
+  lastCalculated:{
+    type: Date
+  },
+
+  num_of_links_in_site:{
+  type: Number
+  },
+
+  jaccard_similarity:{
+    type: Number
+  },
+  
   weight:{ 
     type: Number,
     required: true

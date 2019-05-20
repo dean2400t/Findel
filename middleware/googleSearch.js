@@ -12,11 +12,17 @@ module.exports=async function googleSearch(search)
     var results1= await cusSearch.cse.list(params);
     params.start=11;
     var results2= await cusSearch.cse.list(params);
+    params.start=21;
+    var results3= await cusSearch.cse.list(params);
+    params.start=31;
+    var results4= await cusSearch.cse.list(params);
     var sites=[];
     var allRes=[];
     allRes.push(results1);
     allRes.push(results2);
-    for (var r=0; r<2; r++)
+    allRes.push(results3);
+    allRes.push(results4);
+    for (var r=0; r<4; r++)
         if (allRes[r]!=null)
             for (var index=0; index<10; index++)
                 if (allRes[r].data.items[index]!=null)

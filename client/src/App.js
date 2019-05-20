@@ -15,6 +15,8 @@ import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegistrationComponents/register';
 import UserSearchHistory from './components/User_Search_History_Page';
 import UserFavorites from './components/User_favorites_page';
+import DomainsPage from './components/Domains_components/DomainsPage';
+import Topics_page from './components/Topics_components/topics_page';
 import Cookies from 'universal-cookie';
 const cookies = new Cookies();
 library.add(fab, faCheckSquare, faCoffee);
@@ -90,7 +92,8 @@ class App extends Component {
           <Link to="/UserSearchHistory" style={this.state.displayUserDataComponents}>היסטורית חיפוש</Link>
           <text style={this.state.displayUserDataComponents}> - </text>
           <Link to="/UserFavorites" style={this.state.displayUserDataComponents}>אתרים שדירגתי כטובים</Link>
-
+          <text> - </text>
+          <Link to="/DomainsPage">דומיינים</Link>
           <hr />
 
           <Route exact path="/" component={SearchPage} />
@@ -98,6 +101,8 @@ class App extends Component {
           <Route path="/Register" component={RegisterPage} />
           <Route path="/UserSearchHistory" component={UserSearchHistory} />
           <Route path="/UserFavorites" component={UserFavorites} />
+          <Route path="/DomainsPage" component={DomainsPage} />
+          <Route path="/TopicsPage/:topic" component={Topics_page} />
         </div>
       </Router>
       </div>

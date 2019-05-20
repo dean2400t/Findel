@@ -10,6 +10,7 @@ router.post('/addSite', auth, async function(req, res) {
   
     var topicName=req.body.topicName;
     var siteFormatedURL=req.body.siteURL;
+    var siteDescription = req.body.siteDescription;
     var siteURL=encodeURI(siteFormatedURL);
     if (!topicName)
         return res.status(400).send("אין נושא בגוף הבקשה");
@@ -27,8 +28,7 @@ router.post('/addSite', auth, async function(req, res) {
     var site= await Site.findOne({siteURL: siteURL});
     if (!site)
     {
-
-        site=new Site({siteURL: siteURL, siteFormatedURL: siteFormatedURL});
+        site=new Site({siteURL: siteURL, siteFormatedURL: siteFormatedURL, siteSnap:siteDescription});
         is_site_or_topic_new=true;
     }
 
@@ -52,9 +52,9 @@ router.post('/addSite', auth, async function(req, res) {
 
     var weight=user.userScore+1;
     site_topic_edge=new SiteTopicEdge({topic: topic._id, site: site._id, weight: weight});
-    site.siteTopicEdges.push(site_topic_edge);
-    topic.siteTopicEdges.push(site_topic_edge);
-    user.site_Topic_Edges_Added.push(site_topic_edge);
+    site.siteTopicEdges.push(site_topic_edge._id);
+    topic.siteTopicEdges.push(site_topic_edge._id);
+    user.site_Topic_Edges_Added.push(site_topic_edge._id);
     await site_topic_edge.save();
     await site.save();
     await topic.save();
