@@ -61,18 +61,6 @@ class Search_functions{
                 var full_sites_array=[];
                 var num_of_initial_sites=15;
                 for (var index=0; index<sites.length; index++)
-                {
-                    if (index < num_of_initial_sites)
-                        sitesArray.push({index: index, 
-                                    siteID: sites[index].siteID,
-                                    edgeID: sites[index].edgeID,
-                                    siteURL: sites[index].siteURL,
-                                    formatedURL: sites[index].siteFormatedURL,
-                                    siteSnap: sites[index].siteSnap,
-                                    domain: sites[index].domain,
-                                    userRankCode_for_edge: sites[index].userRankCode,
-                                    edgeWeight: sites[index].edgeWeight
-                                    });
                     full_sites_array.push({index: index, 
                         siteID: sites[index].siteID,
                         edgeID: sites[index].edgeID,
@@ -83,7 +71,29 @@ class Search_functions{
                         userRankCode_for_edge: sites[index].userRankCode,
                         edgeWeight: sites[index].edgeWeight
                         });
-                }
+                full_sites_array.sort(function(site1, site2){return site2.domain.score - site1.domain.score});
+                full_sites_array.sort(function(site1, site2){return site2.edgeWeight - site1.edgeWeight});
+                full_sites_array.sort(function(site1, site2){
+                    if (site2.userRankCode==site1.userRankCode)
+                        return 0;
+                    if (site2.userRankCode==1 && site1.userRankCode!=1)
+                        return 1;
+                    else if (site2.userRankCode!=1 && site1.userRankCode==1)
+                        return -1;
+                    else if (site2.userRankCode==2 && site1.userRankCode==0)
+                        return -1;
+                });
+                for (var index=0; index<full_sites_array.length && index<num_of_initial_sites; index++)
+                    sitesArray.push({index: index, 
+                                siteID: sites[index].siteID,
+                                edgeID: sites[index].edgeID,
+                                siteURL: sites[index].siteURL,
+                                formatedURL: sites[index].siteFormatedURL,
+                                siteSnap: sites[index].siteSnap,
+                                domain: sites[index].domain,
+                                userRankCode_for_edge: sites[index].userRankCode,
+                                edgeWeight: sites[index].edgeWeight
+                                });
                 this_of_searchPage.sites_from_server_to_use=sitesArray;
                 this_of_searchPage.full_sites_list_from_server=full_sites_array;
             }).catch((error) => {
