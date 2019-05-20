@@ -6,6 +6,13 @@
     margin-right: 2px;
 }
 
+#simple_search_radio_button{
+    margin-right: 20px;
+}
+
+#show_more_content_button{
+    cursor: pointer;
+}
 #exContents{
     margin-top: 10px;
 }

@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
+import {Link} from "react-router-dom";
 import SitesToSearch from './SearchPageComponents/sitesInSearch/SitesToSearch';
 import ExpandedContent from './SearchPageComponents/expandedContents/ExpandedContents';
 import RefSites from './SearchPageComponents/refSites/RefSites';
 import Ambigous from './SearchPageComponents/AmbigousContent/Ambigous';
-
+import 'font-awesome/css/font-awesome.min.css';
 import './SearchPage.css';
 import Cookies from 'universal-cookie';
 import Search_functions from '../components/SearchPageComponents/sitesInSearch/search_functions';
@@ -22,8 +23,7 @@ class SearchPage extends Component {
           refSites: [],
           ambigousData: [],
           newID: 1,
-          search_button_function: () => this.search_button_function_deep_search(),
-          simple_search_button_function: () => this.simple_search_button_function(),
+          search_button_function: () => this.search_button_function(),
           search_button_text: "חפש תכנים",
           simple_search_button_text:"חיפוש פשוט",
           search_button_iconClass: "",
@@ -33,7 +33,10 @@ class SearchPage extends Component {
           add_site_to_topic_description: "",
           was_add_site_button_clicked:false,
           was_add_topic_button_clicked: false,
-          is_more_sites_button_hidden: true
+          is_more_sites_button_hidden: true,
+          is_simple_search_selected: false,
+          is_show_more_content_hidden: true,
+          expandend_content_status: ""
         };
         this.sites_and_texts=[];
         this.sitesFinishedScrape=0;
@@ -53,6 +56,7 @@ class SearchPage extends Component {
       }
     render() {
         var search_box_textStyle={color: '#F0F8FF'};
+        var more_content_textStyle={color: '#F0F8FF'};
       return (
         
         <div className="SearchPage">
@@ -61,14 +65,17 @@ class SearchPage extends Component {
                     <img id="findelTheme" src="/publicComponents/findelTheme" height="100" width="400"/>
                     <div>
                         <input id="search_text_box" type="text" value={this.state.inputValue} onChange={evt => this.updateTXT(evt)}></input>
-                        <button id="searchBTN" name="searchBTN" onClick={this.state.search_button_function}>{this.state.search_button_text} <i className={this.state.search_button_iconClass}></i></button>
-                        <button hidden="true" id="simple_search_BTN" name="simple_search_BTN" onClick={this.state.simple_search_button_function}>{this.state.simple_search_button_text} <i className={this.state.search_button_iconClass}></i></button>
+                        <button id="searchBTN" name="searchBTN" onClick={this.state.search_button_function}>{this.state.search_button_text} <i className={this.state.search_button_iconClass}></i></button><br/>
+                        <input type="radio" onClick={() => this.deep_search_radio_button_clicked()} checked={!this.state.is_simple_search_selected}/> חיפוש עמוק
+                        <input type="radio" id="simple_search_radio_button" onClick={() => this.simple_search_radio_button_clicked()} checked={this.state.is_simple_search_selected}/> חיפוש פשוט
                     </div>
                     <div id="exContents">
                         <text color='white'>{this.state.server_message}</text>
                     </div>
                     <div id="exContents">
                         <ExpandedContent expandedContents={this.state.expandedContents}/>
+                        <text><i className={this.state.expandend_content_status}></i></text>
+                        <a target="_blank" rel="noopener noreferrer" style={more_content_textStyle} href={"/TopicsPage/"+this.curSearch} hidden={this.state.is_show_more_content_hidden}>עוד...</a>
                     </div>
                 </div>
                 <div className="add_content_and_sites_div" style={{backgroundColor:'#0587c3'}}>
@@ -112,6 +119,24 @@ class SearchPage extends Component {
         );
         this.curSearch=evt.target.value;
     }
+
+    deep_search_radio_button_clicked()
+    {
+        this.setState(
+            {
+                is_simple_search_selected:false
+            }
+        )
+    }
+    simple_search_radio_button_clicked()
+    {
+        this.setState(
+            {
+                is_simple_search_selected:true
+            }
+        )
+    }
+
     add_site_to_topic_change_function(evt)
     {
         this.setState(
@@ -183,7 +208,7 @@ class SearchPage extends Component {
             });
         this.curSearch=content;
         this.siteSearchFinished=false;
-        this.search_button_function_deep_search();
+        this.search_button_function();
     }
 
     more_sites_clicked(){
@@ -194,84 +219,30 @@ class SearchPage extends Component {
         search_functions.rankSites(this);
     }
 
-    search_button_function_deep_search= async () => {
+    search_button_function= async () => {
         this.did_user_ended_seach=false;
         this.setState({
             search_button_function: () => this.search_button_function_stop_search(),
-            simple_search_button_function: ()=> this.search_button_function_stop_search(),
             search_button_text: "סיים חיפוש",
             simple_search_button_text:"סיים חיפוש",
             search_button_iconClass: "fa fa-spinner fa-spin",
+            is_more_sites_button_hidden: true,
+            is_show_more_content_hidden: true,
+            expandend_content_status: "fa fa-spinner fa-spin",
             server_message: ""
         });
         this.deep_search();
-    }
-    simple_search_button_function= async () => {
-        this.did_user_ended_seach=true;
-        this.setState({
-            search_button_function: () => this.search_button_function_stop_search(),
-            simple_search_button_function: ()=> this.search_button_function_stop_search(),
-            search_button_text: "סיים חיפוש",
-            simple_search_button_text:"סיים חיפוש",
-            search_button_iconClass: "fa fa-spinner fa-spin",
-            server_message: ""
-        });
-        this.simple_search();
     }
 
     search_button_function_stop_search= async () => {
         this.did_user_ended_seach=true;
         this.setState({
-            search_button_function: () => this.search_button_function_deep_search(),
+            search_button_function: () => this.search_button_function(),
             simple_search_button_function: () => this.simple_search_button_function(),
             search_button_text: "חפש תכנים",
             simple_search_button_text:"סיים חיפוש",
             search_button_iconClass:""
         });
-    }
-
-    simple_search= async () =>
-    {
-        Axios.get("/api/topicsToTopicsData/?search="+this.curSearch,{
-            headers: {'findel-auth-token': this.token}
-        })
-        .then(async (result) => {
-            if (result.data.ambig!=null)
-            {
-                result.data.ambig.forEach(category => {
-                    category.id=this.id;
-                    this.id++;
-                    category.subID=this.id;
-                    this.id++;
-                    category["subjects"].forEach(subject => {
-                        subject.id=this.id;
-                        this.id++;
-                    });
-                });
-                this.setState({
-                    ambigousData: result.data.ambig
-                });
-                this.search_button_function_stop_search();
-            }
-            else
-            {
-                this.connected_topics_edges=result.data.connected_topics_edges;
-                await search_functions.request_sites_from_Server_to_use(this.curSearch, this);
-                await search_functions.rankSites(this);
-                await search_functions.display_expended_content(this);
-                this.search_button_function_stop_search();
-            }
-            
-        }).catch( (error) => {
-            if (error.respnse!=null)
-                this.setState({
-                    server_message: error.respnse.data
-                });
-            else
-                this.setState({
-                    server_message: "בעיה עם חיבור לשרת"
-                });
-            this.search_button_function_stop_search();});
     }
 
     deep_search= async () => {
@@ -283,8 +254,8 @@ class SearchPage extends Component {
         Axios.get("/api/topicsToTopicsData/?search="+this.curSearch,{
                 headers: {'findel-auth-token': this.token}
         })
-        .then((result) => {
-            if (result.data.wikiText!=null)
+        .then(async (result) => {
+            if (result.data.wikiText!=null && this.state.is_simple_search_selected==false)
             {
                 this.connected_topics_edges=result.data.connected_topics_edges;
                 search_functions.search_using_wikipedia(result.data.wikiText, this);
@@ -309,8 +280,11 @@ class SearchPage extends Component {
             }
             else
             {
-                this.connected_topics_and_edges=result.data.connected_topics_and_edges;
-                this.simple_search();
+                this.connected_topics_edges=result.data.connected_topics_edges;
+                await search_functions.request_sites_from_Server_to_use(this.curSearch, this);
+                await search_functions.rankSites(this);
+                await search_functions.display_expended_content(this);
+                this.search_button_function_stop_search();
             }
             
         }).catch( (error) => {

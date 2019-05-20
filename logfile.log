@@ -2564,3 +2564,59 @@
 {"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T08:53:58.972Z"}
 {"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T08:57:29.693Z"}
 {"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T08:59:54.038Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T09:50:50.756Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T09:51:18.447Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T09:53:54.869Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T09:55:34.848Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T09:57:16.824Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T09:57:30.766Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T10:00:33.906Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T10:01:38.474Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T10:02:38.511Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T10:08:08.340Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T10:09:04.330Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T10:13:52.735Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T10:15:26.382Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T10:16:25.594Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T10:18:15.994Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T10:57:09.618Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T11:16:46.905Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T11:27:42.192Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T11:31:20.485Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T11:33:19.441Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T11:38:52.159Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T11:39:57.374Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T11:41:34.167Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T11:43:28.218Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T11:49:28.516Z"}
+{"message":"Cannot read property 'topicName' of undefined","stack":"TypeError: Cannot read property 'topicName' of undefined\n    at connected_topics_edges.sort (C:\\Projects\\findel\\routes\\topics_to_topics_data.js:103:71)\n    at Array.sort (native)\n    at update_wikipidia_links_on_topic (C:\\Projects\\findel\\routes\\topics_to_topics_data.js:103:28)\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-05-19T11:52:26.381Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T11:54:39.649Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T11:59:26.409Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T12:08:05.745Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T12:28:34.248Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T15:41:32.510Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T16:02:03.425Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T16:10:41.356Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T16:14:26.435Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T16:21:02.192Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T16:21:19.094Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T17:34:03.146Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T18:10:44.237Z"}
+{"message":"Schema hasn't been registered for model \"topic-Topic-Edges\".\nUse mongoose.model(name, schema)","stack":"MissingSchemaError: Schema hasn't been registered for model \"topic-Topic-Edges\".\nUse mongoose.model(name, schema)\n    at new MissingSchemaError (c:\\Projects\\findel\\node_modules\\mongoose\\lib\\error\\missingSchema.js:22:11)\n    at NativeConnection.Connection.model (c:\\Projects\\findel\\node_modules\\mongoose\\lib\\connection.js:813:11)\n    at getModelsMapForPopulate (c:\\Projects\\findel\\node_modules\\mongoose\\lib\\model.js:4161:57)\n    at populate (c:\\Projects\\findel\\node_modules\\mongoose\\lib\\model.js:3670:21)\n    at _populate (c:\\Projects\\findel\\node_modules\\mongoose\\lib\\model.js:3640:5)\n    at utils.promiseOrCallback.cb (c:\\Projects\\findel\\node_modules\\mongoose\\lib\\model.js:3613:5)\n    at Object.promiseOrCallback (c:\\Projects\\findel\\node_modules\\mongoose\\lib\\utils.js:240:12)\n    at Function.Model.populate (c:\\Projects\\findel\\node_modules\\mongoose\\lib\\model.js:3612:16)\n    at model.Query.Query._completeOne (c:\\Projects\\findel\\node_modules\\mongoose\\lib\\query.js:1938:9)\n    at Immediate.Query.base.findOne.call (c:\\Projects\\findel\\node_modules\\mongoose\\lib\\query.js:1975:10)\n    at Immediate.<anonymous> (c:\\Projects\\findel\\node_modules\\mquery\\lib\\utils.js:116:16)\n    at runCallback (timers.js:693:18)\n    at tryOnImmediate (timers.js:664:5)\n    at processImmediate (timers.js:646:5)","name":"MissingSchemaError","level":"error","timestamp":"2019-05-19T18:10:57.298Z"}
+{"message":"Schema hasn't been registered for model \"topic-Topic-Edges\".\nUse mongoose.model(name, schema)","stack":"MissingSchemaError: Schema hasn't been registered for model \"topic-Topic-Edges\".\nUse mongoose.model(name, schema)\n    at new MissingSchemaError (c:\\Projects\\findel\\node_modules\\mongoose\\lib\\error\\missingSchema.js:22:11)\n    at NativeConnection.Connection.model (c:\\Projects\\findel\\node_modules\\mongoose\\lib\\connection.js:813:11)\n    at getModelsMapForPopulate (c:\\Projects\\findel\\node_modules\\mongoose\\lib\\model.js:4161:57)\n    at populate (c:\\Projects\\findel\\node_modules\\mongoose\\lib\\model.js:3670:21)\n    at _populate (c:\\Projects\\findel\\node_modules\\mongoose\\lib\\model.js:3640:5)\n    at utils.promiseOrCallback.cb (c:\\Projects\\findel\\node_modules\\mongoose\\lib\\model.js:3613:5)\n    at Object.promiseOrCallback (c:\\Projects\\findel\\node_modules\\mongoose\\lib\\utils.js:240:12)\n    at Function.Model.populate (c:\\Projects\\findel\\node_modules\\mongoose\\lib\\model.js:3612:16)\n    at model.Query.Query._completeOne (c:\\Projects\\findel\\node_modules\\mongoose\\lib\\query.js:1938:9)\n    at Immediate.Query.base.findOne.call (c:\\Projects\\findel\\node_modules\\mongoose\\lib\\query.js:1975:10)\n    at Immediate.<anonymous> (c:\\Projects\\findel\\node_modules\\mquery\\lib\\utils.js:116:16)\n    at runCallback (timers.js:693:18)\n    at tryOnImmediate (timers.js:664:5)\n    at processImmediate (timers.js:646:5)","name":"MissingSchemaError","level":"error","timestamp":"2019-05-19T18:11:38.341Z"}
+{"message":"Schema hasn't been registered for model \"topic-Topic-Edges\".\nUse mongoose.model(name, schema)","stack":"MissingSchemaError: Schema hasn't been registered for model \"topic-Topic-Edges\".\nUse mongoose.model(name, schema)\n    at new MissingSchemaError (c:\\Projects\\findel\\node_modules\\mongoose\\lib\\error\\missingSchema.js:22:11)\n    at NativeConnection.Connection.model (c:\\Projects\\findel\\node_modules\\mongoose\\lib\\connection.js:813:11)\n    at getModelsMapForPopulate (c:\\Projects\\findel\\node_modules\\mongoose\\lib\\model.js:4161:57)\n    at populate (c:\\Projects\\findel\\node_modules\\mongoose\\lib\\model.js:3670:21)\n    at _populate (c:\\Projects\\findel\\node_modules\\mongoose\\lib\\model.js:3640:5)\n    at utils.promiseOrCallback.cb (c:\\Projects\\findel\\node_modules\\mongoose\\lib\\model.js:3613:5)\n    at Object.promiseOrCallback (c:\\Projects\\findel\\node_modules\\mongoose\\lib\\utils.js:240:12)\n    at Function.Model.populate (c:\\Projects\\findel\\node_modules\\mongoose\\lib\\model.js:3612:16)\n    at model.Query.Query._completeOne (c:\\Projects\\findel\\node_modules\\mongoose\\lib\\query.js:1938:9)\n    at Immediate.Query.base.findOne.call (c:\\Projects\\findel\\node_modules\\mongoose\\lib\\query.js:1975:10)\n    at Immediate.<anonymous> (c:\\Projects\\findel\\node_modules\\mquery\\lib\\utils.js:116:16)\n    at runCallback (timers.js:693:18)\n    at tryOnImmediate (timers.js:664:5)\n    at processImmediate (timers.js:646:5)","name":"MissingSchemaError","level":"error","timestamp":"2019-05-19T18:12:49.250Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T18:14:45.668Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T18:21:21.580Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T18:22:05.281Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T18:23:15.874Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T18:28:55.022Z"}
+{"message":"web_scrape_score is not defined","stack":"ReferenceError: web_scrape_score is not defined\n    at connected_topics_edges.forEach.edge (C:\\Projects\\findel\\routes\\present_data.js:34:27)\n    at Array.forEach (<anonymous>)\n    at C:\\Projects\\findel\\routes\\present_data.js:26:27\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-05-19T18:29:42.021Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T18:30:39.619Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T18:47:08.602Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-19T18:47:31.457Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-20T07:36:28.994Z"}
+{"message":"userRankCode is not defined","stack":"ReferenceError: userRankCode is not defined\n    at connected_topics_edges.forEach.edge (C:\\Projects\\findel\\routes\\present_data.js:63:24)\n    at Array.forEach (<anonymous>)\n    at C:\\Projects\\findel\\routes\\present_data.js:41:27\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-05-20T07:36:56.684Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-20T07:37:47.350Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-20T07:42:27.992Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-20T07:58:01.942Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-05-20T08:03:06.586Z"}

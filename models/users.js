@@ -53,15 +53,23 @@ const userSchema = new mongoose.Schema({
   searches:[searchSchema],
   favorites: [{
     type: mongoose.Schema.ObjectId, 
-    ref: 'site-Topic-Edges'}],
+    ref: 'site-topic-edges'}],
   
   disliked: [{
     type: mongoose.Schema.ObjectId, 
-    ref: 'site-Topic-Edges'}],
+    ref: 'site-topic-edges'}],
+
+  connected_topics_upvoted: [{
+    type: mongoose.Schema.ObjectId, 
+    ref: 'topic-topic-edges'}],
+
+  connected_topics_downvoted: [{
+    type: mongoose.Schema.ObjectId, 
+    ref: 'topic-topic-edges'}],
   
   site_Topic_Edges_Added:[{
     type: mongoose.Schema.ObjectId, 
-    ref: 'site-Topic-Edges'
+    ref: 'site-topic-edges'
   }]
   });
   

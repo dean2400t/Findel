@@ -23,9 +23,10 @@ router.post('/insertTopicTopicEdgeScores', async function(req, res) {
   var edgeID = req.body.id_of_edge_to_update;
   var web_scrape_score = req.body.web_scrape_score;
 
-  await TopicTopicEdge.findByIdAndUpdate(edgeID, 
+  var date_now=new Date();
+  await TopicTopicEdge.findOneAndUpdate({_id: edgeID}, 
     {web_scrape_score: web_scrape_score,
-    lastCalculated: new Date()});
+      last_web_scrape: date_now});
   return res.status(200).send("edge updated successfuly");
 });
 module.exports = router;

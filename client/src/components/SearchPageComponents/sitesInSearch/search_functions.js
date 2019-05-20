@@ -20,7 +20,7 @@ class Search_functions{
             }
             this_of_searchPage.rabinKarp= new rabinKarpSearch(3001, 20, this_of_searchPage.sites_from_server_to_use.length);
             this_of_searchPage.rabinKarp.hashWikiLinks(links);
-            this_of_searchPage.jaccard_similarity=new Jaccard_similarity(3001, 10, wikiText)
+            this_of_searchPage.jaccard_similarity=new Jaccard_similarity(20399, 10, wikiText)
             this_of_searchPage.sitesTempState=this_of_searchPage.state.sitesBeingSearched;
             
             var timeToRefresh=750;
@@ -195,8 +195,8 @@ class Search_functions{
         var topSites = this_of_searchPage.sites_from_server_to_use;
         topSites.sort(function(site1, site2){return site2.num_of_links_in_site - site1.num_of_links_in_site});
         topSites.sort(function(site1, site2){return site2.jaccard_similarity - site1.jaccard_similarity});
-        topSites.sort(function(site1, site2){return site2.edgeWeight - site1.edgeWeight});
         topSites.sort(function(site1, site2){return site2.domain.score - site1.domain.score});
+        topSites.sort(function(site1, site2){return site2.edgeWeight - site1.edgeWeight});
         topSites.sort(function(site1, site2){
             if (site2.userRankCode==site1.userRankCode)
                 return 0;
@@ -219,7 +219,7 @@ class Search_functions{
                     formatedURL: topSites[refSiteIndex].formatedURL,
                     siteSnap: topSites[refSiteIndex].siteSnap,
                     domain: topSites[refSiteIndex].domain,
-                    userRankCode: topSites[refSiteIndex].userRankCode, 
+                    userRankCode: topSites[refSiteIndex].userRankCode_for_edge, 
                     edgeWeight: topSites[refSiteIndex].edgeWeight});
                 this_of_searchPage.id++;
             }
@@ -239,9 +239,10 @@ class Search_functions{
     display_expended_content = (this_of_searchPage) =>
     {
         var connected_topics_edges=this_of_searchPage.connected_topics_edges;
+        connected_topics_edges.sort(function(edge1, edge2){return edge2.web_scrape_score - edge1.web_scrape_score});
         connected_topics_edges.sort(function(edge1, edge2){return edge2.linkHits - edge1.linkHits});
         connected_topics_edges.sort(function(edge1, edge2){if (edge2.topic1.topicName.length<3 && edge1.topic1.topicName.length>=3) return -1;});
-        connected_topics_edges.sort(function(edge1, edge2){return edge2.edgeWeight - edge1.edgeWeight});
+        connected_topics_edges.sort(function(edge1, edge2){return edge2.weight - edge1.weight});
         connected_topics_edges.sort(function(edge1, edge2){
             if (edge2.userRankCode==edge1.userRankCode)
                 return 0;
@@ -257,8 +258,6 @@ class Search_functions{
         for (var content=0; content<connected_topics_edges.length && content<10; content++)
         {
             var partition=" | ";
-            if (content+1==connected_topics_edges.length || content+1==10)
-                partition="";
             expandedCon.push({id: this_of_searchPage.id, 
                 page: connected_topics_edges[content].topic1.topicName, 
                 partition: partition, 
@@ -266,7 +265,9 @@ class Search_functions{
             this_of_searchPage.id++;
         }
         this_of_searchPage.setState({
-            expandedContents: expandedCon
+            expandedContents: expandedCon,
+            is_show_more_content_hidden: false,
+            expandend_content_status: ""
         });
     }
 
@@ -310,46 +311,42 @@ class Search_functions{
 
     search_expended_content(this_of_searchPage)
     {
-        var connected_topics_edges_to_search=[];
-        this_of_searchPage.connected_topics_edges.forEach(topic_edge => {
-            if (topic_edge.last_web_scrape==null)
-                connected_topics_edges_to_search.push(topic_edge);
-            else
+        var connected_topics_edges=this_of_searchPage.connected_topics_edges;
+        var is_seach_needed=false;
+        for (var index=0; index< connected_topics_edges.length; index++)
+            if (connected_topics_edges[index].is_search_required==true)
                 {
-                    var edge_scrape_age = new Date() - topic_edge.last_web_scrape;
-                    var numOfDaysToLive=3;
-
-                    if(edge_scrape_age>numOfDaysToLive*86400000)
-                        connected_topics_edges_to_search.push(topic_edge);
+                    is_seach_needed=true;
+                    break;
                 }
-        });
-        if (connected_topics_edges_to_search.length>0)
+        if (is_seach_needed)
         {
             var rk_results = this_of_searchPage.rabinKarp.wikiLinksHashesToWordByLength;
             this.best_sites_results(this_of_searchPage, rk_results)
             .then(()=>{
                 this.display_expended_content(this_of_searchPage);
-                connected_topics_edges_to_search.forEach(connected_topic_edge_to_search => {
-                    var opts={
-                        id_of_edge_to_update: connected_topic_edge_to_search._id,
-                        web_scrape_score: connected_topic_edge_to_search.linkHits
-                      };
-                    axios.post('/api/userInsertData/insertTopicTopicEdgeScores', opts
-                        ).then(response => {
-                            console.log(response.data);})
-                        }).catch(error=> {
-                            if (error.response==undefined)
-                            console.log("אין חיבור לשרת");
-                            else
-                            console.log(error.response.data);
-                    });
-                })
+                connected_topics_edges.forEach(connected_topic_edge => {
+                    if (connected_topic_edge.is_search_required)
+                    {
+                        var opts={
+                            id_of_edge_to_update: connected_topic_edge.edgeID,
+                            web_scrape_score: connected_topic_edge.linkHits
+                        };
+                        axios.post('/api/userInsertData/insertTopicTopicEdgeScores', opts
+                            ).then(response => {
+                                console.log(response.data);
+                            }).catch(error=> {
+                                if (error.response==undefined)
+                                console.log("אין חיבור לשרת");
+                                else
+                                console.log(error.response.data);
+                        });
+                    }
+                })})
             .catch(() => {console.log("Search content failed");});
         }
         else
             this.display_expended_content(this_of_searchPage);
-
-        
     }
 }
 export default Search_functions;
