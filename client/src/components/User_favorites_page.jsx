@@ -32,6 +32,7 @@ class UserFavorites extends Component {
                   id++;
                 });
               });
+              favorites=favorites.reverse(); 
               this.setFavorites(favorites)
           }).catch((error) => {
               console.log(error);

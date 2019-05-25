@@ -95,14 +95,41 @@ async function add_and_update_domains(new_sites)
       site_domainURL = site_domainURL.domain + '.' + site_domainURL.tld;
       var domain = await Domain.findOne({domainURL: site_domainURL});
       if (!domain)
+      {
           domain = new Domain({domainURL: site_domainURL, score: 1});
-      domain.sites.push(new_sites[newSiteIndex]._id);
+          domain.sites.push(new_sites[newSiteIndex]._id);
+          await domain.save();
+      }
+      else
+        await Domain.findByIdAndUpdate(domain._id, {$push: {sites: new_sites[newSiteIndex]._id}})
+      
       new_sites[newSiteIndex].domain = domain._id;
-      await domain.save();
+      
     }
   }
 }
 
+
+function binary_find_site_in_edges_by_url(edges, site, start, end) {    
+  // Base Condtion 
+  if (start > end) return null; 
+ 
+  // Find the middle index 
+  let mid=Math.floor((start + end)/2); 
+ 
+  // Compare mid with given key x 
+  if (edges[mid].site.siteURL == site.siteURL) return edges[mid]; 
+        
+  // If element at mid is greater than x, 
+  // search in the left half of mid 
+  if(edges[mid].site.siteURL > site.siteURL)  
+      return binary_find_site_in_edges_by_url(edges, site, start, mid-1); 
+  else
+
+      // If element at mid is smaller than x, 
+      // search in the right half of mid 
+      return binary_find_site_in_edges_by_url(edges, site, mid+1, end); 
+}
 
 /*
 Function searches google by topic and update database accordingly
@@ -120,26 +147,37 @@ async function search_Google_and_orgenize(topic)
   if (topic.siteTopicEdges.length>0)
   {
     var sites_edges = await get_populated_edges_to_sites(topic);
-    var already_connected_sites=[];
+    var already_connected_edges=[];
     sites_edges.forEach(edge => {
-      already_connected_sites.push(edge.site);
+      already_connected_edges.push(edge);
     });
-    already_connected_sites.sort((site1, site2) => {if (site2.siteURL>site1.siteURL) return -1; else return 1;});
+    already_connected_edges.sort((edge1, edge2) => {if (edge2.site.siteURL>edge1.site.siteURL) return -1; else return 1;});
     
-    sites_in_database.forEach(site_in_database => {
-      var is_already_connected_sites_found = binary_find_site_in_sites_by_url(already_connected_sites, site_in_database, 0, already_connected_sites.length-1);
-      if (!is_already_connected_sites_found)
+    sites_in_database.forEach(async site_in_database => {
+      var connected_edge = binary_find_site_in_edges_by_url(already_connected_edges, site_in_database, 0, already_connected_edges.length-1);
+      if (!connected_edge)
         sites_in_db_which_are_not_connected.push(site_in_database);
+      else
+        {
+          var google_site=binary_find_site_in_sites_by_url(sites_from_google, connected_edge.site,0, sites_from_google.length-1);
+          if (!google_site)
+            google_site={order_index_by_google: null};
+          await SiteTopicEdge.findByIdAndUpdate(connected_edge._id, {order_index_by_google: google_site.order_index_by_google});
+        }
     });
   }
 
   //Build edges for current topic to found google sites
   var edge;
   var edges=[];
+  var new_site_topic_edges=[];
   for (var siteIndex=0; siteIndex<sites_in_db_which_are_not_connected.length; siteIndex++)
   {
-    edge=new SiteTopicEdge({site: sites_in_db_which_are_not_connected[siteIndex]._id, topic: topic._id, weight: 1});
-    topic.siteTopicEdges.push(edge._id);
+    var google_site=binary_find_site_in_sites_by_url(sites_from_google, sites_in_db_which_are_not_connected[siteIndex],0, sites_from_google.length-1);
+    if (!google_site)
+      google_site={order_index_by_google: null};
+    edge=new SiteTopicEdge({site: sites_in_db_which_are_not_connected[siteIndex]._id, topic: topic._id, weight: 1, order_index_by_google: google_site.order_index_by_google});
+    new_site_topic_edges.push(edge._id);
     await edge.save();
     await Site.updateOne({_id: sites_in_db_which_are_not_connected[siteIndex].id}, {$push: {siteTopicEdges: edge._id}});
     sites.push(sites_in_db_which_are_not_connected[siteIndex]);
@@ -148,9 +186,10 @@ async function search_Google_and_orgenize(topic)
   {
     for (siteIndex=0; siteIndex<new_sites.length; siteIndex++)
     {
-      edge=new SiteTopicEdge({site: new_sites[siteIndex]._id, topic: topic._id, weight: 1});
+      var google_site=binary_find_site_in_sites_by_url(sites_from_google, new_sites[siteIndex],0, sites_from_google.length-1);
+      edge=new SiteTopicEdge({site: new_sites[siteIndex]._id, topic: topic._id, weight: 1, order_index_by_google: google_site.order_index_by_google});
       new_sites[siteIndex].siteTopicEdges.push(edge._id);
-      topic.siteTopicEdges.push(edge._id);
+      new_site_topic_edges.push(edge._id);
       edges.push(edge);
       sites.push(new_sites[siteIndex]);
     }
@@ -158,8 +197,9 @@ async function search_Google_and_orgenize(topic)
     Site.insertMany(new_sites);
     SiteTopicEdge.insertMany(edges);
   }
-  topic.lastGoogleUpdate=Date.now();
-  await topic.save();
+  if (new_site_topic_edges.length>0)
+    await Topic.findOneAndUpdate({_id: topic._id}, {$push: {siteTopicEdges: {$each: new_site_topic_edges}}, lastGoogleUpdate: Date.now()});
+  
   return sites;
 }
 
@@ -196,7 +236,8 @@ async function get_Sites_Edges_data_from_topic(topic, userID)
       siteSnap: edge_to_site.site['siteSnap'],
       domain: edge_to_site.site['domain'],
       userRankCode: userRankCode,
-      edgeWeight: edge_to_site.weight
+      edgeWeight: edge_to_site.weight,
+      order_index_by_google: edge_to_site.order_index_by_google
     });
   });
   
@@ -230,7 +271,8 @@ router.get('/', async function(req, res) {
   topic={topicName:search};
   const {error}=validateTopic(topic);
   if (error) return res.status(400).send(error.details[0].message);
-  topic=new Topic({topicName: search, lastGoogleUpdate: new Date()});
+  topic=new Topic({topicName: search});
+  await topic.save();
   if (userID!="")
     {
       var search=new Search({topic: topic._id})

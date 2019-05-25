@@ -19,14 +19,15 @@ router.post('/insertSiteTopicEdgeScores', async function(req, res) {
   return res.status(200).send("edge updated successfuly");
 });
 
-router.post('/insertTopicTopicEdgeScores', async function(req, res) {
-  var edgeID = req.body.id_of_edge_to_update;
-  var web_scrape_score = req.body.web_scrape_score;
+router.post('/insertTopicTopicEdgeScores', function(req, res) {
+  var edges = req.body.edges;
 
-  var date_now=new Date();
-  await TopicTopicEdge.findOneAndUpdate({_id: edgeID}, 
-    {web_scrape_score: web_scrape_score,
-      last_web_scrape: date_now});
+  edges.forEach(async edge => {
+    await TopicTopicEdge.findOneAndUpdate({_id: edge._id}, 
+      {web_scrape_score: edge.web_scrape_score,
+        last_web_scrape: Date.now()});
+  });
+  
   return res.status(200).send("edge updated successfuly");
 });
 module.exports = router;

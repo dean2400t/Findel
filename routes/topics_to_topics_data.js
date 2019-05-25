@@ -100,9 +100,11 @@ async function update_wikipidia_links_on_topic(topic, links_name_array, userID){
   var topic_and_edge_in_array=null;
   var new_topics_array=[];
   var new_edges_array=[];
+  var new_edges_id_array=[];
+
   if (connected_topics_edges.length>0)
   {
-    connected_topics_edges.sort((edge_a, edge_b) => {if (edge_b.topic.topicName>edge_a.topic.topicName) return 1 ; else return -1;});
+    connected_topics_edges.sort((edge_a, edge_b) => {if (edge_b.topic1.topicName>edge_a.topic1.topicName) return 1 ; else return -1;});
     links_name_array.forEach(link_name => {
         topic_and_edge_in_array = binary_search_topic_and_edge_in_topics_and_edges_array(connected_topics_edges, link_name, 0, connected_topics_edges.length-1);
         if (!topic_and_edge_in_array)
@@ -113,6 +115,7 @@ async function update_wikipidia_links_on_topic(topic, links_name_array, userID){
             newTopic.topicTopicEdges.push(new_topic_to_topic_edge);
             new_topics_array.push(newTopic);
             new_edges_array.push(new_topic_to_topic_edge);
+            new_edges_id_array.push(new_topic_to_topic_edge._id);
         }
     });
   }
@@ -124,11 +127,12 @@ async function update_wikipidia_links_on_topic(topic, links_name_array, userID){
             newTopic.topicTopicEdges.push(new_topic_to_topic_edge);
             new_topics_array.push(newTopic);
             new_edges_array.push(new_topic_to_topic_edge);
+            new_edges_id_array.push(new_topic_to_topic_edge._id);
         });
     Topic.insertMany(new_topics_array);
     TopicTopicEdge.insertMany(new_edges_array);
-    topic.last_wikipidia_search=new Date();
-    await topic.save();
+    if (new_edges_id_array.length>0)
+        await Topic.findOneAndUpdate({_id: topic._id}, {$push: {topicTopicEdges: {$each: new_edges_id_array}}, last_wikipidia_search: Date.now()});
 }
 
 function checkAuthAndReturnUserID(token)

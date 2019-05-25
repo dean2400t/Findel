@@ -47,6 +47,74 @@ class Search_functions{
         else
             this_of_searchPage.search_button_function_stop_search();
     }
+
+
+    shuffle_sites_from_google(full_sites_array)
+    {
+        full_sites_array.sort(function(site1, site2){
+            if (site2.order_index_by_google===0) return 1;
+            if (site1.order_index_by_google===0) return -1;
+            if (site2.order_index_by_google==null && site1.order_index_by_google==null) return 0;
+            if (site2.order_index_by_google!=null && site1.order_index_by_google==null) return 1;
+            if (site2.order_index_by_google==null && site1.order_index_by_google!=null) return -1;
+            return site1.order_index_by_google-site2.order_index_by_google;
+        });
+        full_sites_array.sort(function(site1, site2){return site2.domain.score - site1.domain.score});
+        full_sites_array.sort(function(site1, site2){return site2.edgeWeight - site1.edgeWeight});
+        var shuffled_sites=[];
+
+        var full_sites_index=0;
+        while (full_sites_index<full_sites_array.length && full_sites_array[full_sites_index].edgeWeight>1)
+        {
+            shuffled_sites.push(full_sites_array[full_sites_index]);
+            full_sites_index++;
+        }
+        
+        var domains_site_array=[];
+        var domains_index=-1;
+        var domainURL="";
+
+        var still_has_some=[];
+        while (full_sites_index<full_sites_array.length)
+        {
+            if (full_sites_array[full_sites_index].domain.score<1)
+                break;
+            if (domainURL==full_sites_array[full_sites_index].domain.domainURL)
+            {
+                domains_site_array[domains_index].sites.push(full_sites_array[full_sites_index]);
+                full_sites_index++;
+            }
+            else
+            {
+                domains_index++;
+                domainURL = full_sites_array[full_sites_index].domain.domainURL;
+                domains_site_array.push({domainURL: domainURL, sites: [full_sites_array[full_sites_index]], cur_site_index: 0});
+                still_has_some.push(domains_index);
+                full_sites_index++;
+            }
+        }
+        while(still_has_some.length>0)
+            for (var has_index=0; has_index<still_has_some.length; has_index++)
+            {
+                var domain=domains_site_array[still_has_some[has_index]];
+                shuffled_sites.push(domain.sites[domain.cur_site_index]);
+                domain.cur_site_index++;
+                if (domain.cur_site_index<domain.sites.length)
+                {
+                    shuffled_sites.push(domain.sites[domain.cur_site_index]);
+                    domain.cur_site_index++;
+                }
+                if (domain.cur_site_index>=domain.sites.length)
+                {
+                    still_has_some.splice(has_index,1);
+                    has_index--;
+                }
+            }
+        for (full_sites_index; full_sites_index<full_sites_array.length; full_sites_index++)
+            shuffled_sites.push(full_sites_array[full_sites_index]);
+        return shuffled_sites;
+    }
+    
     request_sites_from_Server_to_use= async (search, this_of_searchPage)=>{
         await axios.get("/api/topicsToSitesData/?search="+search,{
             headers: {'findel-auth-token': this_of_searchPage.token}
@@ -69,27 +137,28 @@ class Search_functions{
                         siteSnap: sites[index].siteSnap,
                         domain: sites[index].domain,
                         userRankCode_for_edge: sites[index].userRankCode,
-                        edgeWeight: sites[index].edgeWeight
+                        edgeWeight: sites[index].edgeWeight,
+                        order_index_by_google: sites[index].order_index_by_google
                         });
-                full_sites_array.sort(function(site1, site2){return site2.domain.score - site1.domain.score});
-                full_sites_array.sort(function(site1, site2){return site2.edgeWeight - site1.edgeWeight});
+                var shuffled_sites = this.shuffle_sites_from_google(full_sites_array);
                 
-                for (var index=0; index<full_sites_array.length; index++)
-                    full_sites_array[index].index=index;
+                for (var index=0; index<shuffled_sites.length; index++)
+                    shuffled_sites[index].index=index;
                 
-                for (var index=0; index<full_sites_array.length && index<num_of_initial_sites; index++)
+                for (var index=0; index<shuffled_sites.length && index<num_of_initial_sites; index++)
                     sitesArray.push({index: index, 
-                                siteID: full_sites_array[index].siteID,
-                                edgeID: full_sites_array[index].edgeID,
-                                siteURL: full_sites_array[index].siteURL,
-                                formatedURL: full_sites_array[index].formatedURL,
-                                siteSnap: full_sites_array[index].siteSnap,
-                                domain: full_sites_array[index].domain,
-                                userRankCode_for_edge: full_sites_array[index].userRankCode,
-                                edgeWeight: full_sites_array[index].edgeWeight
+                                siteID: shuffled_sites[index].siteID,
+                                edgeID: shuffled_sites[index].edgeID,
+                                siteURL: shuffled_sites[index].siteURL,
+                                formatedURL: shuffled_sites[index].formatedURL,
+                                siteSnap: shuffled_sites[index].siteSnap,
+                                domain: shuffled_sites[index].domain,
+                                userRankCode_for_edge: shuffled_sites[index].userRankCode_for_edge,
+                                edgeWeight: shuffled_sites[index].edgeWeight,
+                                order_index_by_google: shuffled_sites[index].order_index_by_google
                                 });
                 this_of_searchPage.sites_from_server_to_use=sitesArray;
-                this_of_searchPage.full_sites_list_from_server=full_sites_array;
+                this_of_searchPage.full_sites_list_from_server=shuffled_sites;
             }).catch((error) => {
                 if (error.message==="Network Error")
                     this_of_searchPage.setState({
@@ -199,18 +268,7 @@ class Search_functions{
         var topSites = this_of_searchPage.sites_from_server_to_use;
         topSites.sort(function(site1, site2){return site2.num_of_links_in_site - site1.num_of_links_in_site});
         topSites.sort(function(site1, site2){return site2.jaccard_similarity - site1.jaccard_similarity});
-        topSites.sort(function(site1, site2){return site2.domain.score - site1.domain.score});
-        topSites.sort(function(site1, site2){return site2.edgeWeight - site1.edgeWeight});
-        topSites.sort(function(site1, site2){
-            if (site2.userRankCode==site1.userRankCode)
-                return 0;
-            if (site2.userRankCode==1 && site1.userRankCode!=1)
-                return 1;
-            else if (site2.userRankCode!=1 && site1.userRankCode==1)
-                return -1;
-            else if (site2.userRankCode==2 && site1.userRankCode==0)
-                return -1;
-        });
+        topSites=this.shuffle_sites_from_google(topSites);
         var refS=this_of_searchPage.state.refSites;
         for (var refSiteIndex=0; refSiteIndex<topSites.length; refSiteIndex++)
         {
@@ -238,6 +296,7 @@ class Search_functions{
         });
         this_of_searchPage.site_displayed_so_far_index=refS.length-1;
         this_of_searchPage.topSites=topSites;
+        this_of_searchPage.ref_sites_for_histoty=refS;
     }
 
     display_expended_content = (this_of_searchPage) =>
@@ -254,15 +313,20 @@ class Search_functions{
             var partition=" | ";
             expandedCon.push({id: this_of_searchPage.id, 
                 page: connected_topics_edges[content].topic1.topicName, 
-                partition: partition, 
-                clicked: this_of_searchPage.expandedContentClicked.bind(this_of_searchPage)});
+                partition: partition
+                });
             this_of_searchPage.id++;
         }
+        var is_show_more_content_hidden=false;
+        if (connected_topics_edges.length==0)
+            is_show_more_content_hidden=true;
         this_of_searchPage.setState({
             expandedContents: expandedCon,
-            is_show_more_content_hidden: false,
+            is_show_more_content_hidden: is_show_more_content_hidden,
             expandend_content_status: ""
         });
+        this_of_searchPage.expandedCon_to_history=expandedCon;
+        this_of_searchPage.save_to_history();
     }
 
     async best_sites_results(this_of_searchPage, rk_results)
@@ -319,24 +383,27 @@ class Search_functions{
             this.best_sites_results(this_of_searchPage, rk_results)
             .then(()=>{
                 this.display_expended_content(this_of_searchPage);
+                var edges_to_update=[];
                 connected_topics_edges.forEach(connected_topic_edge => {
                     if (connected_topic_edge.is_search_required)
-                    {
-                        var opts={
-                            id_of_edge_to_update: connected_topic_edge.edgeID,
+                        edges_to_update.push({
+                            _id: connected_topic_edge.edgeID,
                             web_scrape_score: connected_topic_edge.linkHits
-                        };
-                        axios.post('/api/userInsertData/insertTopicTopicEdgeScores', opts
-                            ).then(response => {
-                                console.log(response.data);
-                            }).catch(error=> {
-                                if (error.response==undefined)
-                                console.log("אין חיבור לשרת");
-                                else
-                                console.log(error.response.data);
-                        });
-                    }
-                })})
+                        })
+                });
+                var opts={
+                    edges: edges_to_update
+                };
+                axios.post('/api/userInsertData/insertTopicTopicEdgeScores', opts
+                    ).then(response => {
+                        console.log(response.data);
+                    }).catch(error=> {
+                        if (error.response==undefined)
+                        console.log("אין חיבור לשרת");
+                        else
+                        console.log(error.response.data);
+                });
+            })
             .catch(() => {console.log("Search content failed");});
         }
         else

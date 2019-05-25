@@ -33,7 +33,7 @@ class Topic_component extends Component {
     return (
       <div className="topic">
         <text style={{marginRight: '10px'}}>{this.props.topic.connected_topic_name}<br/></text>
-        <text style={{marginRight: '10px'}}>דירוג משתמשים: <FontAwesomeIcon icon={faArrowAltCircleUp} color={this.state.upArrowColor} onClick={() => this.upClick()}/> ({this.props.topic.edge_weight}) <FontAwesomeIcon icon={faArrowAltCircleDown} color={this.state.downArrowColor} onClick={() => this.downClick()}/><br/></text>
+        <text style={{marginRight: '10px'}}>דירוג משתמשים: <FontAwesomeIcon icon={faArrowAltCircleUp} color={this.state.upArrowColor} onClick={() => this.upClick()}/> ({this.state.edge_weight}) <FontAwesomeIcon icon={faArrowAltCircleDown} color={this.state.downArrowColor} onClick={() => this.downClick()}/><br/></text>
         <text style={{marginRight: '10px'}}>ציון מחיפוש באתרים: {this.props.topic.web_scrape_score}<br/></text>
         <text style={{marginRight: '10px'}}>חיפוש אחרון: {this.props.topic.last_web_scrape}<br/></text>
         <text style={redText}>{this.state.rank_error}</text>

@@ -10,6 +10,10 @@
   position: absolute;
   
 }
+.link_text{
+  color: cornflowerblue;
+  cursor: pointer;
+}
 .App-header {
   background-color: #282c34;
   min-height: 100vh;

@@ -27,9 +27,13 @@ module.exports=async function googleSearch(search)
             for (var index=0; index<10; index++)
                 if (allRes[r].data.items[index]!=null)
                 {
+                    var order_index_by_google=index+r*10;
                     sites.push({siteURL: allRes[r].data.items[index].link,
                     formattedUrl: allRes[r].data.items[index].formattedUrl,
-                    snippet: allRes[r].data.items[index].snippet});
+                    snippet: allRes[r].data.items[index].snippet,
+                    order_index_by_google: order_index_by_google
+                });
                 }
+    sites.sort((site_a, site_b)=>{if (site_b.siteURL>site_a.siteURL) return -1; else return 1;});
     return sites;
 }

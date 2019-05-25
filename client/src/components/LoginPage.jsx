@@ -9,6 +9,7 @@ class LoginPage extends Component {
     constructor(props) {
         
         super(props);
+        this.history=props.history;
         this.state = {
             userName: "",
             password: "",
@@ -65,7 +66,7 @@ class LoginPage extends Component {
           ).then(response => {
             dataFromServer= response.data;
             cookies.set('findel-auth-token', dataFromServer.token, { path: '/' });
-            window.location = "/";
+            this.history.goBack();
             }).catch(error=> {
               if (error.response==undefined)
                 this.setState({serverMessage: "אין חיבור לשרת"});
