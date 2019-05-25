@@ -31,6 +31,9 @@ const siteTopicEdgeSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
+  order_index_by_google:{ 
+    type: Number,
+  },
   usersRanking:[UserRanking.schema]
 });
   

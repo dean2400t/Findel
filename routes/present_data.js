@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken');
+const config = require('config');
 var express = require('express');
 var router = express.Router();
 const {Domain} = require('../models/domains');
@@ -44,18 +46,12 @@ router.get('/connected_topics',async function(req, res) {
          connected_topic=edge.topic2;
       var userRankCode=0;
       if (userID!="")
-         connected_topics_edges.forEach(edge => {
-            userRankCode=0;
-            for (var rankIndex=0; rankIndex<edge.usersRanking.length; rankIndex++)
-               if (edge.usersRanking[rankIndex].userID.equals(userID))
-               {
-                  userRankCode=edge.usersRanking[rankIndex].rankCode;
-                  break;
-               }
-         });
-
+      {
+         for (var rankIndex=0; rankIndex<edge.usersRanking.length && userRankCode==0; rankIndex++)
+            if (edge.usersRanking[rankIndex].userID.equals(userID))
+               userRankCode=edge.usersRanking[rankIndex].rankCode;
+      }
       connected_topics_data.push({
-         
          edgeID: edge._id,
          connected_topic_name:connected_topic.topicName,
          edge_weight: edge.weight,

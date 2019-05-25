@@ -18,8 +18,19 @@ import UserFavorites from './components/User_favorites_page';
 import DomainsPage from './components/Domains_components/DomainsPage';
 import Topics_page from './components/Topics_components/topics_page';
 import Cookies from 'universal-cookie';
+import { createBrowserHistory } from 'history';
+ 
+const history = createBrowserHistory();
+history.listen((location, action) => {
+  console.log(
+    `The current URL is ${location.pathname}${location.search}${location.hash}`
+  );
+  console.log(`The last navigation action was ${action}`);
+  window.location= location.pathname + location.search;
+});
 const cookies = new Cookies();
 library.add(fab, faCheckSquare, faCoffee);
+
 
 
 class App extends Component {
@@ -83,17 +94,14 @@ class App extends Component {
           <button className="emptyBTN" name="logoutBTN" onClick={() => this.logout()} hidden={this.state.hideLogoutBTN}>התנתק</button>
           </div>
           <br></br>
-          <Link to="/">חפש</Link>
-          <text style={this.state.displayLoggingComponents}> - </text>
-          <Link to="/Login" style={this.state.displayLoggingComponents}>התחבר</Link>
-          <text style={this.state.displayRegisterComponents}> - </text>
-          <Link to="/Register" style={this.state.displayRegisterComponents}>רישום</Link>
-          <text style={this.state.displayUserDataComponents}> - </text>
-          <Link to="/UserSearchHistory" style={this.state.displayUserDataComponents}>היסטורית חיפוש</Link>
-          <text style={this.state.displayUserDataComponents}> - </text>
-          <Link to="/UserFavorites" style={this.state.displayUserDataComponents}>אתרים שדירגתי כטובים</Link>
-          <text> - </text>
-          <Link to="/DomainsPage">דומיינים</Link>
+          
+
+          <text text className="link_text" onClick={() => this.push_to_history_and_go('/')}>חפש</text>
+          <text className="link_text" style={this.state.displayLoggingComponents} onClick={() => this.push_to_history_and_go('/Login')}> - התחבר</text>
+          <text className="link_text" style={this.state.displayRegisterComponents} onClick={() => this.push_to_history_and_go('/Register')}> -  רישום </text>
+          <text className="link_text" style={this.state.displayUserDataComponents} onClick={() => this.push_to_history_and_go('/UserSearchHistory')}> - היסטורית חיפוש</text>
+          <text className="link_text" style={this.state.displayUserDataComponents} onClick={() => this.push_to_history_and_go('/UserFavorites')}> - אתרים שדירגתי כטובים</text>
+          <text className="link_text" onClick={() => this.push_to_history_and_go('/DomainsPage')}> - דומיינים</text>
           <hr />
 
           <Route exact path="/" component={SearchPage} />
@@ -103,10 +111,16 @@ class App extends Component {
           <Route path="/UserFavorites" component={UserFavorites} />
           <Route path="/DomainsPage" component={DomainsPage} />
           <Route path="/TopicsPage/:topic" component={Topics_page} />
+          
         </div>
       </Router>
       </div>
     );
+  }
+  push_to_history_and_go(location)
+  {
+    history.push(location);
+    window.location = location;
   }
   logout()
   {

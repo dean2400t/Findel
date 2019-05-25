@@ -3,9 +3,10 @@ import PropsTypes from 'prop-types';
 import './Acontent.css';
 class Acontent extends Component {
   render() {
-    var textStyle={color: '#F0F8FF'};
     return (
-      <text className="exContent" style={textStyle} onClick={() => this.props.aContent.clicked(this.props.aContent.page)}>{this.props.aContent.page}{this.props.aContent.partition}</text>
+      <span>
+        <a className="exContent" target="_blank" rel="noopener noreferrer" href={'/?search=' + this.props.aContent.page}>{this.props.aContent.page}</a><text className="ex_content_partition">{this.props.aContent.partition}</text> 
+      </span>
     );
   }
 }

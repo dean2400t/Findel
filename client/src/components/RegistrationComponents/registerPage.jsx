@@ -11,8 +11,8 @@ var checkForms=new CheckForms();
 
 class RegisterPage extends Component {
     constructor(props) {
-        
         super(props);
+        this.history=props.history;
         this.state = {
             email: "",
             emailClass: "form-control",
@@ -171,7 +171,7 @@ class RegisterPage extends Component {
               else
               {
                 cookies.set('findel-auth-token', dataFromServer.token, { path: '/' });
-                window.location = "/";
+                this.history.goBack();
               }
               }).catch(error=> {
                 if (error.response==undefined)

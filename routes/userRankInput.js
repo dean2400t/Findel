@@ -36,64 +36,58 @@ router.post('/rank_connected_topic', auth, async function(req, res) {
 
   var userRankInEdge= findRankIDinEdge(edge.usersRanking, user._id);
 
+  var edge_weight_to_add=0;
   if (userRankInEdge)
   {
     if (rankCode==0)
     {
-      var newWeight=edge.weight;
       if (userRankInEdge.rankCode==1)
-      {
-        newWeight-=userRankInEdge.scoreAdded;
-        user.connected_topics_upvoted.pull(edge._id);
-      }
+        edge_weight_to_add = -userRankInEdge.scoreAdded;
       else if (userRankInEdge.rankCode==2)
-      {
-        newWeight+=userRankInEdge.scoreAdded;
-        user.connected_topics_downvoted.pull(edge._id);
-      }
-      userRankInEdge.remove();
-      edge.weight=newWeight; 
+        edge_weight_to_add = userRankInEdge.scoreAdded;
+      await TopicTopicEdge.findOneAndUpdate({_id: edge._id},
+        { 
+          $pull : { usersRanking : {"_id": userRankInEdge._id} },
+          $inc: {weight: edge_weight_to_add}
+        }, false, false);
+    
     }
-    if (rankCode==1)
-      if (userRankInEdge.rankCode==2)
+    else
+    {
+      if (userRankInEdge.rankCode!=rankCode)
       {
-        userRankInEdge.$set({'rankCode': rankCode});
-        edge.weight+=userRankInEdge.scoreAdded*2;
-        user.connected_topics_upvoted.pull(edge._id);
-        user.connected_topics_downvoted.push(edge._id);
+        if (rankCode==1)
+            edge_weight_to_add = userRankInEdge.scoreAdded*2;
+        if (rankCode==2)
+            edge_weight_to_add = -userRankInEdge.scoreAdded*2;
+        await SiteTopicEdge.findOneAndUpdate({_id: edge._id, "usersRanking._id": userRankInEdge._id},
+        { 
+          $set: { "usersRanking.$.rankCode": rankCode},
+          $inc: {weight: edge_weight_to_add}
+        }, false, false);
       }
-    if (rankCode==2)
-      if (userRankInEdge.rankCode==1)
-      {
-        userRankInEdge.$set({'rankCode': rankCode});
-        edge.weight-=userRankInEdge.scoreAdded*2;
-        user.connected_topics_downvoted.pull(edge._id);
-        user.connected_topics_upvoted.push(edge._id);
-      }
+    }
+
   }
   else
     if (rankCode!=0)
     {
-      var scoreAdded=0;
-      if (user.userScore>0)
-        scoreAdded=user.userScore;
+      if (user.userScore<0)
+        scoreAdded=0;
       else
-        user.userScore=0;
+        scoreAdded=user.userScore
       userRankInEdge=new UserRanking({userID: user._id, rankCode: rankCode, scoreAdded: scoreAdded});
-      edge.usersRanking.push(userRankInEdge);
       if (rankCode==1)
-        {
-          edge.weight+=scoreAdded;
-          user.connected_topics_upvoted.push(edge._id);
-        }
+          edge_weight_to_add = scoreAdded;
       else if (rankCode==2)
-      {
-        edge.weight-=scoreAdded;
-        user.connected_topics_downvoted.push(edge._id);
-      }
+        edge_weight_to_add = -scoreAdded;
+
+      await TopicTopicEdge.findOneAndUpdate({_id: edge._id},
+      { 
+        $push: { usersRanking: userRankInEdge},
+        $inc: {weight: edge_weight_to_add}
+      }, false, false);
     }
-    await edge.save();
-    await user.save();
   
 
   return res.status(200).send("Updated");
@@ -129,74 +123,91 @@ router.post('/rankSite', auth, async function(req, res) {
     return res.status(400).send("Domain not in database");
 
   var userRankInEdge= findRankIDinEdge(edge.usersRanking, user._id);
-
+  var domain_score_to_add=0;
+  var edge_weight_to_add=0;
   if (userRankInEdge)
   {
     if (rankCode==0)
     {
-      var newWeight=edge.weight;
       if (userRankInEdge.rankCode==1)
       {
-        newWeight-=userRankInEdge.scoreAdded;
-        domain.score-=userRankInEdge.scoreAdded;
+        edge_weight_to_add = -userRankInEdge.scoreAdded;
+        domain_score_to_add = -userRankInEdge.scoreAdded;
         user.favorites.pull(edge._id);
       }
       else if (userRankInEdge.rankCode==2)
       {
-        newWeight+=userRankInEdge.scoreAdded;
-        domain.score+=userRankInEdge.scoreAdded;
+        edge_weight_to_add = userRankInEdge.scoreAdded;
+        domain_score_to_add = userRankInEdge.scoreAdded;
         user.disliked.pull(edge._id);
       }
-      userRankInEdge.remove();
-      edge.weight=newWeight; 
+      await SiteTopicEdge.findOneAndUpdate({_id: edge._id},
+        { 
+          $pull : { usersRanking : {"_id": userRankInEdge._id} },
+          $inc: {weight: edge_weight_to_add}
+        }, false, false);
+    
     }
-    if (rankCode==1)
-      if (userRankInEdge.rankCode==2)
+    else
+    {
+      if (userRankInEdge.rankCode!=rankCode)
       {
-        userRankInEdge.$set({'rankCode': rankCode});
-        edge.weight+=userRankInEdge.scoreAdded*2;
-        domain.score+=userRankInEdge.scoreAdded*2;
-        user.favorites.pull(edge._id);
-        user.disliked.push(edge._id);
+        if (rankCode==1)
+          {
+            edge_weight_to_add = userRankInEdge.scoreAdded*2;
+            domain_score_to_add = userRankInEdge.scoreAdded*2;
+            user.favorites.pull(edge._id);
+            user.disliked.push(edge._id);
+          }
+        if (rankCode==2)
+          {
+            edge_weight_to_add = -userRankInEdge.scoreAdded*2;
+            domain_score_to_add = -userRankInEdge.scoreAdded*2;
+            user.disliked.pull(edge._id);
+            user.favorites.push(edge._id);
+          }
+        await SiteTopicEdge.findOneAndUpdate({_id: edge._id, "usersRanking._id": userRankInEdge._id},
+        { 
+          $set: { "usersRanking.$.rankCode": rankCode},
+          $inc: {weight: edge_weight_to_add}
+        }, false, false);
       }
-    if (rankCode==2)
-      if (userRankInEdge.rankCode==1)
-      {
-        userRankInEdge.$set({'rankCode': rankCode});
-        edge.weight-=userRankInEdge.scoreAdded*2;
-        domain.score-=userRankInEdge.scoreAdded*2;
-        user.disliked.pull(edge._id);
-        user.favorites.push(edge._id);
-      }
+    }
+
   }
   else
     if (rankCode!=0)
     {
-      var scoreAdded=0;
-      if (user.userScore>0)
-        scoreAdded=user.userScore;
+      if (user.userScore<0)
+        scoreAdded=0;
       else
-        user.userScore=0;
+        scoreAdded=user.userScore
       userRankInEdge=new UserRanking({userID: user._id, rankCode: rankCode, scoreAdded: scoreAdded});
-      edge.usersRanking.push(userRankInEdge);
       if (rankCode==1)
         {
-          edge.weight+=scoreAdded;
-          domain.score+=scoreAdded;
+          edge_weight_to_add = scoreAdded;
+          domain_score_to_add = scoreAdded;
           user.favorites.push(edge._id);
         }
       else if (rankCode==2)
       {
-        edge.weight-=scoreAdded;
-        domain.score-=scoreAdded;
+        edge_weight_to_add = -scoreAdded;
+        domain_score_to_add = -scoreAdded;
         user.disliked.push(edge._id);
       }
+      await SiteTopicEdge.findOneAndUpdate({_id: edge._id},
+      { 
+        $push: { usersRanking: userRankInEdge},
+        $inc: {weight: edge_weight_to_add}
+      }, false, false);
+      var x=3;
     }
-    await edge.save();
+    
     await user.save();
-    await domain.save();
+    if (domain_score_to_add != 0)
+      await Domain.findOneAndUpdate({_id: domain._id},
+        {$inc:{score: domain_score_to_add}});
   
-
   return res.status(200).send("Updated");
 });
 module.exports = router;

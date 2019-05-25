@@ -1,3 +1,22 @@
-.exContent{
-    cursor: pointer;
+.exContent:link {
+    color: #F0F8FF;
+  }
+  
+  /* visited link */
+.exContent:visited {
+    color: #F0F8FF;
+  }
+  
+  /* mouse over link */
+  .exContent:hover {
+    color: #F0F8FF;
+  }
+  
+  /* selected link */
+  .exContent:active {
+    color: #F0F8FF;
+  }
+
+.ex_content_partition{
+    color: #F0F8FF;
 }

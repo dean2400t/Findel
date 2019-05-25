@@ -16,43 +16,85 @@ const search_functions=new Search_functions();
 class SearchPage extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-          inputValue: '',
-          sitesBeingSearched:[],
-          expandedContents: [],
-          refSites: [],
-          ambigousData: [],
-          newID: 1,
-          search_button_function: () => this.search_button_function(),
-          search_button_text: "חפש תכנים",
-          simple_search_button_text:"חיפוש פשוט",
-          search_button_iconClass: "",
-          server_message:"",
-          add_site_to_topic_input:"",
-          add_topic_to_topic_input:"",
-          add_site_to_topic_description: "",
-          was_add_site_button_clicked:false,
-          was_add_topic_button_clicked: false,
-          is_more_sites_button_hidden: true,
-          is_simple_search_selected: false,
-          is_show_more_content_hidden: true,
-          expandend_content_status: ""
-        };
+        this.history=props.history;
+        const urlParams = new URLSearchParams(window.location.search);
+        const my_search = urlParams.get('search');
+        this.curSearch=my_search;
+
         this.sites_and_texts=[];
         this.sitesFinishedScrape=0;
-        this.sites_from_server_to_use=[];
-        this.full_sites_list_from_server=[];
         this.token=cookies.get('findel-auth-token') || "";
         this.sitesTempState=[];
         this.siteSearchFinished=false;
         this.topSites=null;
-        this.curSearch=null;
 
         this.rabinKarp=null;
         this.wikiLinksHashesToWordByLength=[];
         this.wordsMatriciesByLength=[];
         this.id=1;
-        this.site_displayed_so_far_index=0;
+        
+
+        if (this.history.location.state!=undefined)
+        {
+            var history=this.history.location.state;
+            if (history.ambigousData==undefined)
+                history.ambigousData=[];
+            if (history.expandedContents == undefined)
+                history.expandedContents=[];
+            if (history.refSites == undefined)
+                history.refSites=[];
+            this.state={
+                    inputValue: history.inputValue,
+                    sitesBeingSearched: [],
+                    expandedContents: history.expandedContents,
+                    refSites: history.refSites,
+                    ambigousData: history.ambigousData,
+                    newID: history.newID,
+                    search_button_text: "חפש תכנים",
+                    search_button_iconClass: "",
+                    server_message:"",
+                    add_site_to_topic_input: history.add_site_to_topic_input,
+                    add_topic_to_topic_input: history.add_topic_to_topic_input,
+                    add_site_to_topic_description: history.add_site_to_topic_description,
+                    was_add_site_button_clicked: history.was_add_site_button_clicked,
+                    was_add_topic_button_clicked: history.was_add_topic_button_clicked,
+                    is_more_sites_button_hidden: history.is_more_sites_button_hidden,
+                    is_simple_search_selected: history.is_simple_search_selected,
+                    is_show_more_content_hidden: history.is_show_more_content_hidden,
+                    expandend_content_status: "",
+                    site_displayed_so_far_index: history.site_displayed_so_far_index,
+                    sites_from_server_to_use: history.sites_from_server_to_use,
+                    full_sites_list_from_server: history.full_sites_list_from_server
+            }
+        }
+        else
+        {
+            this.sites_from_server_to_use=[];
+            this.full_sites_list_from_server=[];
+            this.site_displayed_so_far_index=0;
+            this.state = {
+            inputValue: my_search,
+            sitesBeingSearched:[],
+            expandedContents: [],
+            refSites: [],
+            ambigousData: [],
+            newID: 1,
+            search_button_text: "חפש תכנים",
+            search_button_iconClass: "",
+            server_message:"",
+            add_site_to_topic_input:"",
+            add_topic_to_topic_input:"",
+            add_site_to_topic_description: "",
+            was_add_site_button_clicked:false,
+            was_add_topic_button_clicked: false,
+            is_more_sites_button_hidden: true,
+            is_simple_search_selected: false,
+            is_show_more_content_hidden: true,
+            expandend_content_status: ""
+            };
+            if (my_search != null)
+                this.search_button_function();
+        }
       }
     render() {
         var search_box_textStyle={color: '#F0F8FF', cursor: 'pointer'};
@@ -64,8 +106,8 @@ class SearchPage extends Component {
                 <div className="search_box_div">
                     <img id="findelTheme" src="/publicComponents/findelTheme" height="100" width="400"/>
                     <div>
-                        <input id="search_text_box" type="text" value={this.state.inputValue} onChange={evt => this.updateTXT(evt)}></input>
-                        <button id="searchBTN" name="searchBTN" onClick={this.state.search_button_function}>{this.state.search_button_text} <i className={this.state.search_button_iconClass}></i></button><br/>
+                        <input id="search_text_box" type="text" value={this.state.inputValue} onChange={evt => this.updateTXT(evt)} onKeyPress={this.handleKeyPress}></input>
+                        <button id="searchBTN" name="searchBTN" onClick={() => this.search_button_function()}>{this.state.search_button_text} <i className={this.state.search_button_iconClass}></i></button><br/>
                         <input type="radio" onClick={() => this.deep_search_radio_button_clicked()} checked={!this.state.is_simple_search_selected}/> חיפוש עמוק
                         <input type="radio" id="simple_search_radio_button" onClick={() => this.simple_search_radio_button_clicked()} checked={this.state.is_simple_search_selected}/> חיפוש פשוט
                     </div>
@@ -111,6 +153,12 @@ class SearchPage extends Component {
       );
 
     }
+
+    handleKeyPress = (event) => {
+        if(event.key == 'Enter'){
+          this.search_button_function();
+        }
+      }
 
     updateTXT(evt){
         this.setState(
@@ -201,17 +249,6 @@ class SearchPage extends Component {
         );
     }
 
-    expandedContentClicked(content)
-    {
-        this.setState(
-            {
-                inputValue: content
-            });
-        this.curSearch=content;
-        this.siteSearchFinished=false;
-        this.search_button_function();
-    }
-
     more_sites_clicked(){
         this.sites_from_server_to_use=[];
         var num_of_sites_to_add=10;
@@ -242,11 +279,43 @@ class SearchPage extends Component {
             simple_search_button_function: () => this.simple_search_button_function(),
             search_button_text: "חפש תכנים",
             simple_search_button_text:"סיים חיפוש",
-            search_button_iconClass:""
+            search_button_iconClass:"",
+            expandend_content_status: ""
         });
     }
 
-    deep_search= async () => {
+    save_to_history()
+    {
+        this.history.push({
+            pathname: '/',
+            search: '?search='+this.state.inputValue,
+            state: {
+                inputValue: this.state.inputValue,
+                sitesBeingSearched: this.state.sitesBeingSearched,
+                expandedContents: this.expandedCon_to_history,
+                refSites: this.ref_sites_for_histoty,
+                ambigousData: this.ambig_for_history,
+                newID: this.state.newID,
+                search_button_text: "חפש תכנים",
+                search_button_iconClass: "",
+                server_message:"",
+                add_site_to_topic_input: this.state.add_site_to_topic_input,
+                add_topic_to_topic_input: this.state.add_topic_to_topic_input,
+                add_site_to_topic_description: this.state.add_site_to_topic_description,
+                was_add_site_button_clicked: this.state.was_add_site_button_clicked,
+                was_add_topic_button_clicked: this.state.was_add_topic_button_clicked,
+                is_more_sites_button_hidden: this.state.is_more_sites_button_hidden,
+                is_simple_search_selected: this.state.is_simple_search_selected,
+                is_show_more_content_hidden: this.state.is_show_more_content_hidden,
+                expandend_content_status: "",
+                site_displayed_so_far_index: this.site_displayed_so_far_index,
+                sites_from_server_to_use:this.sites_from_server_to_use,
+                full_sites_list_from_server: this.full_sites_list_from_server
+            }
+        });
+    }
+
+    deep_search= () => {
         this.setState({
             expandedContents: [],
             refSites: [],
@@ -255,7 +324,7 @@ class SearchPage extends Component {
         Axios.get("/api/topicsToTopicsData/?search="+this.curSearch,{
                 headers: {'findel-auth-token': this.token}
         })
-        .then(async (result) => {
+        .then(async(result) => {
             if (result.data.wikiText!=null && this.state.is_simple_search_selected==false)
             {
                 this.connected_topics_edges=result.data.connected_topics_edges;
@@ -277,6 +346,7 @@ class SearchPage extends Component {
                 this.setState({
                     ambigousData: result.data.ambig
                 });
+                this.ambig_for_history=result.data.ambig;
                 this.search_button_function_stop_search();
             }
             else
@@ -286,6 +356,7 @@ class SearchPage extends Component {
                 await search_functions.rankSites(this);
                 await search_functions.display_expended_content(this);
                 this.search_button_function_stop_search();
+                this.save_to_history();
             }
             
         }).catch( (error) => {
