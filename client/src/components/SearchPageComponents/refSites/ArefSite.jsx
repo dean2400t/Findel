@@ -24,7 +24,8 @@ class ArefSite extends Component {
       downArrowColor: downArrow,
       rank_error: "",
       edgeWeight: this.props.aRefSite.edgeWeight,
-      rankCode: this.props.aRefSite.userRankCode
+      rankCode: this.props.aRefSite.userRankCode,
+      domain_score: this.props.aRefSite.domain.score
     }
     
     this.token=cookies.get('findel-auth-token') || "";
@@ -36,6 +37,7 @@ class ArefSite extends Component {
             <text><a target="_blank" rel="noopener noreferrer" href={this.props.aRefSite.siteURL}>{this.props.aRefSite.formatedURL}</a> 
             <br/><text>{this.props.aRefSite.siteSnap}</text>
             <br/>דירוג משתמשים: <FontAwesomeIcon icon={faArrowAltCircleUp} color={this.state.upArrowColor} onClick={() => this.upClick()}/> ({this.state.edgeWeight}) <FontAwesomeIcon icon={faArrowAltCircleDown} color={this.state.downArrowColor} onClick={() => this.downClick()}/></text>
+            <br/><text>ציון דומיין: {this.state.domain_score}</text>
             <br/><text style={redText}>{this.state.rank_error}</text>
           </div>
     );
