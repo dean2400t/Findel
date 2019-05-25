@@ -129,6 +129,9 @@ class Search_functions{
                 var full_sites_array=[];
                 var num_of_initial_sites=15;
                 for (var index=0; index<sites.length; index++)
+                {
+                    if (sites[index].domain==null)
+                        sites[index].domain={domainURL: "nullURL", score: 0};
                     full_sites_array.push({
                         siteID: sites[index].siteID,
                         edgeID: sites[index].edgeID,
@@ -140,6 +143,7 @@ class Search_functions{
                         edgeWeight: sites[index].edgeWeight,
                         order_index_by_google: sites[index].order_index_by_google
                         });
+                    }
                 var shuffled_sites = this.shuffle_sites_from_google(full_sites_array);
                 
                 for (var index=0; index<shuffled_sites.length; index++)
