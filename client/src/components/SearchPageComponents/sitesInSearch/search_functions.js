@@ -47,8 +47,38 @@ class Search_functions{
         else
             this_of_searchPage.search_button_function_stop_search();
     }
-
-
+    shuffle_sites_from_google(full_sites_array)
+    {
+        full_sites_array.sort(function(site1, site2){
+            if (site2.order_index_by_google===0) return 1;
+            if (site1.order_index_by_google===0) return -1;
+            if (site2.order_index_by_google==null && site1.order_index_by_google==null) return 0;
+            if (site2.order_index_by_google!=null && site1.order_index_by_google==null) return 1;
+            if (site2.order_index_by_google==null && site1.order_index_by_google!=null) return -1;
+            return site1.order_index_by_google-site2.order_index_by_google;
+        });
+        full_sites_array.sort(function(site1, site2){
+            if (site2.domain.score < 1 && site1.domain.score>=1)
+                return -1;
+            else if (site2.domain.score >= 1 && site1.domain.score < 1)
+                return 1;
+            else if (site2.domain.score < 1 && site1.domain.score < 1)
+                return site2.domain.score-site1.domain.score;
+            else
+            return 0;
+        });
+        full_sites_array.sort(function(site1, site2){return site2.edgeWeight - site1.edgeWeight});
+        var temp;
+        for (var index=0; index<full_sites_array[index]-1; index+=2)
+            if (full_sites_array[index].domain.score < full_sites_array[index+1].domain.score)
+            {
+                temp=full_sites_array[index];
+                full_sites_array[index]=full_sites_array[index+1];
+                full_sites_array[index+1]=temp;
+            }
+        return full_sites_array;
+    }
+/*
     shuffle_sites_from_google(full_sites_array)
     {
         full_sites_array.sort(function(site1, site2){
@@ -114,6 +144,7 @@ class Search_functions{
             shuffled_sites.push(full_sites_array[full_sites_index]);
         return shuffled_sites;
     }
+    */
     
     request_sites_from_Server_to_use= async (search, this_of_searchPage)=>{
         await axios.get("/api/topicsToSitesData/?search="+search,{
