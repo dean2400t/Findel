@@ -11,7 +11,7 @@ var router = express.Router();
 router.post('/addSite', auth, async function(req, res) {
   
     var topicName=req.body.topicName;
-    var siteFormatedURL=req.body.siteURL;
+    var siteFormatedURL=decodeURI(req.body.siteURL);
     var siteDescription = req.body.siteDescription;
     var siteURL=encodeURI(siteFormatedURL);
     if (!topicName)
@@ -30,7 +30,7 @@ router.post('/addSite', auth, async function(req, res) {
     var site= await Site.findOne({siteURL: siteURL});
     if (!site)
     {
-        site=new Site({siteURL: siteURL, siteFormatedURL: siteFormatedURL, siteSnap:siteDescription});
+        site=new Site({siteURL: siteURL, siteFormatedURL: siteFormatedURL, siteSnap:siteDescription, domain});
         var site_domainURL = parseDomain(site.siteURL);
         site_domainURL = site_domainURL.domain + '.' + site_domainURL.tld;
         var domain = await Domain.findOne({domainURL: site_domainURL});
@@ -42,7 +42,7 @@ router.post('/addSite', auth, async function(req, res) {
         }
         else
             await Domain.findByIdAndUpdate(domain._id, {$push: {sites: site}})
-      
+        site.domain = domain._id
         is_site_or_topic_new=true;
     }
 
