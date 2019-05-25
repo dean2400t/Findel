@@ -4,6 +4,8 @@ const {User} = require('../models/users');
 const {Topic} = require('../models/topics');
 const {Site} = require('../models/sites');
 const {SiteTopicEdge}=require('../models/siteTopicEdges');
+const parseDomain = require("parse-domain");
+const {Domain} = require('../models/domains');
 var router = express.Router();
 
 router.post('/addSite', auth, async function(req, res) {
@@ -29,6 +31,18 @@ router.post('/addSite', auth, async function(req, res) {
     if (!site)
     {
         site=new Site({siteURL: siteURL, siteFormatedURL: siteFormatedURL, siteSnap:siteDescription});
+        var site_domainURL = parseDomain(site.siteURL);
+        site_domainURL = site_domainURL.domain + '.' + site_domainURL.tld;
+        var domain = await Domain.findOne({domainURL: site_domainURL});
+        if (!domain)
+        {
+            domain = new Domain({domainURL: site_domainURL, score: 1});
+            domain.sites.push(site._id);
+            await domain.save();
+        }
+        else
+            await Domain.findByIdAndUpdate(domain._id, {$push: {sites: site}})
+      
         is_site_or_topic_new=true;
     }
 
