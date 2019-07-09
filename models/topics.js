@@ -5,8 +5,10 @@ const topicSchema = new mongoose.Schema({
   topicName: {
     type: String,
     required: true,
+    unique: true,
+    trim: true,
     minlength: 1,
-    maxlength: 255
+    maxlength: 1024
   },
   lastGoogleUpdate:{
     type: Date
@@ -28,7 +30,7 @@ const topicSchema = new mongoose.Schema({
   
   function validateTopic(topic) {
     const schema = {
-        topicName: Joi.string().min(1).max(255).required()
+        topicName: Joi.string().min(1).max(1024).required()
     };
     return Joi.validate(topic, schema);
   }

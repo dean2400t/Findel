@@ -4,8 +4,11 @@ const {User} = require('../models/users');
 const {Topic} = require('../models/topics');
 const {Site} = require('../models/sites');
 const {SiteTopicEdge}=require('../models/siteTopicEdges');
-const parseDomain = require("parse-domain");
-const {Domain} = require('../models/domains');
+const {site_save, 
+       add_and_update_domain, 
+       topic_save,
+       site_to_topic_edge_save} = require('../middleware/save_securely_to_database');
+
 var router = express.Router();
 
 router.post('/addSite', auth, async function(req, res) {
@@ -26,53 +29,34 @@ router.post('/addSite', auth, async function(req, res) {
     if (!user)
         return res.status(400).send("User not found in database");
 
-    var is_site_or_topic_new=false;
     var site= await Site.findOne({siteURL: siteURL});
     if (!site)
     {
         site=new Site({siteURL: siteURL, siteFormatedURL: siteFormatedURL, siteSnap:siteDescription, domain});
-        var site_domainURL = parseDomain(site.siteURL);
-        site_domainURL = site_domainURL.domain + '.' + site_domainURL.tld;
-        var domain = await Domain.findOne({domainURL: site_domainURL});
-        if (!domain)
-        {
-            domain = new Domain({domainURL: site_domainURL, score: 1});
-            domain.sites.push(site._id);
-            await domain.save();
-        }
-        else
-            await Domain.findByIdAndUpdate(domain._id, {$push: {sites: site}})
-        site.domain = domain._id
-        is_site_or_topic_new=true;
+        site = await site_save(site);
+        site = await add_and_update_domain(site);
     }
 
     var topic= await Topic.findOne({topicName: topicName})
     if (!topic)
     {
         topic=new Topic({topicName: topicName});
-        is_site_or_topic_new=true;
+        topic = await topic_save(topic);
     }
-    
-    var site_topic_edge;
-    if (!is_site_or_topic_new)
+
+    var site_topic_edge= await SiteTopicEdge.findOne({$and: [{topic: topic._id}, {site: site._id}]});
+    if (site_topic_edge)
     {
-        site_topic_edge= await SiteTopicEdge.findOne({$and: [{topic: topic._id}, {site: site._id}]});
-        if (site_topic_edge)
-        {
-            var msg="קיים חיבור בין " + topic.topicName + " ל" + site.siteURL;
-            return res.status(400).send(msg)
-        }
+        var msg="קיים חיבור בין " + topic.topicName + " ל" + site.siteURL;
+        return res.status(400).send(msg)
     }
 
     var weight=user.userScore+1;
     site_topic_edge=new SiteTopicEdge({topic: topic._id, site: site._id, weight: weight});
-    site.siteTopicEdges.push(site_topic_edge._id);
-    topic.siteTopicEdges.push(site_topic_edge._id);
-    user.site_Topic_Edges_Added.push(site_topic_edge._id);
-    await site_topic_edge.save();
-    await site.save();
-    await topic.save();
-    await user.save();
+    site_topic_edge = await site_to_topic_edge_save(site_topic_edge);
+    await Site.updateOne({_id: site._id}, {$addToSet: {siteTopicEdges: site_topic_edge._id}});
+    await Topic.findOneAndUpdate({_id: topic._id}, {$addToSet: {siteTopicEdges: site_topic_edge._id}});
+    await User.findOneAndUpdate({_id: user._id}, {$addToSet: {site_Topic_Edges_Added: site_topic_edge._id}});
     var msg="נוצר חיבור בין " + topic.topicName + " ל" + site.siteURL;
     return res.status(200).send(msg);
 });

@@ -6,12 +6,15 @@ const domainSchema = new mongoose.Schema({
   domainURL: {
     type: String,
     required: true,
+    unique: true,
+    trim: true,
     minlength: 4,
-    maxlength: 512
+    maxlength: 1024
   },
 
   score:{
-  type: Number
+  type: Number,
+  default: 1
   },
 
   is_verified:{

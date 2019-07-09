@@ -1,10 +1,13 @@
 const Joi = require('joi');
+Joi.objectId = require('joi-objectid')(Joi);
 const mongoose = require('mongoose');
 
 const siteSchema = new mongoose.Schema({
   siteURL: {
     type: String,
     required: true,
+    unique: true,
+    trim: true,
     minlength: 4,
     maxlength: 1024
   },
@@ -35,7 +38,7 @@ const siteSchema = new mongoose.Schema({
     const schema = {
       siteURL: Joi.string().min(4).max(1024).required(),
       siteFormatedURL: Joi.string().min(4).max(1024).required(),
-      domain: Joi.string().min(4).max(512).required(),
+      domain: Joi.objectId().required(),
       siteSnap: Joi.string().max(1024)
     };
     return Joi.validate(site, schema);

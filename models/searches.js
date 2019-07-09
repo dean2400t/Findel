@@ -1,4 +1,5 @@
 const Joi = require('joi');
+Joi.objectId = require('joi-objectid')(Joi);
 const mongoose = require('mongoose');
 
 const searchSchema = new mongoose.Schema({
@@ -13,7 +14,7 @@ const searchSchema = new mongoose.Schema({
   
   function validateSearch(search) {
     const schema = {
-        topic: Joi.string().min(2).max(100).required()
+        topic: Joi.objectId().required()
     };
     return Joi.validate(search, schema);
   }

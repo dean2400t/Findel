@@ -1,4 +1,5 @@
 const Joi = require('joi');
+Joi.objectId = require('joi-objectid')(Joi);
 const mongoose = require('mongoose');
 const {UserRanking}=require('./userRanking');
 
@@ -15,11 +16,12 @@ const topicTopicEdgeSchema = new mongoose.Schema({
   },
   weight:{ 
     type: Number,
+    default: 1,
     required: true
   },
   web_scrape_score:{
     type: Number,
-    required: true
+    default: 1
   },
   last_web_scrape:{
     type: Date
@@ -27,13 +29,15 @@ const topicTopicEdgeSchema = new mongoose.Schema({
   usersRanking:[UserRanking.schema]
   
 });
-  
+
+topicTopicEdgeSchema.index({ topic1: 1, topic2: 1}, { unique: true });
+
   const TopicTopicEdge = mongoose.model('topic-topic-edges', topicTopicEdgeSchema);
   
   function validateTopicTopicEdge(topicTopicEdgeSchema) {
     const schema = {
-        topic1: Joi.string().min(2).max(100).required(),
-        topic2: Joi.string().min(2).max(100).required(),
+        topic1: Joi.objectId().required(),
+        topic2: Joi.objectId().required(),
         weight: Joi.number.required()
     };
     return Joi.validate(topicTopicEdgeSchema, schema);

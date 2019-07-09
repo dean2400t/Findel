@@ -1,4 +1,5 @@
 const Joi = require('joi');
+Joi.objectId = require('joi-objectid')(Joi);
 const mongoose = require('mongoose');
 const jwt=require('jsonwebtoken');
 const config = require('config');
@@ -13,6 +14,8 @@ const userSchema = new mongoose.Schema({
   userName:{
     type: String,
     required: true,
+    unique: true,
+    trim: true,
     minlength: 2,
     maxlength: 255
   },
