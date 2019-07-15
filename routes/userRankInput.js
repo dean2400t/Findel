@@ -38,14 +38,6 @@ async function insert_ranking_edge_to_database(edges_ranking_collection, user, r
     return null;
 }
 
-function findRankIDinEdge(usersRanking, userID)
-{
-  for (var index=0; index<usersRanking.length; index++)
-    if (usersRanking[index].userID.equals(userID))
-      return usersRanking[index];
-  return undefined;
-}
-
 router.post('/rank_connected_topic', auth, async function(req, res) {
   var edgeID=req.body.edgeID;
   var rankCode=req.body.rankCode;
