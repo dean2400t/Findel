@@ -11,8 +11,7 @@ const mongoose = require('mongoose');
 const userRankingSchema = new mongoose.Schema({
   userID: {
     type: mongoose.Schema.ObjectId, 
-    ref: 'users',
-    unique: true
+    ref: 'users'
   },
   rankCode:{
     type: Number,

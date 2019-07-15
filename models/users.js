@@ -51,29 +51,19 @@ const userSchema = new mongoose.Schema({
   },
   userScore:
   {
-    type: Number
+    type: Number,
+    default: 1,
+    required: true
   },
   searches:[searchSchema],
-  favorites: [{
-    type: mongoose.Schema.ObjectId, 
-    ref: 'site-topic-edges'}],
   
-  disliked: [{
+  site_topic_edges_ranking: [{
     type: mongoose.Schema.ObjectId, 
-    ref: 'site-topic-edges'}],
-
-  connected_topics_upvoted: [{
-    type: mongoose.Schema.ObjectId, 
-    ref: 'topic-topic-edges'}],
-
-  connected_topics_downvoted: [{
-    type: mongoose.Schema.ObjectId, 
-    ref: 'topic-topic-edges'}],
+    ref: 'site-topic-edges-ranking'}],
   
-  site_Topic_Edges_Added:[{
+  topic_topic_edges_ranking: [{
     type: mongoose.Schema.ObjectId, 
-    ref: 'site-topic-edges'
-  }]
+    ref: 'topic-topic-edges-ranking'}]
   });
   
   userSchema.methods.generateAuthToken = function() { 

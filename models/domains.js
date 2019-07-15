@@ -26,7 +26,11 @@ const domainSchema = new mongoose.Schema({
     ref: 'sites'
   }],
 
-  userRankings: [UserRanking.schema]
+  usersRanking:
+    [{
+      type: mongoose.Schema.ObjectId, 
+      ref: 'site-topic-edges-ranking'
+    }]
   
 });
   
@@ -34,7 +38,7 @@ const domainSchema = new mongoose.Schema({
   
   function validateDomain(domain) {
     const schema = {
-      domainURL: Joi.string().min(4).max(512).required()
+      domainURL: Joi.string().min(4).max(1024).required()
     };
     return Joi.validate(domain, schema);
   }

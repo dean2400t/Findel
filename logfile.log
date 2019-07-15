@@ -2820,3 +2820,48 @@
 {"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-05T21:48:50.049Z"}
 {"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-05T21:54:12.986Z"}
 {"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-05T21:56:50.252Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-09T12:33:51.135Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-09T12:52:02.652Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-11T11:52:11.841Z"}
+{"message":"Cannot read property 'subdomain' of null","stack":"TypeError: Cannot read property 'subdomain' of null\n    at add_and_update_domain (C:\\Projects\\findel\\routes\\topics_to_sites_data.js:84:35)\n    at add_new_sites_and_return_sites_from_database (C:\\Projects\\findel\\routes\\topics_to_sites_data.js:67:22)\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-07-11T11:52:45.639Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-11T11:53:36.270Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-11T11:55:06.082Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-11T11:55:59.384Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-11T11:57:08.828Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-11T11:58:03.722Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-11T11:58:31.178Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-11T12:00:20.513Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-11T12:01:50.893Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-11T12:04:11.643Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-11T12:16:34.677Z"}
+{"message":"Cannot read property 'subdomain' of null","stack":"TypeError: Cannot read property 'subdomain' of null\n    at add_and_update_domain (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:84:35)\n    at add_new_sites_and_return_sites_from_database (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:67:22)\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-07-11T12:17:11.086Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-11T12:19:50.423Z"}
+{"message":"Cannot read property '_id' of null","stack":"TypeError: Cannot read property '_id' of null\n    at add_and_update_domain (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:92:28)","level":"error","timestamp":"2019-07-11T12:20:13.849Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-11T12:20:42.914Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-11T12:24:40.394Z"}
+{"message":"Cannot read property '_id' of null","stack":"TypeError: Cannot read property '_id' of null\n    at add_and_update_domain (C:\\Projects\\findel\\routes\\topics_to_sites_data.js:92:28)","level":"error","timestamp":"2019-07-11T12:28:34.917Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-11T12:29:40.192Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-11T12:33:40.116Z"}
+{"message":"Cannot read property '_id' of null","stack":"TypeError: Cannot read property '_id' of null\n    at add_and_update_domain (c:\\Projects\\findel\\middleware\\save_securely_to_database.js:54:28)","level":"error","timestamp":"2019-07-11T12:33:50.027Z"}
+{"message":"Cannot read property '_id' of null","stack":"TypeError: Cannot read property '_id' of null\n    at add_and_update_domain (c:\\Projects\\findel\\middleware\\save_securely_to_database.js:54:28)","level":"error","timestamp":"2019-07-11T12:34:51.453Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-11T12:36:01.140Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-11T12:38:10.134Z"}
+{"message":"Cannot read property '_id' of null","stack":"TypeError: Cannot read property '_id' of null\n    at add_and_update_domain (c:\\Projects\\findel\\middleware\\save_securely_to_database.js:58:28)","level":"error","timestamp":"2019-07-11T12:39:37.141Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-11T12:43:30.390Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-11T12:48:04.429Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-11T12:50:54.286Z"}
+{"message":"Cannot read property '_id' of null","stack":"TypeError: Cannot read property '_id' of null\n    at add_and_update_domain (c:\\Projects\\findel\\middleware\\save_securely_to_database.js:58:28)","level":"error","timestamp":"2019-07-11T12:52:08.593Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-11T12:52:47.562Z"}
+{"message":"Cannot read property '_id' of null","stack":"TypeError: Cannot read property '_id' of null\n    at add_and_update_domain (c:\\Projects\\findel\\middleware\\save_securely_to_database.js:58:28)","level":"error","timestamp":"2019-07-11T12:54:01.267Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-11T12:55:13.498Z"}
+{"message":"Cannot read property '_id' of null","stack":"TypeError: Cannot read property '_id' of null\n    at add_and_update_domain (c:\\Projects\\findel\\middleware\\save_securely_to_database.js:58:28)","level":"error","timestamp":"2019-07-11T12:57:18.931Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-11T12:58:02.423Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-11T13:03:16.952Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-11T13:04:17.821Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-11T13:14:51.786Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-11T13:22:17.444Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-11T13:23:28.216Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-11T13:25:15.173Z"}
+{"message":"Cannot read property '_id' of null","stack":"TypeError: Cannot read property '_id' of null\n    at search_Google_and_orgenize (c:\\Projects\\findel\\routes\\topics_to_sites_data.js:147:36)","level":"error","timestamp":"2019-07-11T13:26:00.910Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-11T13:27:56.783Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-07-15T08:04:35.594Z"}

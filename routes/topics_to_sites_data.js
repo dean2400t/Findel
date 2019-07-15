@@ -7,9 +7,10 @@ const {SiteTopicEdge} = require('../models/siteTopicEdges');
 const {Site} = require('../models/sites');
 const googleSearch=require('../middleware/googleSearch');
 const {Domain} = require('../models/domains');
-const {domain_save, 
+const {add_and_update_domain, 
        site_to_topic_edge_save,
-       site_save} = require('../middleware/save_securely_to_database');
+       site_save,
+       topic_save} = require('../middleware/save_securely_to_database');
 const {User} = require('../models/users');
 const {Search}=require('../models/searches');
 const parseDomain = require("parse-domain");
@@ -59,7 +60,7 @@ async function add_new_sites_and_return_sites_from_database(sites)
         siteFormatedURL: newSitesToAdd[newSiteIndex].formattedUrl,
         siteSnap:  newSitesToAdd[newSiteIndex].snippet
       });
-      site = site_save(site);
+      site = await site_save(site);
       if (!site)
         console.log("fatal site save error");
       else
@@ -78,20 +79,6 @@ async function get_populated_edges_to_sites(topic)
   return edgesToSites;
 }
 
-async function add_and_update_domain(new_site)
-{
-  var site_domainURL = parseDomain(new_site.siteURL);
-  site_domainURL = site_domainURL.subdomain + '.' + site_domainURL.domain + '.' + site_domainURL.tld;
-  domain = new Domain({domainURL: site_domainURL});
-  domain = domain_save(domain);
-  if (!domain)
-    console.log("fatal domain adding/update error");
-  else
-    await Domain.findByIdAndUpdate(domain._id, {$addToSet: {sites: new_site._id}})
-  new_site.domain = domain._id;
-  return new_site;
-}
-
 
 function binary_find_site_in_edges_by_url(edges, site, start, end) {
   if (start > end) return null; 
@@ -107,7 +94,6 @@ function binary_find_site_in_edges_by_url(edges, site, start, end) {
 
 async function filter_already_connected_sites_in_database(sites_in_database, sites_from_google, topic)
 {
-  var sites_in_db_which_are_not_connected=[];
   if (topic.siteTopicEdges.length>0)
   {
     var sites_edges = await get_populated_edges_to_sites(topic);
@@ -117,6 +103,7 @@ async function filter_already_connected_sites_in_database(sites_in_database, sit
     });
     already_connected_edges.sort((edge1, edge2) => {if (edge2.site.siteURL>edge1.site.siteURL) return -1; else return 1;});
     
+    var sites_in_db_which_are_not_connected=[];
     sites_in_database.forEach(async site_in_database => {
       var connected_edge = binary_find_site_in_edges_by_url(already_connected_edges, site_in_database, 0, already_connected_edges.length-1);
       if (!connected_edge)
@@ -129,8 +116,11 @@ async function filter_already_connected_sites_in_database(sites_in_database, sit
           await SiteTopicEdge.findByIdAndUpdate(connected_edge._id, {order_index_by_google: google_site.order_index_by_google});
         }
     });
+    return sites_in_db_which_are_not_connected;
   }
-  return sites_in_db_which_are_not_connected;
+  else
+    return sites_in_database;
+  
 }
 /*
 Function searches google by topic and update database accordingly
@@ -141,7 +131,7 @@ async function search_Google_and_orgenize(topic)
   var sites=[];
   var sites_from_google=await googleSearch(search);
   sites_in_database = await add_new_sites_and_return_sites_from_database(sites_from_google);
-  var sites_in_db_which_are_not_connected=filter_already_connected_sites_in_database(sites_in_database, sites_from_google, topic);
+  var sites_in_db_which_are_not_connected= await filter_already_connected_sites_in_database(sites_in_database, sites_from_google, topic);
 
   //Build edges for current topic to found google sites
   var edge;
@@ -153,7 +143,7 @@ async function search_Google_and_orgenize(topic)
     if (!google_site)
       google_site={order_index_by_google: null};
     edge = new SiteTopicEdge({site: sites_in_db_which_are_not_connected[siteIndex]._id, topic: topic._id, order_index_by_google: google_site.order_index_by_google});
-    edge = site_to_topic_edge_save(edge);
+    edge = await site_to_topic_edge_save(edge);
     new_site_topic_edges.push(edge._id);
     await Site.updateOne({_id: sites_in_db_which_are_not_connected[siteIndex].id}, {$addToSet: {siteTopicEdges: edge._id}});
     sites.push(sites_in_db_which_are_not_connected[siteIndex]);
@@ -233,7 +223,7 @@ router.get('/', async function(req, res) {
   const {error}=validateTopic(topic);
   if (error) return res.status(400).send(error.details[0].message);
   topic=new Topic({topicName: search});
-  await topic.save();
+  topic = await topic_save(topic);
   if (userID!="")
     {
       var search=new Search({topic: topic._id})

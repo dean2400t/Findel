@@ -66,4 +66,18 @@ router.get('/test_duplicate_topic_edges', async function(req, res) {
     await topic_to_topic_edges_save(edges);
     return res.status(200).send("OK");
 });
+
+router.get('/test_remove_response', async function(req, res) {
+    var topicName = "בדיקה1"
+    var topic = new Topic({topicName: topicName});
+    topic = await topic_save(topic);
+    
+    var cond = "topicName";
+    var json = {};
+    json[cond]= topicName;
+    var test = await Topic.deleteOne(json);
+    test = await Topic.deleteOne(json);
+
+    x=3;
+    });
 module.exports = router;

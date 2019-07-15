@@ -93,13 +93,13 @@ async function update_wikipidia_links_on_topic(topic, links_name_array, userID){
   if (connected_topics_edges.length>0)
   {
     connected_topics_edges.sort((edge_a, edge_b) => {if (edge_b.topic1.topicName>edge_a.topic1.topicName) return 1 ; else return -1;});
-    links_name_array.forEach(link_name => {
+    links_name_array.forEach(async link_name => {
         topic_and_edge_in_array = binary_search_topic_and_edge_in_topics_and_edges_array(connected_topics_edges, link_name, 0, connected_topics_edges.length-1);
         if (!topic_and_edge_in_array)
         {
             var newTopic=new Topic({topicName: link_name});
             newTopic = await topic_save(newTopic);
-            if (topic.topicName < topicName)
+            if (topic.topicName < newTopic.topicName)
                 var new_topic_to_topic_edge=new TopicTopicEdge({topic1: topic._id, topic2: newTopic._id});
             else
                 var new_topic_to_topic_edge=new TopicTopicEdge({topic1: newTopic._id, topic2: topic._id});
@@ -111,11 +111,13 @@ async function update_wikipidia_links_on_topic(topic, links_name_array, userID){
     });
   }
   else
-    links_name_array.forEach(link_name => {
+    links_name_array.forEach(async link_name => {
         var newTopic=new Topic({topicName: link_name});
         newTopic = await topic_save(newTopic);
-
-        var new_topic_to_topic_edge=new TopicTopicEdge({topic1: topic._id, topic2: newTopic._id, weight: 1, web_scrape_score: 1});
+        if (topic.topicName < newTopic.topicName)
+            var new_topic_to_topic_edge=new TopicTopicEdge({topic1: topic._id, topic2: newTopic._id});
+        else
+            var new_topic_to_topic_edge=new TopicTopicEdge({topic1: newTopic._id, topic2: topic._id});
         new_topic_to_topic_edge = await topic_to_topic_edge_save(new_topic_to_topic_edge);
         await Topic.findOneAndUpdate({_id: newTopic._id}, {$addToSet: {topicTopicEdges: new_topic_to_topic_edge}});
         new_edges_id_array.push(new_topic_to_topic_edge._id);

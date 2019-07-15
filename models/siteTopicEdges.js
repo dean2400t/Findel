@@ -16,6 +16,10 @@ const siteTopicEdgeSchema = new mongoose.Schema({
     required: true
   },
 
+  order_index_by_google:{ 
+    type: Number,
+  },
+
   lastCalculated:{
     type: Date
   },
@@ -28,15 +32,26 @@ const siteTopicEdgeSchema = new mongoose.Schema({
     type: Number
   },
   
-  weight:{ 
+  liked_weight:{ 
     type: Number,
     required: true,
     default: 1
   },
-  order_index_by_google:{ 
+  trustworthy_weight:{ 
     type: Number,
+    required: true,
+    default: 1
   },
-  usersRanking:[UserRanking.schema]
+  educational_weight:{
+    type: Number,
+    required: true,
+    default: 1
+  },
+  usersRanking:
+    [{
+      type: mongoose.Schema.ObjectId, 
+      ref: 'site-topic-edges-ranking'
+    }]
 });
 siteTopicEdgeSchema.index({ site: 1, topic: 1}, { unique: true });
   
