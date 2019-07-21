@@ -41,16 +41,28 @@ function binary_search_topic_and_edge_in_topics_and_edges_array(topics_and_edges
 
 async function get_connected_topics_edges(topic, userID)
 {
-    var connected_topics_edges = await TopicTopicEdge.find(
-        {$or: [{ topic1: topic }, { topic2: topic } ]})
-        .populate('topic1')
-        .populate('topic2')
-        .populate({
-            path: 'usersRanking',
-            match: { user: userID}
-          });
+    if (userID != '')
+        var connected_topics_edges = await TopicTopicEdge.find(
+            {$or: [{ topic1: topic }, { topic2: topic } ]})
+            .populate('topic1')
+            .populate('topic2')
+            .populate({
+                path: 'usersRanking',
+                match: { user: userID}
+            });
+    else
+        var connected_topics_edges = await TopicTopicEdge.find(
+            {$or: [{ topic1: topic }, { topic2: topic } ]})
+            .populate('topic1')
+            .populate('topic2');
+
     var edges_data=[];
     connected_topics_edges.forEach(edge => {
+        if (userID != "")
+        var user_rankings = edge.usersRanking;
+      else
+        var user_rankings = [];
+
         var connnected_topic=edge.topic1;
         if (connnected_topic._id.equals(edge.topic1._id))
             edge.topic1=edge.topic2;
@@ -70,7 +82,7 @@ async function get_connected_topics_edges(topic, userID)
             liked_weight: edge.liked_weight,
             web_scrape_score: edge.web_scrape_score,
             is_search_required: is_search_required,
-            user_rankings: edge.usersRanking
+            user_rankings: user_rankings
         });
     });
     

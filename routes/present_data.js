@@ -38,26 +38,39 @@ router.get('/connected_topics',async function(req, res) {
    var token=req.headers['findel-auth-token'];
    var userID= checkAuthAndReturnUserID(token);
 
-   var connected_topics_edges=await TopicTopicEdge.find({$or: [{ topic1: topic }, { topic2: topic } ]}).populate('topic1').populate('topic2');
+   if (userID != '')
+        var connected_topics_edges = await TopicTopicEdge.find(
+            {$or: [{ topic1: topic }, { topic2: topic } ]})
+            .populate('topic1')
+            .populate('topic2')
+            .populate({
+                path: 'usersRanking',
+                match: { user: userID}
+            });
+    else
+        var connected_topics_edges = await TopicTopicEdge.find(
+            {$or: [{ topic1: topic }, { topic2: topic } ]})
+            .populate('topic1')
+            .populate('topic2');
+   
    connected_topics_data=[];
    connected_topics_edges.forEach(edge => {
       var connected_topic=edge.topic1;
       if (edge.topic1.topicName==topicName)
          connected_topic=edge.topic2;
-      var userRankCode=0;
-      if (userID!="")
-      {
-         for (var rankIndex=0; rankIndex<edge.usersRanking.length && userRankCode==0; rankIndex++)
-            if (edge.usersRanking[rankIndex].userID.equals(userID))
-               userRankCode=edge.usersRanking[rankIndex].rankCode;
-      }
+      
+      if (userID != "")
+        var user_rankings = edge.usersRanking;
+      else
+        var user_rankings = [];
+
       connected_topics_data.push({
          edgeID: edge._id,
          connected_topic_name:connected_topic.topicName,
-         edge_weight: edge.weight,
+         liked_weight: edge.liked_weight,
          web_scrape_score: edge.web_scrape_score,
          last_web_scrape: edge.last_web_scrape,
-         userRankCode: userRankCode
+         user_rankings: user_rankings
       });
    });
 

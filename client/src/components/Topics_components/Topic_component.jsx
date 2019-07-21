@@ -12,20 +12,27 @@ const topic_functions=new Topic_functions();
 class Topic_component extends Component {
     constructor(props) {
         super(props);
-        var upArrow='black';
-        var downArrow='black';
-        if (this.props.topic.userRankCode==1)
-          upArrow='green';
-        if (this.props.topic.userRankCode==2)
-          downArrow='red';
+        var liked_upArrow='black';
+        var liked_downArrow='black';
+        var user_rankings = this.props.topic.user_rankings
+        user_rankings.forEach(ranking => {
+        if (ranking.rank_type == "liked")
+        {
+          if (ranking.rankCode == 1)
+            liked_upArrow = 'green'
+          else
+            liked_downArrow = 'red'
+        }
+      });
         this.state = {
-          upArrowColor: upArrow,
-          downArrowColor: downArrow,
+          liked_upArrowColor: liked_upArrow,
+          liked_downArrowColor: liked_downArrow,
           rank_error: "",
-          edge_weight: this.props.topic.edge_weight,
+          edge_liked_weight: this.props.topic.liked_weight,
           rankCode: this.props.topic.userRankCode
         }
-        
+        this.last_ranking_timeStamp = null;
+        this.last_ranking_id = null;
         this.token=cookies.get('findel-auth-token') || "";
     }
   render() {
@@ -33,23 +40,25 @@ class Topic_component extends Component {
     return (
       <div className="topic">
         <text style={{marginRight: '10px'}}>{this.props.topic.connected_topic_name}<br/></text>
-        <text style={{marginRight: '10px'}}>דירוג משתמשים: <FontAwesomeIcon icon={faArrowAltCircleUp} color={this.state.upArrowColor} onClick={() => this.upClick()}/> ({this.state.edge_weight}) <FontAwesomeIcon icon={faArrowAltCircleDown} color={this.state.downArrowColor} onClick={() => this.downClick()}/><br/></text>
+        <text style={{marginRight: '10px'}}>
+        דירוג משתמשים: 
+        <FontAwesomeIcon icon={faArrowAltCircleUp} color={this.state.liked_upArrowColor} onClick={() => this.rank_click_up("liked")}/> 
+        ({this.state.edge_liked_weight}) 
+        <FontAwesomeIcon icon={faArrowAltCircleDown} color={this.state.liked_downArrowColor} onClick={() => this.rank_click_down("liked")}/>
+        <br/></text>
         <text style={{marginRight: '10px'}}>ציון מחיפוש באתרים: {this.props.topic.web_scrape_score}<br/></text>
         <text style={{marginRight: '10px'}}>חיפוש אחרון: {this.props.topic.last_web_scrape}<br/></text>
         <text style={redText}>{this.state.rank_error}</text>
       </div>
     );
   }
-  cancelRank()
+  rank_click_up(rank_type)
   {
-    topic_functions.cancelRank(this);
+    topic_functions.ranking_function(this, rank_type, "up")
   }
-
-  upClick= () => {
-    topic_functions.upClick(this);
-  }
-  downClick= () => {
-    topic_functions.downClick(this);
+  rank_click_down(rank_type)
+  {
+    topic_functions.ranking_function(this, rank_type, "down")
   }
 }
 Topic_component.PropsTypes={

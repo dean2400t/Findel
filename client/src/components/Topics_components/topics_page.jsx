@@ -25,7 +25,7 @@ class Topics_page extends Component {
           }).then((topics) => {
               // Do something with the result
               topics.sort((topic_a, topic_b)=>{return topic_b.web_scrape_score-topic_a.web_scrape_score;})
-              topics.sort((topic_a, topic_b)=>{return topic_b.edge_weight-topic_a.edge_weight;})
+              topics.sort((topic_a, topic_b)=>{return topic_b.liked_weight-topic_a.liked_weight;})
               topics.forEach(topic => {
                   topic.id=this.id;
                   this.id++;
