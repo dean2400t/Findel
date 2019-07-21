@@ -12,10 +12,20 @@ const domainSchema = new mongoose.Schema({
     maxlength: 1024
   },
 
-  score:{
-  type: Number,
-  default: 1
+  liked_weight:{
+    type: Number,
+    default: 1
   },
+
+  trustworthy_weight:{
+    type: Number,
+    default: 1
+    },
+
+  educational_weight:{
+    type: Number,
+    default: 1
+    },
 
   is_verified:{
     type: Boolean

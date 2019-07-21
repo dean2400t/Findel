@@ -13,7 +13,7 @@ const {add_and_update_domain,
        topic_save} = require('../middleware/save_securely_to_database');
 const {User} = require('../models/users');
 const {Search}=require('../models/searches');
-const parseDomain = require("parse-domain");
+const {Site_topic_edges_ranking} = require('../models/site_topic_edges_ranking');
 var router = express.Router();
 
 function binary_find_site_in_sites_by_url(sites, site, start, end) {     
@@ -169,25 +169,37 @@ function checkAuthAndReturnUserID(token)
 async function get_Sites_Edges_data_from_topic(topic, userID)
 {
   var sites=[];
-  var edges_to_sites = await SiteTopicEdge.find({topic: topic}).populate('site');
+  if (userID == "")
+    var edges_to_sites = await SiteTopicEdge.find({topic: topic})
+    .populate('site');
+  else
+    var edges_to_sites = await SiteTopicEdge.find({topic: topic})
+      .populate('site')
+      .populate({
+        path: 'usersRanking',
+        match: { user: userID}
+      });
+  
   for (var index=0; index<edges_to_sites.length; index++)
     edges_to_sites[index].site.domain = await Domain.findById(edges_to_sites[index].site.domain).select('-sites -userRankings');
-
+  
   edges_to_sites.forEach(edge_to_site => {
-    var userRankCode=0;
-    if (userID!="")
-      for (var rankIndex=0; rankIndex<edge_to_site.usersRanking.length; rankIndex++)
-        if (edge_to_site.usersRanking[rankIndex].userID.equals(userID))
-          userRankCode=edge_to_site.usersRanking[rankIndex].rankCode;
+    if (userID != "")
+      var user_rankings = edge_to_site.usersRanking;
+    else
+      var user_rankings = [];
+    var site = edge_to_site.site;
     sites.push({
-      siteID: edge_to_site.site._id,
+      siteID: site._id,
       edgeID: edge_to_site._id,
-      siteURL: edge_to_site.site['siteURL'],
-      siteFormatedURL: edge_to_site.site['siteFormatedURL'],
-      siteSnap: edge_to_site.site['siteSnap'],
-      domain: edge_to_site.site['domain'],
-      userRankCode: userRankCode,
-      edgeWeight: edge_to_site.weight,
+      siteURL: site['siteURL'],
+      siteFormatedURL: site['siteFormatedURL'],
+      siteSnap: site['siteSnap'],
+      domain: site['domain'],
+      user_rankings: user_rankings,
+      liked_weight: edge_to_site.liked_weight,
+      trustworthy_weight: edge_to_site.trustworthy_weight,
+      educational_weight: edge_to_site.educational_weight,
       order_index_by_google: edge_to_site.order_index_by_google
     });
   });

@@ -65,7 +65,9 @@ class SearchPage extends Component {
                     site_displayed_so_far_index: history.site_displayed_so_far_index,
                     sites_from_server_to_use: history.sites_from_server_to_use,
                     full_sites_list_from_server: history.full_sites_list_from_server
+                    
             }
+            this.full_sites_list_from_server = history.full_sites_list_from_server
         }
         else
         {

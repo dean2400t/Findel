@@ -6,7 +6,6 @@ import cheerio from 'cheerio';
 class Search_functions{
     Search_functions(){}
 
-    
     async search_using_wikipedia(wikiText ,this_of_searchPage){
         await this.request_sites_from_Server_to_use(this_of_searchPage.curSearch, this_of_searchPage);
         if (this_of_searchPage.sites_from_server_to_use!=null)
@@ -67,7 +66,9 @@ class Search_functions{
             else
             return 0;
         });
-        full_sites_array.sort(function(site1, site2){return site2.edgeWeight - site1.edgeWeight});
+        full_sites_array.sort(function(site1, site2){return site2.educational_weight - site1.educational_weight});
+        full_sites_array.sort(function(site1, site2){return site2.trustworthy_weight - site1.trustworthy_weight});
+        full_sites_array.sort(function(site1, site2){return site2.liked_weight - site1.liked_weight});
         var temp;
         for (var index=0; index<full_sites_array[index]-1; index+=2)
             if (full_sites_array[index].domain.score < full_sites_array[index+1].domain.score)
@@ -170,8 +171,10 @@ class Search_functions{
                         formatedURL: sites[index].siteFormatedURL,
                         siteSnap: sites[index].siteSnap,
                         domain: sites[index].domain,
-                        userRankCode_for_edge: sites[index].userRankCode,
-                        edgeWeight: sites[index].edgeWeight,
+                        user_rankings_for_edge: sites[index].user_rankings,
+                        liked_weight: sites[index].liked_weight,
+                        trustworthy_weight: sites[index].trustworthy_weight,
+                        educational_weight: sites[index].educational_weight,
                         order_index_by_google: sites[index].order_index_by_google
                         });
                     }
@@ -188,8 +191,10 @@ class Search_functions{
                                 formatedURL: shuffled_sites[index].formatedURL,
                                 siteSnap: shuffled_sites[index].siteSnap,
                                 domain: shuffled_sites[index].domain,
-                                userRankCode_for_edge: shuffled_sites[index].userRankCode_for_edge,
-                                edgeWeight: shuffled_sites[index].edgeWeight,
+                                user_rankings_for_edge: shuffled_sites[index].user_rankings_for_edge,
+                                liked_weight: shuffled_sites[index].liked_weight,
+                                trustworthy_weight: shuffled_sites[index].trustworthy_weight,
+                                educational_weight: shuffled_sites[index].educational_weight,
                                 order_index_by_google: shuffled_sites[index].order_index_by_google
                                 });
                 this_of_searchPage.sites_from_server_to_use=sitesArray;
@@ -316,8 +321,10 @@ class Search_functions{
                     formatedURL: topSites[refSiteIndex].formatedURL,
                     siteSnap: topSites[refSiteIndex].siteSnap,
                     domain: topSites[refSiteIndex].domain,
-                    userRankCode: topSites[refSiteIndex].userRankCode_for_edge, 
-                    edgeWeight: topSites[refSiteIndex].edgeWeight});
+                    user_rankings_for_edge: topSites[refSiteIndex].user_rankings_for_edge, 
+                    liked_weight: topSites[refSiteIndex].liked_weight,
+                    trustworthy_weight: topSites[refSiteIndex].trustworthy_weight,
+                    educational_weight: topSites[refSiteIndex].educational_weight});
                 this_of_searchPage.id++;
             }
         }
@@ -340,7 +347,7 @@ class Search_functions{
         connected_topics_edges.sort(function(edge1, edge2){return edge2.web_scrape_score - edge1.web_scrape_score});
         connected_topics_edges.sort(function(edge1, edge2){return edge2.linkHits - edge1.linkHits});
         connected_topics_edges.sort(function(edge1, edge2){if (edge2.topic1.topicName.length<3 && edge1.topic1.topicName.length>=3) return -1;});
-        connected_topics_edges.sort(function(edge1, edge2){return edge2.weight - edge1.weight});
+        connected_topics_edges.sort(function(edge1, edge2){return edge2.liked_weight - edge1.liked_weight});
         
         var expandedCon=[];
         for (var content=0; content<connected_topics_edges.length && content<10; content++)

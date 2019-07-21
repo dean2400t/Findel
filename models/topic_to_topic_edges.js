@@ -14,7 +14,7 @@ const topicTopicEdgeSchema = new mongoose.Schema({
     ref: 'topics',
     required: true
   },
-  weight:{ 
+  liked_weight:{ 
     type: Number,
     default: 1,
     required: true
@@ -26,7 +26,11 @@ const topicTopicEdgeSchema = new mongoose.Schema({
   last_web_scrape:{
     type: Date
   },
-  usersRanking:[UserRanking.schema]
+  usersRanking:
+    [{
+      type: mongoose.Schema.ObjectId, 
+      ref: 'topic-topic-edges-ranking'
+    }]
   
 });
 

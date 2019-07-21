@@ -1,7 +1,6 @@
 const Joi = require('joi');
 Joi.objectId = require('joi-objectid')(Joi);
 const mongoose = require('mongoose');
-const {UserRanking}=require('./userRanking');
 
 const siteTopicEdgeSchema = new mongoose.Schema({
   site: {

@@ -1,117 +1,84 @@
 import axios from 'axios';
+import { equal } from 'assert';
 
 
 class Ref_site_functions {
     constructor() {
     }
-    cancelRank(this_of_refSite)
+
+    ranking_function(this_of_refSite, rank_type, up_or_down)
     {
+        var string_for_edge_upArrow_color = rank_type + "_upArrowColor";
+        var string_for_edge_downArrow_color = rank_type + "_downArrowColor";
+        var upArrow = this_of_refSite.state[string_for_edge_upArrow_color];
+        var downArrow = this_of_refSite.state[string_for_edge_downArrow_color];
+
+        var rankCode = 0;
+        if (up_or_down == "up")
+        {
+            if (upArrow != 'green')
+                rankCode = 1;
+        }
+        else
+            if (downArrow != 'red')
+                rankCode = 2;
+
         var edgeID=this_of_refSite.props.aRefSite.edgeID;
-        var siteID=this_of_refSite.props.aRefSite.siteID;
         var opts={
             edgeID: edgeID,
-            siteID: siteID,
-            rankCode: 0
+            rank_type: rank_type,
+            rankCode: rankCode
         };
-        if (this_of_refSite.token=="")
-        this_of_refSite.setState({rank_error: "יש להתחבר על מנת לדרג"});
-        else{
-        axios.post("/api/userRanking/rankSite", opts, {
+        axios.post("/api/userRanking/rank_site_topic_edge", opts, {
             headers: {'findel-auth-token': this_of_refSite.token}
         })
             .then((result) => {
-                var newWeight=this_of_refSite.state.edgeWeight;
-                if (this_of_refSite.state.rankCode==1)
-                newWeight--;
+                var res_data = result.data;
+                var recived_time = new Date(res_data.edge_ranking_date);
+                if (this_of_refSite.last_ranking_timeStamp != null)
+                    {
+                        /*
+                         if ids are the same then a deletion was made, so if rankcode is not 0 then
+                         the deletion was received earlier
+                        */
+                         if (this_of_refSite.last_ranking_id == res_data.edge_ranking_id)
+                            if (res_data.rankCode != 0)
+                                return;
+                        
+                        if (recived_time - this_of_refSite.last_ranking_timeStamp < 0)
+                            return;
+                    }
+                this_of_refSite.last_ranking_id = res_data.edge_ranking_id;
+                this_of_refSite.last_ranking_timeStamp = recived_time;
+
+                var string_for_edge_rank_type_weight = "edge_" + rank_type + "_weight";
+                var string_for_domain_rank_type_weight = "domain_" + rank_type + "_weight";
+
+                var json_for_state_change = {};
+                json_for_state_change[string_for_edge_rank_type_weight] = res_data.weight;
+                json_for_state_change[string_for_domain_rank_type_weight] = res_data.domain_weight;
+                if (res_data.rankCode == 0)
+                {
+                    json_for_state_change[string_for_edge_upArrow_color] = 'black';
+                    json_for_state_change[string_for_edge_downArrow_color] = 'black';
+                }
+                else if (res_data.rankCode == 1)
+                {
+                    json_for_state_change[string_for_edge_upArrow_color] = 'green';
+                    json_for_state_change[string_for_edge_downArrow_color] = 'black';
+                }
                 else
-                newWeight++
-                this_of_refSite.setState({
-                upArrowColor: 'black',
-                downArrowColor: 'black',
-                rank_error: "",
-                edgeWeight: newWeight,
-                rankCode: 0
-                })
+                {
+                    json_for_state_change[string_for_edge_upArrow_color] = 'black';
+                    json_for_state_change[string_for_edge_downArrow_color] = 'red';
+                }
+                json_for_state_change['rankCode'] = res_data.rankCode;
+
+                this_of_refSite.setState(json_for_state_change);
             }).catch((error) => {
                 this_of_refSite.setState({rank_error: error.response.data});
             });
-        }
     }
-    upClick(this_of_refSite)
-    {
-        if (this_of_refSite.state.upArrowColor=='green')
-            this.cancelRank(this_of_refSite);
-        else
-        {
-            var edgeID=this_of_refSite.props.aRefSite.edgeID;
-            var siteID=this_of_refSite.props.aRefSite.siteID;
-            var opts={
-                edgeID: edgeID,
-                siteID: siteID,
-            rankCode: 1
-            };
-            if (this_of_refSite.token=="")
-                this_of_refSite.setState({rank_error: "יש להתחבר על מנת לדרג"});
-            else
-            {
-                axios.post("/api/userRanking/rankSite", opts, {
-                headers: {'findel-auth-token': this_of_refSite.token}
-                })
-                .then((result) => {
-                    var newWeight=this_of_refSite.state.edgeWeight;
-                    if (this_of_refSite.state.rankCode==2)
-                        newWeight++;
-                    newWeight++;
-                    this_of_refSite.setState({
-                        upArrowColor: 'green',
-                        downArrowColor: 'black',
-                        rank_error: "",
-                        edgeWeight:newWeight,
-                        rankCode: 1
-                    })
-                    }).catch((error) => {
-                    this_of_refSite.setState({rank_error: error.response.data});
-                });
-            }
-        }
-    }
-    downClick(this_of_refSite)
-    {
-        if (this_of_refSite.state.downArrowColor=='red')
-          this.cancelRank(this_of_refSite);
-        else
-        {
-            var edgeID=this_of_refSite.props.aRefSite.edgeID;
-            var siteID=this_of_refSite.props.aRefSite.siteID;
-            var opts={
-                edgeID: edgeID,
-                siteID: siteID,
-            rankCode: 2
-          };
-          if (this_of_refSite.token=="")
-            this_of_refSite.setState({rank_error: "יש להתחבר על מנת לדרג"});
-          else{
-          axios.post("/api/userRanking/rankSite", opts, {
-              headers: {'findel-auth-token': this_of_refSite.token}
-          })
-              .then((result) => {
-                var newWeight=this_of_refSite.state.edgeWeight;
-                if (this_of_refSite.state.rankCode==1)
-                  newWeight--;
-                newWeight--;
-                this_of_refSite.setState({
-                    upArrowColor: 'black',
-                    downArrowColor: 'red',
-                    rank_error: "",
-                    edgeWeight:newWeight,
-                    rankCode: 2
-                  });
-                }).catch((error) => {
-                  this_of_refSite.setState({rank_error: error.response.data});
-              });
-          }
-        }
-      }
 }
 
 export default Ref_site_functions;

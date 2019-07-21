@@ -41,7 +41,14 @@ function binary_search_topic_and_edge_in_topics_and_edges_array(topics_and_edges
 
 async function get_connected_topics_edges(topic, userID)
 {
-    var connected_topics_edges = await TopicTopicEdge.find({$or: [{ topic1: topic }, { topic2: topic } ]}).populate('topic1').populate('topic2');
+    var connected_topics_edges = await TopicTopicEdge.find(
+        {$or: [{ topic1: topic }, { topic2: topic } ]})
+        .populate('topic1')
+        .populate('topic2')
+        .populate({
+            path: 'usersRanking',
+            match: { user: userID}
+          });
     var edges_data=[];
     connected_topics_edges.forEach(edge => {
         var connnected_topic=edge.topic1;
@@ -57,21 +64,13 @@ async function get_connected_topics_edges(topic, userID)
                 is_search_required=false;
         }
 
-        var userRankCode=0;
-        if (userID!="")
-        connected_topics_edges.forEach(edge => {
-            userRankCode=0;
-            for (var rankIndex=0; rankIndex<edge.usersRanking.length; rankIndex++)
-                if (edge.usersRanking[rankIndex].userID.equals(userID))
-                    userRankCode=edge.usersRanking[rankIndex].rankCode;
-        });
         edges_data.push({
             edgeID: edge._id,
             topic1: edge.topic1,
-            weight: edge.weight,
+            liked_weight: edge.liked_weight,
             web_scrape_score: edge.web_scrape_score,
             is_search_required: is_search_required,
-            userRankCode: userRankCode
+            user_rankings: edge.usersRanking
         });
     });
     
