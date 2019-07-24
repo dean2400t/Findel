@@ -68,6 +68,7 @@ class ArefSite extends Component {
   }
   render() {
     var redText={color: "red"};
+    var more_on_site_textStyle={color: '#0587c3'};
     return (
           <div className="aSiteRef">
             <text><a target="_blank" rel="noopener noreferrer" href={this.props.aRefSite.siteURL}>{this.props.aRefSite.formatedURL}</a></text>
@@ -100,6 +101,7 @@ class ArefSite extends Component {
             <br/><text>{this.state.domain_trustworthy_weight} אמינות הדומיין</text>
             <br/><text>{this.state.domain_educational_weight} חינוכיות הדומיין</text>
             <br/><text style={redText}>{this.state.rank_error}</text>
+            <a target="_blank" rel="noopener noreferrer" style={more_on_site_textStyle} href={"/SitePage/"+this.siteURL}>עוד על הדף...</a>
           </div>
     );
   }

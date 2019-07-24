@@ -30,6 +30,10 @@ const topicTopicEdgeSchema = new mongoose.Schema({
     [{
       type: mongoose.Schema.ObjectId, 
       ref: 'topic-topic-edges-ranking'
+    }],
+  root_comments:[{
+      type: mongoose.Schema.ObjectId, 
+      ref: 'comments'
     }]
   
 });

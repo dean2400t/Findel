@@ -7,7 +7,9 @@ const {SiteTopicEdge}=require('../models/siteTopicEdges');
 const {site_save, 
        add_and_update_domain, 
        topic_save,
-       site_to_topic_edge_save} = require('../middleware/save_securely_to_database');
+       site_to_topic_edge_save,
+       comment_save} = require('../middleware/save_securely_to_database');
+const get_collection_from_collection_name = require('../middleware/get_collection_from_collection_name');
 
 var router = express.Router();
 
@@ -59,6 +61,60 @@ router.post('/addSite', auth, async function(req, res) {
     await User.findOneAndUpdate({_id: user._id}, {$addToSet: {site_Topic_Edges_Added: site_topic_edge._id}});
     var msg="נוצר חיבור בין " + topic.topicName + " ל" + site.siteURL;
     return res.status(200).send(msg);
+});
+
+router.post('/addComment', auth, async function(req, res) {
+  
+    var text=req.body.text;
+    var object_id = req.body.object_id;
+    var collection_name = req.body.collection_name;
+    var parent_comment_id = req.body.parent_comment_id;
+    var root_comment_id = req.body.root_comment_id;
+
+    if (!text)
+        return res.status(400).send("אין טקסט בגוף הבקשה");
+    if (object_id=="")
+        return res.status(400).send("אין ID של אובייקט בגוף הבקשה");
+    if (!collection_name)
+        return res.status(400).send("אין לאיזה ספריית אובייקטים לשמור בגוף הבקשה");
+    if (!parent_comment_id)
+        return res.status(400).send("אין ID של תגובה קודמת בגוף הבקשה");
+    if (!root_comment_id)
+        return res.status(400).send("אין ID של תגובה ראשית בגוף הבקשה");
+    
+    var user=await User.findById(req.user._id);
+    if (!user)
+        return res.status(400).send("User not found in database");
+    
+    var root_comment = await Comment.findById(root_comment_id)
+    if (!root_comment)
+        return res.status(400).send("Root comment not found in database");
+
+    var parent_comment = await Comment.findById(parent_comment_id)
+    if (!parent_comment)
+        return res.status(400).send("Parent comment not found in database");
+
+    var collection = get_collection_from_collection_name(collection_name);
+    if (!collection)
+        return res.status(400).send("collection name is incorrect");
+
+    var object_to_comment = await collection.findById(object_id);
+    if (!object_to_comment)
+        return res.status(400).send("Object with this ID does not exist in this collection");
+
+    var comment = new Comment({
+        text: text,
+        object_id: object_id,
+        object_id_collection_name: collection_name,
+        user: user._id,
+        root_comment: root_comment_id,
+        parent_comment: parent_comment_id
+    });
+
+    if (await comment_save(comment))
+        await collection.findOneAndUpdate({_id: object_id}, {$addToSet: {root_comment: comment._id}});
+    
+    return res.status(200).send(comment);
 });
 
 module.exports = router;

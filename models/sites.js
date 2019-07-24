@@ -28,8 +28,11 @@ const siteSchema = new mongoose.Schema({
   siteTopicEdges:[{
     type: mongoose.Schema.ObjectId, 
     ref: 'site-Topic-Edges'
+  }],
+  root_comments:[{
+    type: mongoose.Schema.ObjectId, 
+    ref: 'comments'
   }]
-  
 });
   
   const Site = mongoose.model('sites', siteSchema);

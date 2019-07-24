@@ -5,6 +5,9 @@ var router = express.Router();
 const {Domain} = require('../models/domains');
 const {Topic} = require('../models/topics');
 const {TopicTopicEdge} = require('../models/topic_to_topic_edges');
+const {Site} = require('../models/sites');
+const {Comments} = require('../models/comments');
+const extract_comments_from_database = require('../middleware/extract_comments_from_database');
 
 function checkAuthAndReturnUserID(token)
 {
@@ -76,4 +79,42 @@ router.get('/connected_topics',async function(req, res) {
 
    return res.status(200).send(connected_topics_data);
 });
+
+
+router.get('/site_data',async function(req, res) {
+   var siteURL = req.query.siteURL;
+   var token=req.headers['findel-auth-token'];
+   var userID= checkAuthAndReturnUserID(token);
+   if (userID != '')
+      site = await Site.findOne({siteURL: siteURL})
+      .populate('domain')
+      .populate({
+         path: 'siteTopicEdges',
+         populate:{
+                     path: 'usersRanking',
+                     match: { user: userID},
+                     model: 'topic-topic-edges-ranking'
+                  }
+      });
+   else
+      site = await Site.findOne({siteURL: siteURL})
+      .populate('domain')
+      .populate('siteTopicEdges');
+   
+   if (!site)
+      return res.status(400).send("Site " + siteURL +" not found in database");
+   
+   var comments = await extract_comments_from_database(site.root_comments, userID);
+   
+   return res.status(200).send({
+      siteURL: site.siteURL,
+      siteFormatedURL: site.siteFormatedURL,
+      siteSnap: site.siteSnap,
+      domain: site.domain,
+      site_topic_edges: site.siteTopicEdges,
+      comments: comments
+   });
+
+});
+
 module.exports = router;

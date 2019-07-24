@@ -50,6 +50,10 @@ const siteTopicEdgeSchema = new mongoose.Schema({
     [{
       type: mongoose.Schema.ObjectId, 
       ref: 'site-topic-edges-ranking'
+    }],
+  root_comments:[{
+    type: mongoose.Schema.ObjectId, 
+    ref: 'comments'
     }]
 });
 siteTopicEdgeSchema.index({ site: 1, topic: 1}, { unique: true });

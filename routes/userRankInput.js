@@ -25,19 +25,6 @@ function is_topic_topic_edge_rank_type_valid(rank_type){
   return false;
 }
 
-async function update_scores_to_topic_topic_ranking_edge_insertion(edge_ranking, edge, user, rank_type)
-{
-  var score_field_name = rank_type + "_weight";
-  var field_and_score_in_json = {};
-  field_and_score_in_json[score_field_name] = edge_ranking.scoreAdded;
-  await TopicTopicEdge.findOneAndUpdate({_id: edge._id},
-    {$inc: field_and_score_in_json, $push: {usersRanking: edge_ranking._id}});
-  edge[score_field_name] += edge_ranking.scoreAdded;
-  await User.findOneAndUpdate({_id: user._id},
-    {$push: {topic_topic_edges_ranking: edge_ranking._id}});
-  return true;
-}
-
 async function insert_ranking_edge_to_database(edges_ranking_collection, edge, user, rank_type, rankCode)
 {
   var user_score = user.userScore;
@@ -56,6 +43,20 @@ async function insert_ranking_edge_to_database(edges_ranking_collection, edge, u
     return edge_ranking;
   else
     return null;
+}
+
+//Topic to topic ranking
+async function update_scores_to_topic_topic_ranking_edge_insertion(edge_ranking, edge, user, rank_type)
+{
+  var score_field_name = rank_type + "_weight";
+  var field_and_score_in_json = {};
+  field_and_score_in_json[score_field_name] = edge_ranking.scoreAdded;
+  await TopicTopicEdge.findOneAndUpdate({_id: edge._id},
+    {$inc: field_and_score_in_json, $push: {usersRanking: edge_ranking._id}});
+  edge[score_field_name] += edge_ranking.scoreAdded;
+  await User.findOneAndUpdate({_id: user._id},
+    {$push: {topic_topic_edges_ranking: edge_ranking._id}});
+  return true;
 }
 
 async function remove_topic_topic_ranking_edge_and_update_scores_in_db(edge_ranking, edge, user, rank_type)
@@ -178,6 +179,7 @@ router.post('/rank_topic_topic_edge', auth, async function(req, res) {
     return res.status(400).send("Failed to enter ranking");
   });
 
+//Site to topic ranking
 async function update_scores_to_site_topic_ranking_edge_insertion(edge_ranking, edge, domain, user, rank_type)
 {
   var score_field_name = rank_type + "_weight";
@@ -326,4 +328,6 @@ router.post('/rank_site_topic_edge', auth, async function(req, res) {
   }
   return res.status(400).send("Failed to enter ranking");
 });
+
+//comment ranking
 module.exports = router;

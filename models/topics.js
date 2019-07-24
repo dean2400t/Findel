@@ -23,6 +23,10 @@ const topicSchema = new mongoose.Schema({
   topicTopicEdges:[{
     type: mongoose.Schema.ObjectId, 
     ref: 'topic-topic-edges'
+  }],
+  root_comments:[{
+    type: mongoose.Schema.ObjectId, 
+    ref: 'comments'
   }]
 });
   

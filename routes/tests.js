@@ -1,6 +1,7 @@
 const parseDomain = require("parse-domain");
 const {Topic} = require('../models/topics');
 const {TopicTopicEdge} = require('../models/topic_to_topic_edges');
+const {Comment} = require('../models/comments');
 const {topic_save, topic_to_topic_edges_save} = require('../middleware/save_securely_to_database');
 
 var express = require('express');
@@ -79,5 +80,22 @@ router.get('/test_remove_response', async function(req, res) {
     test = await Topic.deleteOne(json);
 
     x=3;
+    });
+
+router.get('/test_comments', async function(req, res) {
+    var comment_text = "בדיקה1"
+    var father = new Comment({text: comment_text});
+    comment_text = "ילד1";
+    var child1 = new Comment({text: comment_text});
+    father.comments.push(child1);
+    comment_text = "ילד2";
+    var child2 = new Comment({text: comment_text});
+    comment_text = "ילד2 נכד";
+    var grandson = new Comment({text: comment_text});
+    child2.comments.push(grandson)
+    father.comments.push(child2);
+    await father.save();
+
+    return res.status(200).send("OK");
     });
 module.exports = router;

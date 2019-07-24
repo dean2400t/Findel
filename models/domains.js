@@ -40,6 +40,11 @@ const domainSchema = new mongoose.Schema({
     [{
       type: mongoose.Schema.ObjectId, 
       ref: 'site-topic-edges-ranking'
+    }],
+
+  root_comments:[{
+      type: mongoose.Schema.ObjectId, 
+      ref: 'comments'
     }]
   
 });
