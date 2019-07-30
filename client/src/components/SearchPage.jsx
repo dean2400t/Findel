@@ -106,7 +106,7 @@ class SearchPage extends Component {
         <div className="SearchPage">
             <div style={{ backgroundColor:'#0587c3'}}>
                 <div className="search_box_div">
-                    <img id="findelTheme" src="/publicComponents/findelTheme" height="100" width="400"/>
+                    <img id="findelTheme" src="/publicComponents/findelTheme"/>
                     <div>
                         <input id="search_text_box" type="text" value={this.state.inputValue} onChange={evt => this.updateTXT(evt)} onKeyPress={this.handleKeyPress}></input>
                         <button id="searchBTN" name="searchBTN" onClick={() => this.search_button_function()}>{this.state.search_button_text} <i className={this.state.search_button_iconClass}></i></button><br/>

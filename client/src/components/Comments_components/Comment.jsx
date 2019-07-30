@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import './ArefSite.css';
+import './Comment.css';
 import PropsTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faArrowAltCircleUp} from '@fortawesome/free-solid-svg-icons';
 import {faArrowAltCircleDown} from '@fortawesome/free-solid-svg-icons';
 import Cookies from 'universal-cookie';
 import Comments_functions from './comments_functions';
-import { isArray } from 'util';
 
 const cookies = new Cookies();
 const comments_functions=new Comments_functions();
@@ -14,11 +13,9 @@ const comments_functions=new Comments_functions();
 class Comment extends Component {
   constructor(props) {
     super(props);
-    if (!isArray(this.props.comment))
-    {
     var liked_upArrow='black';
     var liked_downArrow='black';
-    var users_rankings = this.props.comment.user_rankings;
+    var users_rankings = this.props.comment.usersRanking;
     users_rankings.forEach(ranking => {
         if (ranking.rank_type == "liked")
         {
@@ -37,14 +34,8 @@ class Comment extends Component {
     this.last_ranking_timeStamp = null;
     this.last_ranking_id = null;
     this.token=cookies.get('findel-auth-token') || "";
-    }
   }
   render() {
-    if (isArray(this.props.comment))
-      return (
-            <Comments key={this.props.comment.id} comments={this.props.comment}/>
-      );
-    else
       return (
         <div className="Comment">
             <br/>
@@ -52,7 +43,7 @@ class Comment extends Component {
               <FontAwesomeIcon icon={faArrowAltCircleUp} color={this.state.liked_upArrowColor} onClick={() => this.rank_click_up("liked")}/> 
               ({this.state.liked_weight}) 
               <FontAwesomeIcon icon={faArrowAltCircleDown} color={this.state.liked_downArrowColor} onClick={() => this.rank_click_down("liked")}/>
-            </text><br/>
+            </text>
             <br/><text>{this.props.comment.text}</text>
             <br/><text>הגב</text>
           </div>
@@ -67,4 +58,7 @@ class Comment extends Component {
       comments_functions.ranking_function(this, rank_type, "down")
     }
 }
+Comment.PropsTypes={
+  comment: PropsTypes.object.isRequired
+}  
 export default Comment;

@@ -1,26 +1,25 @@
 import React, { Component } from 'react';
-import './ArefSite.css';
 import PropsTypes from 'prop-types';
+import Cookies from 'universal-cookie';
+import './connected_topic_edge_component.css';
+import Site_topic_edge_function from './site_topic_edge_function';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faArrowAltCircleUp} from '@fortawesome/free-solid-svg-icons';
 import {faArrowAltCircleDown} from '@fortawesome/free-solid-svg-icons';
-import Cookies from 'universal-cookie';
-import Ref_site_functions from './ref_site_functions';
 
 const cookies = new Cookies();
-const ref_site_functions=new Ref_site_functions();
-
-class ArefSite extends Component {
-  constructor(props) {
-    super(props);
-    var liked_upArrow='black';
+const site_topic_edge_function=new Site_topic_edge_function();
+class Connected_topic_edge_component extends Component {
+    constructor(props) {
+        super(props);
+        var liked_upArrow='black';
     var liked_downArrow='black';
     var trustworthy_upArrow='black';
     var trustworthy_downArrow='black';
     var educational_upArrow='black';
     var educational_downArrow='black';
 
-    var users_rankings = this.props.aRefSite.user_rankings_for_edge
+    var users_rankings = this.props.connected_topic_edge.usersRanking
     users_rankings.forEach(ranking => {
         if (ranking.rank_type == "liked")
         {
@@ -54,13 +53,10 @@ class ArefSite extends Component {
       educational_upArrowColor: educational_upArrow,
       educational_downArrowColor: educational_downArrow,
       rank_error: "",
-      edge_liked_weight: this.props.aRefSite.liked_weight,
-      edge_trustworthy_weight: this.props.aRefSite.trustworthy_weight,
-      edge_educational_weight: this.props.aRefSite.educational_weight,
-      rankCode: this.props.aRefSite.userRankCode,
-      domain_liked_weight: this.props.aRefSite.domain.liked_weight,
-      domain_trustworthy_weight: this.props.aRefSite.domain.trustworthy_weight,
-      domain_educational_weight: this.props.aRefSite.domain.educational_weight
+      edge_liked_weight: this.props.connected_topic_edge.liked_weight,
+      edge_trustworthy_weight: this.props.connected_topic_edge.trustworthy_weight,
+      edge_educational_weight: this.props.connected_topic_edge.educational_weight,
+      rankCode: this.props.connected_topic_edge.userRankCode,
     }
     this.last_ranking_timeStamp = null;
     this.last_ranking_id = null;
@@ -70,15 +66,14 @@ class ArefSite extends Component {
     var redText={color: "red"};
     var more_on_site_textStyle={color: '#0587c3'};
     return (
-          <div className="aSiteRef">
-            <text><a target="_blank" rel="noopener noreferrer" href={this.props.aRefSite.siteURL}>{this.props.aRefSite.formatedURL}</a></text>
-            <br/><text>{this.props.aRefSite.siteSnap}</text>
+          <div className="connected_topic">
+            <a className="topic_link" target="_blank" rel="noopener noreferrer" href={'/?search=' + this.props.connected_topic_edge.topic.topicName}>{this.props.connected_topic_edge.topic.topicName}</a>
             <br/>
             <text>
               <FontAwesomeIcon icon={faArrowAltCircleUp} color={this.state.liked_upArrowColor} onClick={() => this.rank_click_up("liked")}/> 
               ({this.state.edge_liked_weight}) 
               <FontAwesomeIcon icon={faArrowAltCircleDown} color={this.state.liked_downArrowColor} onClick={() => this.rank_click_down("liked")}/>
-              &nbsp; ציון משתמשים שאהבו את הדף
+              &nbsp; משתמשים שאהבו את הדף בהקשר החיפוש
             </text><br/>
             
             <text> 
@@ -96,25 +91,21 @@ class ArefSite extends Component {
               <FontAwesomeIcon icon={faArrowAltCircleDown} color={this.state.educational_downArrowColor} onClick={() => this.rank_click_down("educational")}/>
               &nbsp; ציון מתשתמשים שאמרו שהדף מכיל תוכן חינוכי 
             </text>
-
-            <br/><text> {this.state.domain_liked_weight} אהבו את הדומיין</text>
-            <br/><text>{this.state.domain_trustworthy_weight} אמינות הדומיין</text>
-            <br/><text>{this.state.domain_educational_weight} חינוכיות הדומיין</text>
             <br/><text style={redText}>{this.state.rank_error}</text>
-            <a target="_blank" rel="noopener noreferrer" style={more_on_site_textStyle} href={"/SitePage/"+encodeURIComponent(this.props.aRefSite.formatedURL)}>עוד על הדף...</a>
+            <a target="_blank" rel="noopener noreferrer" href={"/SitePage/"+this.props.connected_topic_edge.site.siteURL}>עוד על הנושא...</a>
           </div>
     );
   }
   rank_click_up(rank_type)
   {
-    ref_site_functions.ranking_function(this, rank_type, "up")
+    site_topic_edge_function.ranking_function(this, rank_type, "up")
   }
   rank_click_down(rank_type)
   {
-    ref_site_functions.ranking_function(this, rank_type, "down")
+    site_topic_edge_function.ranking_function(this, rank_type, "down")
   }
 }
-ArefSite.PropsTypes={
-    aRefSite: PropsTypes.object.isRequired
+Connected_topic_edge_component.PropsTypes={
+    topic: PropsTypes.object.isRequired
 }   
-export default ArefSite;
+export default Connected_topic_edge_component;

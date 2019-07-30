@@ -1,33 +1,29 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import './add_comment.css';
 import Cookies from 'universal-cookie';
 const cookies = new Cookies();
 
 class Add_comment extends Component {
     constructor(props) {
         super(props);
-        this.object_id = this.props.object_id;
-        this.object_id_collection_name = this.props.object_id_collection_name;
-        this.root_comment_id = this.props.root_comment_id;
-        this.parent_comment_id = this.props.parent_comment_id;
         this.token=cookies.get('findel-auth-token') || "";
         this.state ={
             comment_text: ''
         }
       }
     render() {
-    
-      if(this.token == '')
-        return (<text>חייב להיות מחובר על מנת להגיב</text>);
-      else
         return (
-                <div className="Add_comment">
-                    <textarea value={this.state.comment_text} 
-                    placeholder="רשום שאלה/תשובה/תגובה כאן..." 
-                    onChange={evt => this.comment_text_change(evt)}/><br/>
-                    <button onClick={() => this.send_comment_to_server()}>הכנס תגובה</button>
-                    <text value={this.state.server_message}></text>
-                </div>
+            <div className="Add_comment">
+                <textarea value={this.state.comment_text}
+                id='comment_textArea'
+                rows={6}
+                cols={50}
+                placeholder="רשום שאלה/תשובה/תגובה כאן..." 
+                onChange={evt => this.comment_text_change(evt)}/><br/>
+                <button onClick={() => this.send_comment_to_server()}>הכנס תגובה</button>
+                <text value={this.state.server_message}></text>
+            </div>
         );
     }
     comment_text_change(evt)
@@ -43,10 +39,10 @@ class Add_comment extends Component {
     {
         var opts={
             text: this.state.comment_text,
-            object_id: this.object_id,
-            collection_name: this.object_id_collection_name,
-            root_comment_id: this.root_comment_id,
-            parent_comment_id: this.parent_comment_id
+            object_id: this.props.parrent_object_data.object_id,
+            collection_name: this.props.parrent_object_data.object_id_collection_name,
+            root_comment_id: this.props.parrent_object_data.root_comment_id,
+            parent_comment_id: this.props.parrent_object_data.parent_comment_id
           };
         axios.post('/api/addContent/addComment', opts, {
         headers: {'findel-auth-token': this.token}}

@@ -73,6 +73,8 @@ async function site_to_topic_edge_save(edge)
 
 async function topic_to_topic_edge_save(edge)
 {
+    if (edge.topic1.equals(edge.topic2))
+        return null;
     try{
         await edge.save()
     }catch(error){ 

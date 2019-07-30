@@ -4,6 +4,7 @@ const {User} = require('../models/users');
 const {Topic} = require('../models/topics');
 const {Site} = require('../models/sites');
 const {SiteTopicEdge}=require('../models/siteTopicEdges');
+const {Comment} = require('../models/comments');
 const {site_save, 
        add_and_update_domain, 
        topic_save,
@@ -77,44 +78,64 @@ router.post('/addComment', auth, async function(req, res) {
         return res.status(400).send("אין ID של אובייקט בגוף הבקשה");
     if (!collection_name)
         return res.status(400).send("אין לאיזה ספריית אובייקטים לשמור בגוף הבקשה");
-    if (!parent_comment_id)
-        return res.status(400).send("אין ID של תגובה קודמת בגוף הבקשה");
-    if (!root_comment_id)
-        return res.status(400).send("אין ID של תגובה ראשית בגוף הבקשה");
     
+    if (!parent_comment_id && root_comment_id)
+        return res.status(400).send("אין ID של תגובה קודמת בגוף הבקשה");
+    
+    if (!root_comment_id && parent_comment_id)
+        return res.status(400).send("אין ID של תגובה ראשית בגוף הבקשה");
+
     var user=await User.findById(req.user._id);
     if (!user)
         return res.status(400).send("User not found in database");
-    
-    var root_comment = await Comment.findById(root_comment_id)
-    if (!root_comment)
-        return res.status(400).send("Root comment not found in database");
 
-    var parent_comment = await Comment.findById(parent_comment_id)
-    if (!parent_comment)
-        return res.status(400).send("Parent comment not found in database");
-
-    var collection = get_collection_from_collection_name(collection_name);
+    var collection = await get_collection_from_collection_name(collection_name);
     if (!collection)
         return res.status(400).send("collection name is incorrect");
 
     var object_to_comment = await collection.findById(object_id);
     if (!object_to_comment)
         return res.status(400).send("Object with this ID does not exist in this collection");
-
-    var comment = new Comment({
-        text: text,
-        object_id: object_id,
-        object_id_collection_name: collection_name,
-        user: user._id,
-        root_comment: root_comment_id,
-        parent_comment: parent_comment_id
-    });
-
-    if (await comment_save(comment))
-        await collection.findOneAndUpdate({_id: object_id}, {$addToSet: {root_comment: comment._id}});
     
-    return res.status(200).send(comment);
+    if (!root_comment_id)
+    {
+        var comment = new Comment({
+            text: text,
+            object_id: object_id,
+            object_id_collection_name: collection_name,
+            user: user._id
+        });
+        comment.root_comment=comment._id;
+        comment.parent_comment=null;
+        if (await comment_save(comment))
+        {
+            await collection.findOneAndUpdate({_id: object_id}, {$addToSet: {root_comments: comment._id}});
+            return res.status(200).send(comment);
+        }
+    }
+    else
+    {
+        var root_comment = await Comment.findById(root_comment_id)
+        if (!root_comment)
+            return res.status(400).send("Root comment not found in database");
+
+        var parent_comment = await Comment.findById(parent_comment_id)
+        if (!parent_comment)
+            return res.status(400).send("Parent comment not found in database");
+        
+        var comment = new Comment({
+            text: text,
+            object_id: object_id,
+            object_id_collection_name: collection_name,
+            user: user._id,
+            root_comment: root_comment_id,
+            parent_comment: parent_comment_id
+        });
+        
+        if (await comment_save(comment))
+            return res.status(200).send(comment);
+    }
+    return res.status(500).send("comment not saved");
 });
 
 module.exports = router;

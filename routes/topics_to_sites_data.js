@@ -144,9 +144,12 @@ async function search_Google_and_orgenize(topic)
       google_site={order_index_by_google: null};
     edge = new SiteTopicEdge({site: sites_in_db_which_are_not_connected[siteIndex]._id, topic: topic._id, order_index_by_google: google_site.order_index_by_google});
     edge = await site_to_topic_edge_save(edge);
-    new_site_topic_edges.push(edge._id);
-    await Site.updateOne({_id: sites_in_db_which_are_not_connected[siteIndex].id}, {$addToSet: {siteTopicEdges: edge._id}});
-    sites.push(sites_in_db_which_are_not_connected[siteIndex]);
+    if (edge)
+    {
+      new_site_topic_edges.push(edge._id);
+      await Site.updateOne({_id: sites_in_db_which_are_not_connected[siteIndex].id}, {$addToSet: {siteTopicEdges: edge._id}});
+      sites.push(sites_in_db_which_are_not_connected[siteIndex]);
+    }
   }
 
   if (new_site_topic_edges.length>0)

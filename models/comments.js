@@ -24,11 +24,6 @@ const comment_Scheme = new mongoose.Schema({
     minlength: 1,
     maxlength: 5000
   },
-  usersRanking:
-    [{
-      type: mongoose.Schema.ObjectId, 
-      ref: 'comments-ranking'
-    }],
   liked_weight:{
     type: Number,
     default: 1,
@@ -41,8 +36,7 @@ const comment_Scheme = new mongoose.Schema({
   },
   parent_comment: {
     type: mongoose.Schema.ObjectId, 
-    ref: 'comments',
-    required: true
+    ref: 'comments'
   },
   usersRanking:
     [{
