@@ -34,10 +34,6 @@ const comment_Scheme = new mongoose.Schema({
     ref: 'comments',
     required: true
   },
-  parent_comment: {
-    type: mongoose.Schema.ObjectId, 
-    ref: 'comments'
-  },
   usersRanking:
     [{
       type: mongoose.Schema.ObjectId, 
@@ -48,8 +44,7 @@ const comment_Scheme = new mongoose.Schema({
 comment_Scheme.index({
   text: 1, 
   user: 1, 
-  root_comment: 1, 
-  parent_comment: 1,
+  root_comment: 1,
   object_id: 1,
   object_id_collection_name: 1
   }, { unique: true });

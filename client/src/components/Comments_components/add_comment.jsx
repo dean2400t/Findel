@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import './add_comment.css';
 import Cookies from 'universal-cookie';
+import Comments_Array_mapper from './Comments_Array_mapper';
 const cookies = new Cookies();
 
 class Add_comment extends Component {
@@ -9,7 +10,8 @@ class Add_comment extends Component {
         super(props);
         this.token=cookies.get('findel-auth-token') || "";
         this.state ={
-            comment_text: ''
+            comment_text: '',
+            comments_added: []
         }
       }
     render() {
@@ -22,7 +24,9 @@ class Add_comment extends Component {
                 placeholder="רשום שאלה/תשובה/תגובה כאן..." 
                 onChange={evt => this.comment_text_change(evt)}/><br/>
                 <button onClick={() => this.send_comment_to_server()}>הכנס תגובה</button>
-                <text value={this.state.server_message}></text>
+                <br/>
+                <text>{this.state.server_message}</text>
+                <Comments_Array_mapper comments={this.state.comments_added}/>
             </div>
         );
     }
@@ -41,13 +45,20 @@ class Add_comment extends Component {
             text: this.state.comment_text,
             object_id: this.props.parrent_object_data.object_id,
             collection_name: this.props.parrent_object_data.object_id_collection_name,
-            root_comment_id: this.props.parrent_object_data.root_comment_id,
-            parent_comment_id: this.props.parrent_object_data.parent_comment_id
+            root_comment_id: this.props.parrent_object_data.root_comment_id
           };
         axios.post('/api/addContent/addComment', opts, {
         headers: {'findel-auth-token': this.token}}
             ).then(response => {
-                this.setState({server_message: "הוכנס בהצלחה"});
+                response.data.collection_name=response.data.object_id_collection_name;
+                response.data.id=response.data._id;
+                response.data.sub_comments=[];
+                var comments_added= this.state.comments_added;
+                comments_added.push(response.data);
+                this.setState({
+                    server_message: "הוכנס בהצלחה",
+                    comments_added: comments_added
+                });
             }).catch(error=> {
                 if (error.response==undefined)
                 this.setState({server_message: "אין חיבור לשרת"});

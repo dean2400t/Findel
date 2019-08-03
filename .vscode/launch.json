@@ -4,7 +4,13 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Launch Chrome",
+            "url": "http://localhost:3000/SitePage/https%3A%2F%2Fhe.wikipedia.org%2Fwiki%2F%D7%94%D7%A9%D7%9E%D7%A9",
+            "webRoot": "${workspaceFolder}\\client\\src"
+        },
         {
             "type": "node",
             "request": "launch",
@@ -23,16 +29,6 @@
             "request": "launch",
             "name": "Launch Program",
             "program": "${workspaceFolder}\\bin\\www"
-        },
-        {
-            "name": "Chrome",
-            "type": "chrome",
-            "request": "launch",
-            "url": "http://localhost:3000",
-            "webRoot": "${workspaceRoot}/client/src",
-            "sourceMapPathOverrides": {
-                "webpack:///src/*": "${webRoot}/*"
-            }
         }
     ]
 }

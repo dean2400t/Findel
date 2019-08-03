@@ -69,7 +69,6 @@ router.post('/addComment', auth, async function(req, res) {
     var text=req.body.text;
     var object_id = req.body.object_id;
     var collection_name = req.body.collection_name;
-    var parent_comment_id = req.body.parent_comment_id;
     var root_comment_id = req.body.root_comment_id;
 
     if (!text)
@@ -79,12 +78,6 @@ router.post('/addComment', auth, async function(req, res) {
     if (!collection_name)
         return res.status(400).send("אין לאיזה ספריית אובייקטים לשמור בגוף הבקשה");
     
-    if (!parent_comment_id && root_comment_id)
-        return res.status(400).send("אין ID של תגובה קודמת בגוף הבקשה");
-    
-    if (!root_comment_id && parent_comment_id)
-        return res.status(400).send("אין ID של תגובה ראשית בגוף הבקשה");
-
     var user=await User.findById(req.user._id);
     if (!user)
         return res.status(400).send("User not found in database");
@@ -106,7 +99,6 @@ router.post('/addComment', auth, async function(req, res) {
             user: user._id
         });
         comment.root_comment=comment._id;
-        comment.parent_comment=null;
         if (await comment_save(comment))
         {
             await collection.findOneAndUpdate({_id: object_id}, {$addToSet: {root_comments: comment._id}});
@@ -118,18 +110,13 @@ router.post('/addComment', auth, async function(req, res) {
         var root_comment = await Comment.findById(root_comment_id)
         if (!root_comment)
             return res.status(400).send("Root comment not found in database");
-
-        var parent_comment = await Comment.findById(parent_comment_id)
-        if (!parent_comment)
-            return res.status(400).send("Parent comment not found in database");
         
         var comment = new Comment({
             text: text,
             object_id: object_id,
             object_id_collection_name: collection_name,
             user: user._id,
-            root_comment: root_comment_id,
-            parent_comment: parent_comment_id
+            root_comment: root_comment_id
         });
         
         if (await comment_save(comment))

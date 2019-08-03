@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import './site_page.css'
 import axios from 'axios';
 import Connected_topics_edges_component from './connected_topics_edges_component';
-import Add_comment from '../add_comment';
-import Comments_Array_mapper from '../Comments_components/Comments_Array_mapper';
+import Comments from '../Comments_components/Comments';
+import arrange_comments from '../Comments_components/arrange_comments';
 import Cookies from 'universal-cookie';
 const cookies = new Cookies();
 
@@ -23,7 +23,7 @@ class Site_page extends Component {
                 object_id: "",
                 object_id_collection_name: 'sd',
                 root_comment_id: null,
-                parent_comment_id: null
+                parrent_comments_array: null
             },
             comments:[]
         };
@@ -44,11 +44,14 @@ class Site_page extends Component {
                   edge.site={ siteURL: data.siteURL }
                   this.id++;
               });
+              var number_of_overall_comments = data.comments.length;
+              data.comments = arrange_comments(data.comments);
               data.add_comment_vars= {
                 object_id: data.siteID,
                 object_id_collection_name: 'sites',
                 root_comment_id: null,
-                parent_comment_id: null
+                parrent_comments_array: data.comments,
+                number_of_overall_comments: number_of_overall_comments
                 }
               this.setState(data);
           }).catch((error) => {
@@ -72,13 +75,11 @@ class Site_page extends Component {
                 <br/>
                 <text>Domain: {this.state.domain.domainURL}</text>
                 <br/>
-                <Comments_Array_mapper comments={this.state.comments}/> 
-                <Add_comment parrent_object_data={this.state.add_comment_vars}/>
+                <Comments comments={this.state.comments} parrent_object_data={this.state.add_comment_vars}/> 
                 <Connected_topics_edges_component connected_topics_edges={this.state.site_topic_edges}/>
             </div>
         </div>
-      );
-          
+      ); 
     }
 }
 

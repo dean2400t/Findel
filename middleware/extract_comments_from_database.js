@@ -8,9 +8,10 @@ module.exports=async function extract_comments_from_database(root_comments_IDs_a
         return [];
 
     if (userID == '')
-        var comments = await Comment.find({root_comment: {$in: root_comments_IDs_array}});
+        var comments = await Comment.find({root_comment: {$in: root_comments_IDs_array}}).populate('user');
     else
         var comments = await Comment.find({root_comment: {$in: root_comments_IDs_array}})
+        .populate('user')
         .populate({
             path: 'usersRanking',
             match: { user: userID}});

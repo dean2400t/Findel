@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import Composite from './Composite';
+import Comment from './Comment';
 import PropsTypes from 'prop-types';
 
 class Comments_Array_mapper extends Component {
     render() {
         
-        return this.props.comments.map((composite)=>(
-            <Composite key={composite.id} composite={composite} />
+        return this.props.comments.map((comment)=>(
+            <Comment key={comment.id} comment={comment} />
           ));
     }
 }
