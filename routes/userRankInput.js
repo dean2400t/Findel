@@ -1,14 +1,15 @@
 var express = require('express');
 const auth = require('../middleware/security/auth');
 const {Site} = require('../models/sites');
-const {UserRanking}=require('../models/userRanking');
 const {User} = require('../models/users');
 const {Domain} = require('../models/domains');
 const {SiteTopicEdge}=require('../models/siteTopicEdges');
 const {TopicTopicEdge} = require('../models/topic_to_topic_edges');
 const {Site_topic_edges_ranking} = require('../models/site_topic_edges_ranking');
 const {Topic_topic_edges_ranking} = require('../models/topic_topic_edges_ranking');
-const {edge_ranking_save} = require('../middleware/save_securely_to_database');
+const {Comments_ranking} = require('../models/comments_rankings');
+const {Comment} = require('../models/comments');
+const {edge_ranking_save, comment_ranking_save} = require('../middleware/save_securely_to_database');
 var router = express.Router();
 
 function is_site_topic_edge_rank_type_valid(rank_type){
@@ -20,6 +21,12 @@ function is_site_topic_edge_rank_type_valid(rank_type){
 }
 
 function is_topic_topic_edge_rank_type_valid(rank_type){
+  if (rank_type == "liked")
+      return true;
+  return false;
+}
+
+function is_comment_rank_type_valid(rank_type){
   if (rank_type == "liked")
       return true;
   return false;
@@ -330,4 +337,148 @@ router.post('/rank_site_topic_edge', auth, async function(req, res) {
 });
 
 //comment ranking
+async function insert_comment_ranking_to_database(comment, user, rank_type, rankCode)
+{
+  var user_score = user.userScore;
+  if (user_score<0)
+    user_score = 0;
+  if (rankCode == 2)
+    user_score *= -1;
+  var comment_ranking = new Comments_ranking({
+    comment: comment._id,
+    user: user._id,
+    rank_type: rank_type,
+    rankCode: rankCode,
+    scoreAdded: user_score
+    });
+  if (await comment_ranking_save(comment_ranking)==true)
+    return comment_ranking;
+  else
+    return null;
+}
+
+async function update_scores_to_comment_ranking_insertion(comment_ranking, comment, user, rank_type)
+{
+  var score_field_name = rank_type + "_weight";
+  var field_and_score_in_json = {};
+  field_and_score_in_json[score_field_name] = comment_ranking.scoreAdded;
+  await Comment.findOneAndUpdate({_id: comment._id},
+    {$inc: field_and_score_in_json, $push: {usersRanking: comment_ranking._id}});
+  comment[score_field_name] += comment_ranking.scoreAdded;
+
+  await User.findOneAndUpdate({_id: user._id},
+    {$push: {comments_ranking: comment_ranking._id}});
+  return true;
+}
+
+function data_to_return_for_comment_ranking(rank_type, rankCode, comment_ranking, comment)
+{
+  var weight = comment[rank_type + "_weight"];
+
+  if (rankCode != 0)
+    weight -= comment_ranking.scoreAdded;
+    
+  if (rankCode == 1)
+    weight += 1;
+
+  else if (rankCode == 2)
+    weight -= 1;
+
+  return {
+    rankCode: rankCode,
+    commentID: comment._id,
+    weight: weight,
+    comment_ranking_date: comment_ranking._id.getTimestamp(),
+    comment_ranking_id: comment_ranking.id
+    } 
+}
+
+async function remove_comment_ranking_and_update_scores_in_db(comment_ranking, comment, user, rank_type)
+{
+  var delete_result = await Comments_ranking.deleteOne(
+    {comment: comment._id, user: user._id, rank_type: rank_type});
+  
+  if (delete_result != null)
+    if (delete_result.n == 1)
+    {
+      var score_field_name = rank_type + "_weight";
+      var field_and_score_in_json = {};
+      field_and_score_in_json[score_field_name] = -comment_ranking.scoreAdded;
+      await Comment.findOneAndUpdate({_id: comment._id},
+        {$inc: field_and_score_in_json, $pull: {usersRanking: comment_ranking._id}});
+      comment[score_field_name] -= comment_ranking.scoreAdded;
+      await User.findOneAndUpdate({_id: user._id},
+        {$pull: {comments_ranking: comment_ranking._id}});
+      return true;
+    }
+  return false
+}
+
+router.post('/rank_comment', auth, async function(req, res) {
+  
+  var commentID=req.body.commentID;
+  var rank_type = req.body.rank_type;
+  var rankCode=req.body.rankCode;
+  if (!commentID)
+    return res.status(400).send("No commentID was sent");
+  if (!rank_type)
+    return res.status(400).send("No rank_type was sent");
+  if (!is_comment_rank_type_valid(rank_type))
+    return res.status(400).send("rank_type is not valid");
+  if (!rankCode && rankCode!==0)
+    return res.status(400).send("No rank_code was sent");
+  if (rankCode<0 || rankCode>2)
+    return res.status(400).send("rankCode must be 0, 1, or 2");
+  if (!Number.isInteger(rankCode))
+  return res.status(400).send("rankCode must be 0, 1, or 2");
+    
+  var comment=await Comment.findById(commentID);
+  if (!comment)
+    return res.status(400).send("Comment not found in database");
+
+  var user=await User.findById(req.user._id);
+  if (!user)
+    return res.status(400).send("User not found in database");
+  
+  var comment_ranking = await Comments_ranking.findOne(
+    {comment: comment._id, user: user._id, rank_type: rank_type});
+  if (!comment_ranking)
+  {
+    if (rankCode == 0)
+      return res.status(400).send("Comment is already not ranked");
+    else
+    {
+      comment_ranking = await insert_comment_ranking_to_database(
+        comment, user, rank_type, rankCode);
+      if (!comment_ranking)
+        return res.status(400).send("Double request");
+      
+      if (await update_scores_to_comment_ranking_insertion(
+        comment_ranking, comment, user, rank_type) == true)
+          return res.status(200).send(data_to_return_for_comment_ranking(rank_type, rankCode, comment_ranking, comment));
+    }
+  }
+
+  if (comment_ranking.rankCode == rankCode)
+    if (rankCode == 1 || rankCode == 2)
+      return res.status(200).send(data_to_return_for_comment_ranking(rank_type, rankCode, comment_ranking, comment));
+
+  if (await remove_comment_ranking_and_update_scores_in_db(
+    comment_ranking, comment, user, rank_type) == true)
+  {
+    if (rankCode == 0)
+      return res.status(200).send(data_to_return_for_comment_ranking(rank_type, rankCode, comment_ranking, comment));
+    
+    comment_ranking = await insert_comment_ranking_to_database(
+      comment, user, rank_type, rankCode);
+    if (!comment_ranking)
+      return res.status(400).send("Double request");
+    
+    
+    if (await update_scores_to_comment_ranking_insertion(
+      comment_ranking, comment, user, rank_type)==true)
+        return res.status(200).send(data_to_return_for_comment_ranking(rank_type, rankCode, comment_ranking, comment));
+  }
+  return res.status(400).send("Failed to enter ranking");
+});
 module.exports = router;

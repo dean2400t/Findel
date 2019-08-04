@@ -1,6 +1,5 @@
 const Joi = require('joi');
 const mongoose = require('mongoose');
-const {UserRanking}=require('./userRanking');
 
 const domainSchema = new mongoose.Schema({
   domainURL: {

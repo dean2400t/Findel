@@ -63,8 +63,13 @@ const userSchema = new mongoose.Schema({
   
   topic_topic_edges_ranking: [{
     type: mongoose.Schema.ObjectId, 
+    ref: 'topic-topic-edges-ranking'}],
+  
+  comments_ranking: [{
+    type: mongoose.Schema.ObjectId, 
     ref: 'topic-topic-edges-ranking'}]
   });
+  
   
   userSchema.methods.generateAuthToken = function() { 
     var jwtPrivateKey=config.get('jwtPrivateKey');

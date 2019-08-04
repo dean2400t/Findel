@@ -1,6 +1,4 @@
 import axios from 'axios';
-import { equal } from 'assert';
-
 
 class Comments_functions {
     constructor() {
@@ -24,7 +22,7 @@ class Comments_functions {
                 rankCode = 2;
 
         var opts={
-            commentID: this_of_comment.props.comment.commentID,
+            commentID: this_of_comment.props.comment._id,
             rank_type: rank_type,
             rankCode: rankCode
         };

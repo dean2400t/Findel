@@ -21,7 +21,7 @@ class Site_page extends Component {
             site_topic_edges: [],
             add_comment_vars: {
                 object_id: "",
-                object_id_collection_name: 'sd',
+                object_id_collection_name: '',
                 root_comment_id: null,
                 parrent_comments_array: null
             },

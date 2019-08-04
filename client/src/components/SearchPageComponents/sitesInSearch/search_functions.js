@@ -159,7 +159,7 @@ class Search_functions{
                 // Do something with the result
                 var sitesArray=[];
                 var full_sites_array=[];
-                var num_of_initial_sites=15;
+                var num_of_initial_sites=9;
                 for (var index=0; index<sites.length; index++)
                 {
                     if (sites[index].domain==null)
@@ -368,7 +368,7 @@ class Search_functions{
             expandend_content_status: ""
         });
         this_of_searchPage.expandedCon_to_history=expandedCon;
-        this_of_searchPage.save_to_history();
+        
     }
 
     async best_sites_results(this_of_searchPage, rk_results)
@@ -425,6 +425,10 @@ class Search_functions{
             this.best_sites_results(this_of_searchPage, rk_results)
             .then(()=>{
                 this.display_expended_content(this_of_searchPage);
+            })
+            .then(()=>
+            {
+                var connected_topics_edges=this_of_searchPage.connected_topics_edges;
                 var edges_to_update=[];
                 connected_topics_edges.forEach(connected_topic_edge => {
                     if (connected_topic_edge.is_search_required)

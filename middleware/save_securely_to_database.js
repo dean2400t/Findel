@@ -104,6 +104,16 @@ async function comment_save(comment)
     return true;
 }
 
+async function comment_ranking_save(comment_ranking)
+{
+    try{
+        await comment_ranking.save()
+    }catch(error){ 
+        return false;
+    }
+    return true;
+}
+
 async function topic_to_topic_edges_save(edges)
 {
     try{
@@ -132,3 +142,4 @@ exports.topic_to_topic_edge_save = topic_to_topic_edge_save;
 exports.add_and_update_domain = add_and_update_domain;
 exports.edge_ranking_save = edge_ranking_save;
 exports.comment_save = comment_save;
+exports.comment_ranking_save = comment_ranking_save;

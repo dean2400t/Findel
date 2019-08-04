@@ -330,7 +330,8 @@ class SearchPage extends Component {
             if (result.data.wikiText!=null && this.state.is_simple_search_selected==false)
             {
                 this.connected_topics_edges=result.data.connected_topics_edges;
-                search_functions.search_using_wikipedia(result.data.wikiText, this);
+                await search_functions.search_using_wikipedia(result.data.wikiText, this);
+                this.save_to_history();
             }
             
             else if (result.data.ambig!=null)

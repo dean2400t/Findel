@@ -77,7 +77,14 @@ router.get('/connected_topics',async function(req, res) {
       });
    });
 
-   return res.status(200).send(connected_topics_data);
+   var comments = await extract_comments_from_database(topic.root_comments, userID);
+
+   data={
+      topic: topic,
+      topics: connected_topics_data,
+      comments: comments
+   }
+   return res.status(200).send(data);
 });
 
 
