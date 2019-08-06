@@ -20,18 +20,20 @@ function checkAuthAndReturnUserID(token)
   }
 }
 
+
 router.get('/domains', async function(req, res) {
-   var domains = await Domain.find({}).select('score domainURL _id');
+   var domains = await Domain.find({}).select('liked_weight credibility_weight educational_weight domainURL _id');
    return res.status(200).send(domains);
 });
 
-router.get('/domains', async function(req, res) {
+router.get('/domain_pages', async function(req, res) {
    var domain_id = req.query.id;
    var domain_and_pages = await Domain.findById(domain_id)
       .populate('pages', 'pageURL pageFormatedURL')
-      .select('score pages domainURL _id');
+      .select('pages domainURL _id');
    return res.status(200).send(domain_and_pages);
 });
+
 
 router.get('/connected_topics',async function(req, res) {
    var topicName = req.query.topic;
