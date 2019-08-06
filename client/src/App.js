@@ -97,7 +97,7 @@ class App extends Component {
           <br></br>
           
 
-          <text text className="link_text" onClick={() => this.push_to_history_and_go('/')}>חפש</text>
+          <text className="link_text" onClick={() => this.push_to_history_and_go('/')}>חפש</text>
           <text className="link_text" style={this.state.displayLoggingComponents} onClick={() => this.push_to_history_and_go('/Login_page')}> - התחבר</text>
           <text className="link_text" style={this.state.displayRegisterComponents} onClick={() => this.push_to_history_and_go('/Register_page')}> -  רישום </text>
           <text className="link_text" style={this.state.displayUserDataComponents} onClick={() => this.push_to_history_and_go('/UserSearchHistory_page')}> - היסטורית חיפוש</text>

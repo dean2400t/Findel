@@ -425,7 +425,7 @@ class Search_functions{
                 var opts={
                     edges: edges_to_update
                 };
-                axios.post('/api/userInsertData/insert_topic_topic_edge_scores', opts
+                axios.post('/api/userInsertData/insert_topic_topic_edges_scores', opts
                     ).then(response => {
                         console.log(response.data);
                     }).catch(error=> {
