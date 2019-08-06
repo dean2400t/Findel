@@ -76,22 +76,39 @@ router.get('/favorites', auth, async function(req, res) {
  });
   
   var topic_and_liked_pages = {};
-  var favorites =[];
   if (positive_liked_rankings.length>0)
   {
     positive_liked_rankings.forEach(ranking => {
       if (topic_and_liked_pages[ranking.edge.topic._id] == null)
         topic_and_liked_pages[ranking.edge.topic._id] = {
           topic: ranking.edge.topic,
-          pages: []
+          pages: [],
+          most_recent_ranking: ranking._id.getTimestamp()
         };
       topic_and_liked_pages[ranking.edge.topic._id].pages.push(ranking.edge.page);
+      ranking.edge.page.time_ranked_as_favorite = ranking._id.getTimestamp();
+      if (topic_and_liked_pages[ranking.edge.topic._id].most_recent_ranking < ranking.edge.page.time_ranked_as_favorite)
+        topic_and_liked_pages[ranking.edge.topic._id].most_recent_ranking = ranking.edge.page.time_ranked_as_favorite;
     });
   }
+
+  
+
   var favorites =[];
   Object.values(topic_and_liked_pages).forEach(topic_and_liked_pages =>{
     favorites.push(topic_and_liked_pages)
   })
+  
+  favorites.sort((favorite1, favorite2) => {
+    return favorite2.most_recent_ranking - favorite1.most_recent_ranking;
+  });
+
+  favorites.forEach(favorite => {
+    favorite.pages.sort((page1, page2) => {
+      return page2.time_ranked_as_favorite - page1.time_ranked_as_favorite
+    })
+  });
+
   return res.status(200).send(favorites);
 });
 module.exports = router;

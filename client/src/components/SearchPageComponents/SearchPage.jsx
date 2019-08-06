@@ -354,7 +354,7 @@ class SearchPage extends Component {
             {
                 this.connected_topics_edges=result.data.connected_topics_edges;
                 await search_functions.request_pages_from_Server_to_use(this.curSearch, this);
-                await search_functions.rankpages(this);
+                await search_functions.rank_pages(this);
                 await search_functions.display_expended_content(this);
                 this.search_button_function_stop_search();
                 this.save_to_history();
@@ -367,7 +367,7 @@ class SearchPage extends Component {
                 });
             else
                 this.setState({
-                    server_message: "בעיה עם חיבור לשרת"
+                    server_message: error.message
                 });
             this.search_button_function_stop_search();
         });

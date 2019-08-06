@@ -3176,3 +3176,22 @@
 {"level":"info","message":"Listening on port 1337...","timestamp":"2019-08-06T09:29:13.743Z"}
 {"level":"info","message":"Listening on port 1337...","timestamp":"2019-08-06T09:36:22.745Z"}
 {"level":"info","message":"Listening on port 1337...","timestamp":"2019-08-06T09:39:07.478Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-08-06T09:45:52.231Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-08-06T09:55:12.330Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-08-06T09:57:24.760Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-08-06T10:00:06.255Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-08-06T10:09:55.071Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-08-06T10:13:53.897Z"}
+{"message":"topic_and_liked_pages.sort is not a function","stack":"TypeError: topic_and_liked_pages.sort is not a function\n    at c:\\Projects\\findel\\routes\\user_data.js:96:25\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-08-06T10:14:01.223Z"}
+{"message":"topic_and_liked_pages.sort is not a function","stack":"TypeError: topic_and_liked_pages.sort is not a function\n    at c:\\Projects\\findel\\routes\\user_data.js:96:25\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-08-06T10:14:11.801Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-08-06T10:15:05.031Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-08-06T10:16:28.262Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-08-06T10:25:59.921Z"}
+{"message":"cur_ranking_time is not defined","stack":"ReferenceError: cur_ranking_time is not defined\n    at positive_liked_rankings.forEach.ranking (c:\\Projects\\findel\\routes\\user_data.js:92:77)\n    at Array.forEach (<anonymous>)\n    at c:\\Projects\\findel\\routes\\user_data.js:82:29\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-08-06T10:27:21.019Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-08-06T10:27:57.769Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-08-06T10:28:59.182Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-08-06T10:31:18.623Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-08-06T10:33:21.373Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-08-06T10:35:27.690Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-08-06T10:39:30.392Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-08-06T10:49:34.704Z"}

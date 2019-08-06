@@ -19,7 +19,8 @@ class UserFavorites extends Component {
           .then((result) => {
               return result.data;
           }).then((favorites) => {
-              favorites=favorites.reverse(); 
+              
+              
               this.setFavorites(favorites)
           }).catch((error) => {
               console.log(error);

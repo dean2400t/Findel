@@ -5,7 +5,9 @@ class Search extends Component {
   render() {
     return (
       <div className="search">
-        <text> נושא: {this.props.search.topic}<br></br>תאריך: {this.props.search.searchDate}<br></br><br></br></text>
+        <text> נושא: <a target="_blank" rel="noopener noreferrer" href={'/?search=' + this.props.search.topic}>{this.props.search.topic}</a></text>
+        <br/><text> תאריך: {this.props.search.searchDate}</text>
+        <br/><br/>
       </div>
     );
   }
