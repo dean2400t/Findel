@@ -23,7 +23,7 @@ const page_topic_edge_Schema = new mongoose.Schema({
     type: Date
   },
 
-  num_of_links_in_site:{
+  num_of_links_in_page:{
   type: Number
   },
 

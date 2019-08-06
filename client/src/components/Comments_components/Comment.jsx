@@ -27,7 +27,6 @@ class Comment extends Component {
             liked_downArrow = 'red'
         }
       });
-
     var user_name_color = "#0587c3";
     if (this.props.comment.user.position == "Teacher")
       user_name_color = "green";
@@ -71,6 +70,7 @@ class Comment extends Component {
               <FontAwesomeIcon icon={faArrowAltCircleDown} color={this.state.liked_downArrowColor} onClick={() => this.rank_click_down("liked")}/>
             </text>
             <text style={user_name_style}>&nbsp;&nbsp;{this.state.comment.user.userName}</text>
+            <br/><text style={user_name_style}>הגיב ב: {this.props.comment.time_made}</text>
             <br/><text>{this.state.comment.text}</text>
             <br/><text style={redText}>{this.state.rank_error}</text>
             <text onClick= {() => this.add_commnet_text_clicked()} style={add_comment_text_style}>{this.state.add_comment_text}</text>

@@ -85,9 +85,9 @@ class Page_ref extends Component {
               ({this.state.edge_credibility_weight}) 
               <FontAwesomeIcon icon={faArrowAltCircleDown} color={this.state.credibility_downArrowColor} onClick={() => this.rank_click_down("credibility")}/>
               &nbsp; ציון משתמשים שאמרו שהדף&nbsp;
-              <span class="field-tip">
+              <span className="field-tip">
                   <text><u>אמין*</u></text>
-                    <span class="tip-content">
+                    <span className="tip-content">
                     •	עד כמה השפה ואוצר המילים ברמה גבוהה ומקצועית?
                     <br/>
                     <br/>

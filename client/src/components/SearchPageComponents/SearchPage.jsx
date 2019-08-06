@@ -109,8 +109,8 @@ class SearchPage extends Component {
                     <div>
                         <input id="search_text_box" type="text" value={this.state.inputValue} onChange={evt => this.updateTXT(evt)} onKeyPress={this.handleKeyPress}></input>
                         <button id="searchBTN" name="searchBTN" onClick={() => this.search_button_function()}>{this.state.search_button_text} <i className={this.state.search_button_iconClass}></i></button><br/>
-                        <input type="radio" onClick={() => this.deep_search_radio_button_clicked()} checked={!this.state.is_simple_search_selected}/> חיפוש עמוק
-                        <input type="radio" id="simple_search_radio_button" onClick={() => this.simple_search_radio_button_clicked()} checked={this.state.is_simple_search_selected}/> חיפוש פשוט
+                        <input type="radio" onClick={() => this.deep_search_radio_button_clicked()} checked={!this.state.is_simple_search_selected} value=''/> חיפוש עמוק
+                        <input type="radio" id="simple_search_radio_button" onClick={() => this.simple_search_radio_button_clicked()} checked={this.state.is_simple_search_selected} value=''/> חיפוש פשוט
                     </div>
                     <div id="exContents">
                         <text color='white'>{this.state.server_message}</text>
@@ -118,7 +118,7 @@ class SearchPage extends Component {
                     <div id="exContents">
                         <ExpandedContent expandedContents={this.state.expandedContents}/>
                         <text><i className={this.state.expandend_content_status}></i></text>
-                        <a target="_blank" rel="noopener noreferrer" style={more_content_textStyle} href={"/TopicsPage/"+this.curSearch} hidden={this.state.is_show_more_content_hidden}>עוד...</a>
+                        <a target="_blank" rel="noopener noreferrer" style={more_content_textStyle} href={"/Topics_page/"+this.curSearch} hidden={this.state.is_show_more_content_hidden}>עוד...</a>
                     </div>
                 </div>
                 <div className="add_content_and_pages_div" style={{backgroundColor:'#0587c3'}}>

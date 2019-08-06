@@ -31,7 +31,6 @@ class Topics_page extends Component {
           .then((result) => {
               return result.data;
           }).then((data) => {
-              var topics = data.topics;
               data.topics.sort((topic_a, topic_b)=>{return topic_b.web_scrape_score-topic_a.web_scrape_score;})
               data.topics.sort((topic_a, topic_b)=>{return topic_b.liked_weight-topic_a.liked_weight;})
               data.topics.forEach(topic => {
