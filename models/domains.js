@@ -38,7 +38,7 @@ const domain_Schema = new mongoose.Schema({
   usersRanking:
     [{
       type: mongoose.Schema.ObjectId, 
-      ref: 'site-topic-edges-ranking'
+      ref: 'page-topic-edges-ranking'
     }],
 
   root_comments:[{

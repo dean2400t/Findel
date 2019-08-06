@@ -102,7 +102,7 @@ class App extends Component {
           <text className="link_text" style={this.state.displayRegisterComponents} onClick={() => this.push_to_history_and_go('/Register_page')}> -  רישום </text>
           <text className="link_text" style={this.state.displayUserDataComponents} onClick={() => this.push_to_history_and_go('/UserSearchHistory_page')}> - היסטורית חיפוש</text>
           <text className="link_text" style={this.state.displayUserDataComponents} onClick={() => this.push_to_history_and_go('/UserFavorites_page')}> - דפים שדירגתי כטובים</text>
-          <text className="link_text" onClick={() => this.push_to_history_and_go('/DomainsPage')}> - דומיינים</text>
+          <text className="link_text" onClick={() => this.push_to_history_and_go('/Domains_page')}> - דומיינים</text>
           <hr />
 
           <Route exact path="/" component={SearchPage} />

@@ -84,7 +84,27 @@ class Page_ref extends Component {
               <FontAwesomeIcon icon={faArrowAltCircleUp} color={this.state.credibility_upArrowColor} onClick={() => this.rank_click_up("credibility")}/> 
               ({this.state.edge_credibility_weight}) 
               <FontAwesomeIcon icon={faArrowAltCircleDown} color={this.state.credibility_downArrowColor} onClick={() => this.rank_click_down("credibility")}/>
-              &nbsp; ציון משתמשים שאמרו שהדף אמין
+              &nbsp; ציון משתמשים שאמרו שהדף&nbsp;
+              <span class="field-tip">
+                  <text><u>אמין*</u></text>
+                    <span class="tip-content">
+                    •	עד כמה השפה ואוצר המילים ברמה גבוהה ומקצועית?
+                    <br/>
+                    <br/>
+                    •	כמה פרסומות קיימות בדף? באתרים המרוויחים כסף מפרסום קיים סיכוי גבוהה יותר, של גורמים חיצוניים, לממן כתבות ו/או להשפיע על תוכן האתר.
+                    <br/>
+                    <br/>
+                    •	מי כתב את הדף? האם יש לו מניעה מסוים שיכול להשפיע על שיקול דעתו?
+                    מה רמת הידע של כותב הדף בנושא? האם הוא עבר הסמכה? אקדמאי בתחום? מאיפה הנתונים שלו מגיעים? 
+                    <br/>
+                    <br/>
+                    •	האם קיים בדף משהו שאתם מזהים כשגוי או מוטה? אם כן יכול להיות שישנם עוד שגיאות והטיות.
+                    <br/>
+                    <br/>
+                    <br/>
+                    לאחר ששאלתם שאלות אלו: אם אתם ברושם שהדף אמין, סמנו אותו ככזה. אם נתקלתם באחד או מספר דברים לא תקינים, סמנו אותו כלא אמין. אם אינכם בטוחים, השאירו אותו במצב הקיים.
+                  </span>
+              </span>  
             </text>
             <br/>
             
