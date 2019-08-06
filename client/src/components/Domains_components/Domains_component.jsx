@@ -9,7 +9,7 @@ class Domains_component extends Component {
                 <text>{domain.domainURL}: <br/></text>
                 <text>ציון: {domain.score} <br/></text>
                 <Domain_component key={domain.id} domain={domain} />
-                <button onClick={domain.request_sites_of_domain_function} hidden={domain.is_more_sites_button_hidden}>אתרים...</button>
+                <button onClick={domain.request_pages_of_domain_function} hidden={domain.is_more_pages_button_hidden}>אתרים...</button>
             </div>
           ));
     }

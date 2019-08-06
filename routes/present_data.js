@@ -4,8 +4,8 @@ var express = require('express');
 var router = express.Router();
 const {Domain} = require('../models/domains');
 const {Topic} = require('../models/topics');
-const {TopicTopicEdge} = require('../models/topic_to_topic_edges');
-const {Site} = require('../models/sites');
+const {Topic_topic_edge} = require('../models/topic_to_topic_edges');
+const {Page} = require('../models/pages');
 const {Comments} = require('../models/comments');
 const extract_comments_from_database = require('../middleware/extract_comments_from_database');
 
@@ -25,12 +25,12 @@ router.get('/domains', async function(req, res) {
    return res.status(200).send(domains);
 });
 
-router.get('/domain_sites', async function(req, res) {
+router.get('/domains', async function(req, res) {
    var domain_id = req.query.id;
-   var domain_and_sites = await Domain.findById(domain_id)
-      .populate('sites', 'siteURL siteFormatedURL')
-      .select('score sites domainURL _id');
-   return res.status(200).send(domain_and_sites);
+   var domain_and_pages = await Domain.findById(domain_id)
+      .populate('pages', 'pageURL pageFormatedURL')
+      .select('score pages domainURL _id');
+   return res.status(200).send(domain_and_pages);
 });
 
 router.get('/connected_topics',async function(req, res) {
@@ -42,7 +42,7 @@ router.get('/connected_topics',async function(req, res) {
    var userID= checkAuthAndReturnUserID(token);
 
    if (userID != '')
-        var connected_topics_edges = await TopicTopicEdge.find(
+        var connected_topics_edges = await Topic_topic_edge.find(
             {$or: [{ topic1: topic }, { topic2: topic } ]})
             .populate('topic1')
             .populate('topic2')
@@ -51,7 +51,7 @@ router.get('/connected_topics',async function(req, res) {
                 match: { user: userID}
             });
     else
-        var connected_topics_edges = await TopicTopicEdge.find(
+        var connected_topics_edges = await Topic_topic_edge.find(
             {$or: [{ topic1: topic }, { topic2: topic } ]})
             .populate('topic1')
             .populate('topic2');
@@ -88,40 +88,40 @@ router.get('/connected_topics',async function(req, res) {
 });
 
 
-router.get('/site_data',async function(req, res) {
-   var siteFormatedURL = req.query.siteURL;
+router.get('/page_data',async function(req, res) {
+   var pageFormatedURL = req.query.pageURL;
    var token=req.headers['findel-auth-token'];
    var userID= checkAuthAndReturnUserID(token);
 
    if (userID != '')
-      var site_topic_edges_populateQuery = [
+      var page_topic_edges_populateQuery = [
          {path:'usersRanking', match:{ user: userID}, model: 'topic-topic-edges-ranking'}, 
          {path:'topic', model: 'topics'}
          ];
    else
-      var site_topic_edges_populateQuery = [ 
+      var page_topic_edges_populateQuery = [ 
          {path:'topic', model: 'topics'}
          ];
 
-   site = await Site.findOne({siteFormatedURL: siteFormatedURL})
+   page = await Page.findOne({pageFormatedURL: pageFormatedURL})
       .populate('domain')
       .populate({
-         path: 'siteTopicEdges',
-         populate: site_topic_edges_populateQuery
+         path: 'page_topic_edges',
+         populate: page_topic_edges_populateQuery
       });
    
-   if (!site)
-      return res.status(400).send("Site " + siteURL +" not found in database");
+   if (!page)
+      return res.status(400).send("Page " + pageURL +" not found in database");
    
-   var comments = await extract_comments_from_database(site.root_comments, userID);
+   var comments = await extract_comments_from_database(page.root_comments, userID);
    
    return res.status(200).send({
-      siteID: site.id,
-      siteURL: site.siteURL,
-      siteFormatedURL: site.siteFormatedURL,
-      siteSnap: site.siteSnap,
-      domain: site.domain,
-      site_topic_edges: site.siteTopicEdges,
+      pageID: page.id,
+      pageURL: page.pageURL,
+      pageFormatedURL: page.pageFormatedURL,
+      pageSnap: page.pageSnap,
+      domain: page.domain,
+      page_topic_edges: page.page_topic_edges,
       comments: comments
    });
 

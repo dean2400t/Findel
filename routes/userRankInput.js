@@ -1,20 +1,20 @@
 var express = require('express');
 const auth = require('../middleware/security/auth');
-const {Site} = require('../models/sites');
+const {Page} = require('../models/pages');
 const {User} = require('../models/users');
 const {Domain} = require('../models/domains');
-const {SiteTopicEdge}=require('../models/siteTopicEdges');
-const {TopicTopicEdge} = require('../models/topic_to_topic_edges');
-const {Site_topic_edges_ranking} = require('../models/site_topic_edges_ranking');
+const {Page_topic_edge}=require('../models/page_topic_edges');
+const {Topic_topic_edge} = require('../models/topic_to_topic_edges');
+const {Page_topic_edges_ranking} = require('../models/page_topic_edges_ranking');
 const {Topic_topic_edges_ranking} = require('../models/topic_topic_edges_ranking');
 const {Comments_ranking} = require('../models/comments_rankings');
 const {Comment} = require('../models/comments');
 const {edge_ranking_save, comment_ranking_save} = require('../middleware/save_securely_to_database');
 var router = express.Router();
 
-function is_site_topic_edge_rank_type_valid(rank_type){
+function is_page_topic_edge_rank_type_valid(rank_type){
   if (rank_type == "liked" ||
-      rank_type == "trustworthy" ||
+      rank_type == "credibility" ||
       rank_type == "educational")
       return true;
   return false;
@@ -58,7 +58,7 @@ async function update_scores_to_topic_topic_ranking_edge_insertion(edge_ranking,
   var score_field_name = rank_type + "_weight";
   var field_and_score_in_json = {};
   field_and_score_in_json[score_field_name] = edge_ranking.scoreAdded;
-  await TopicTopicEdge.findOneAndUpdate({_id: edge._id},
+  await Topic_topic_edge.findOneAndUpdate({_id: edge._id},
     {$inc: field_and_score_in_json, $push: {usersRanking: edge_ranking._id}});
   edge[score_field_name] += edge_ranking.scoreAdded;
   await User.findOneAndUpdate({_id: user._id},
@@ -77,7 +77,7 @@ async function remove_topic_topic_ranking_edge_and_update_scores_in_db(edge_rank
       var score_field_name = rank_type + "_weight";
       var field_and_score_in_json = {};
       field_and_score_in_json[score_field_name] = -edge_ranking.scoreAdded;
-      await TopicTopicEdge.findOneAndUpdate({_id: edge._id},
+      await Topic_topic_edge.findOneAndUpdate({_id: edge._id},
         {$inc: field_and_score_in_json, $pull: {usersRanking: edge_ranking._id}});
       edge[score_field_name] -= edge_ranking.scoreAdded;
       await User.findOneAndUpdate({_id: user._id},
@@ -124,7 +124,7 @@ router.post('/rank_topic_topic_edge', auth, async function(req, res) {
   if (!Number.isInteger(rankCode))
   return res.status(400).send("rankCode must be 0, 1, or 2");
     
-  var edge=await TopicTopicEdge.findById(edgeID).populate('topic1').populate('topic2');
+  var edge=await Topic_topic_edge.findById(edgeID).populate('topic1').populate('topic2');
   if (!edge)
     return res.status(400).send("Edge not found in database");
 
@@ -186,8 +186,8 @@ router.post('/rank_topic_topic_edge', auth, async function(req, res) {
     return res.status(400).send("Failed to enter ranking");
   });
 
-//Site to topic ranking
-async function update_scores_to_site_topic_ranking_edge_insertion(edge_ranking, edge, domain, user, rank_type)
+//page to topic ranking
+async function update_scores_to_page_topic_ranking_edge_insertion(edge_ranking, edge, domain, user, rank_type)
 {
   var score_field_name = rank_type + "_weight";
   var field_and_score_in_json = {};
@@ -195,17 +195,17 @@ async function update_scores_to_site_topic_ranking_edge_insertion(edge_ranking, 
   await Domain.findOneAndUpdate({_id: domain._id},
     {$inc: field_and_score_in_json, $push: {usersRanking: edge_ranking._id}});
   domain[score_field_name] += edge_ranking.scoreAdded;
-  await SiteTopicEdge.findOneAndUpdate({_id: edge._id},
+  await Page_topic_edge.findOneAndUpdate({_id: edge._id},
     {$inc: field_and_score_in_json, $push: {usersRanking: edge_ranking._id}});
   edge[score_field_name] += edge_ranking.scoreAdded;
   await User.findOneAndUpdate({_id: user._id},
-    {$push: {site_topic_edges_ranking: edge_ranking._id}});
+    {$push: {page_topic_edges_ranking: edge_ranking._id}});
   return true;
 }
 
-async function remove_site_topic_ranking_edge_and_update_scores_in_db(edge_ranking, edge, domain, user, rank_type)
+async function remove_page_topic_ranking_edge_and_update_scores_in_db(edge_ranking, edge, domain, user, rank_type)
 {
-  var delete_result = await Site_topic_edges_ranking.deleteOne(
+  var delete_result = await Page_topic_edges_ranking.deleteOne(
     {edge: edge._id, user: user._id, rank_type: rank_type});
   
   if (delete_result != null)
@@ -217,17 +217,17 @@ async function remove_site_topic_ranking_edge_and_update_scores_in_db(edge_ranki
       await Domain.findOneAndUpdate({_id: domain._id},
         {$inc: field_and_score_in_json, $pull: {usersRanking: edge_ranking._id}});
       domain[score_field_name] -= edge_ranking.scoreAdded;
-      await SiteTopicEdge.findOneAndUpdate({_id: edge._id},
+      await Page_topic_edge.findOneAndUpdate({_id: edge._id},
         {$inc: field_and_score_in_json, $pull: {usersRanking: edge_ranking._id}});
       edge[score_field_name] -= edge_ranking.scoreAdded;
       await User.findOneAndUpdate({_id: user._id},
-        {$pull: {site_topic_edges_ranking: edge_ranking._id}});
+        {$pull: {page_topic_edges_ranking: edge_ranking._id}});
       return true;
     }
   return false
 }
 
-function data_to_return_for_site_topic_edge_ranking(rank_type, rankCode, edge_ranking, edge, domain)
+function data_to_return_for_page_topic_edge_ranking(rank_type, rankCode, edge_ranking, edge, domain)
 {
   var weight = edge[rank_type + "_weight"];
   var domain_weight = domain[rank_type + "_weight"];
@@ -258,7 +258,7 @@ function data_to_return_for_site_topic_edge_ranking(rank_type, rankCode, edge_ra
     } 
 }
 
-router.post('/rank_site_topic_edge', auth, async function(req, res) {
+router.post('/rank_page_topic_edge', auth, async function(req, res) {
   
   var edgeID=req.body.edgeID;
   var rank_type = req.body.rank_type;
@@ -267,7 +267,7 @@ router.post('/rank_site_topic_edge', auth, async function(req, res) {
     return res.status(400).send("No edgeID was sent");
   if (!rank_type)
     return res.status(400).send("No rank_type was sent");
-  if (!is_site_topic_edge_rank_type_valid(rank_type))
+  if (!is_page_topic_edge_rank_type_valid(rank_type))
     return res.status(400).send("rank_type is not valid");
   if (!rankCode && rankCode!==0)
     return res.status(400).send("No rank_code was sent");
@@ -276,25 +276,25 @@ router.post('/rank_site_topic_edge', auth, async function(req, res) {
   if (!Number.isInteger(rankCode))
   return res.status(400).send("rankCode must be 0, 1, or 2");
     
-  var edge=await SiteTopicEdge.findById(edgeID).populate('site');
+  var edge=await Page_topic_edge.findById(edgeID).populate('page');
   if (!edge)
     return res.status(400).send("Edge not found in database");
 
-  var site = edge.site;
-  if (!site)
-    return res.status(400).send("Site not found in database");
+  var page = edge.page;
+  if (!page)
+    return res.status(400).send("Page not found in database");
 
   var user=await User.findById(req.user._id);
   if (!user)
     return res.status(400).send("User not found in database");
   
-  var domain=await Domain.findById(site.domain);
+  var domain=await Domain.findById(page.domain);
   if (!domain)
     return res.status(400).send("Domain not in database");
 
   
   
-  var edge_ranking = await Site_topic_edges_ranking.findOne(
+  var edge_ranking = await Page_topic_edges_ranking.findOne(
     {edge: edge._id, user: user._id, rank_type: rank_type});
   if (!edge_ranking)
   {
@@ -303,35 +303,35 @@ router.post('/rank_site_topic_edge', auth, async function(req, res) {
     else
     {
       edge_ranking = await insert_ranking_edge_to_database(
-        Site_topic_edges_ranking, edge, user, rank_type, rankCode);
+        Page_topic_edges_ranking, edge, user, rank_type, rankCode);
       if (!edge_ranking)
         return res.status(400).send("Double request");
       
-      if (await update_scores_to_site_topic_ranking_edge_insertion(
+      if (await update_scores_to_page_topic_ranking_edge_insertion(
         edge_ranking, edge, domain, user, rank_type) == true)
-          return res.status(200).send(data_to_return_for_site_topic_edge_ranking(rank_type, rankCode, edge_ranking, edge, domain));
+          return res.status(200).send(data_to_return_for_page_topic_edge_ranking(rank_type, rankCode, edge_ranking, edge, domain));
     }
   }
 
   if (edge_ranking.rankCode == rankCode)
     if (rankCode == 1 || rankCode == 2)
-      return res.status(200).send(data_to_return_for_site_topic_edge_ranking(rank_type, rankCode, edge_ranking, edge, domain));
+      return res.status(200).send(data_to_return_for_page_topic_edge_ranking(rank_type, rankCode, edge_ranking, edge, domain));
 
-  if (await remove_site_topic_ranking_edge_and_update_scores_in_db(
+  if (await remove_page_topic_ranking_edge_and_update_scores_in_db(
     edge_ranking, edge, domain, user, rank_type) == true)
   {
     if (rankCode == 0)
-      return res.status(200).send(data_to_return_for_site_topic_edge_ranking(rank_type, rankCode, edge_ranking, edge, domain));
+      return res.status(200).send(data_to_return_for_page_topic_edge_ranking(rank_type, rankCode, edge_ranking, edge, domain));
     
     edge_ranking = await insert_ranking_edge_to_database(
-      Site_topic_edges_ranking, edge, user, rank_type, rankCode);
+      Page_topic_edges_ranking, edge, user, rank_type, rankCode);
     if (!edge_ranking)
       return res.status(400).send("Double request");
     
     
-    if (await update_scores_to_site_topic_ranking_edge_insertion(
+    if (await update_scores_to_page_topic_ranking_edge_insertion(
       edge_ranking, edge, domain, user, rank_type)==true)
-        return res.status(200).send(data_to_return_for_site_topic_edge_ranking(rank_type, rankCode, edge_ranking, edge, domain));
+        return res.status(200).send(data_to_return_for_page_topic_edge_ranking(rank_type, rankCode, edge_ranking, edge, domain));
   }
   return res.status(400).send("Failed to enter ranking");
 });

@@ -2,9 +2,9 @@ const jwt = require('jsonwebtoken');
 const config = require('config');
 
 var express = require('express');
-const {Topic, validateTopic} = require('../models/topics');
+const {Topic, validate_topic} = require('../models/topics');
 const {topic_to_topic_edge_save, topic_save} = require('../middleware/save_securely_to_database');
-const {TopicTopicEdge} = require('../models/topic_to_topic_edges');
+const {Topic_topic_edge} = require('../models/topic_to_topic_edges');
 const {Search} = require('../models/searches');
 const {User} =require('../models/users');
 var wtf = require('wtf_wikipedia');
@@ -43,7 +43,7 @@ async function get_connected_topics_edges(topic, userID)
 {
     
     if (userID != '')
-        var connected_topics_edges = await TopicTopicEdge.find(
+        var connected_topics_edges = await Topic_topic_edge.find(
             {$or: [{ topic1: topic }, { topic2: topic } ]})
             .populate('topic1')
             .populate('topic2')
@@ -52,7 +52,7 @@ async function get_connected_topics_edges(topic, userID)
                 match: { user: userID}
             });
     else
-        var connected_topics_edges = await TopicTopicEdge.find(
+        var connected_topics_edges = await Topic_topic_edge.find(
             {$or: [{ topic1: topic }, { topic2: topic } ]})
             .populate('topic1')
             .populate('topic2');
@@ -111,14 +111,14 @@ async function update_wikipidia_links_on_topic(topic, links_name_array, userID){
             var newTopic=new Topic({topicName: link_name});
             newTopic = await topic_save(newTopic);
             if (topic.topicName < newTopic.topicName)
-                var new_topic_to_topic_edge=new TopicTopicEdge({topic1: topic._id, topic2: newTopic._id});
+                var new_topic_to_topic_edge=new Topic_topic_edge({topic1: topic._id, topic2: newTopic._id});
             else
-                var new_topic_to_topic_edge=new TopicTopicEdge({topic1: newTopic._id, topic2: topic._id});
+                var new_topic_to_topic_edge=new Topic_topic_edge({topic1: newTopic._id, topic2: topic._id});
 
             new_topic_to_topic_edge = await topic_to_topic_edge_save(new_topic_to_topic_edge);
             if (new_topic_to_topic_edge)
             {
-                await Topic.findOneAndUpdate({_id: newTopic._id}, {$addToSet: {topicTopicEdges: new_topic_to_topic_edge}});
+                await Topic.findOneAndUpdate({_id: newTopic._id}, {$addToSet: {topic_topic_edges: new_topic_to_topic_edge}});
                 new_edges_id_array.push(new_topic_to_topic_edge._id);
             }
         }
@@ -129,18 +129,18 @@ async function update_wikipidia_links_on_topic(topic, links_name_array, userID){
         var newTopic=new Topic({topicName: link_name});
         newTopic = await topic_save(newTopic);
         if (topic.topicName < newTopic.topicName)
-            var new_topic_to_topic_edge=new TopicTopicEdge({topic1: topic._id, topic2: newTopic._id});
+            var new_topic_to_topic_edge=new Topic_topic_edge({topic1: topic._id, topic2: newTopic._id});
         else
-            var new_topic_to_topic_edge=new TopicTopicEdge({topic1: newTopic._id, topic2: topic._id});
+            var new_topic_to_topic_edge=new Topic_topic_edge({topic1: newTopic._id, topic2: topic._id});
         new_topic_to_topic_edge = await topic_to_topic_edge_save(new_topic_to_topic_edge);
         if (new_topic_to_topic_edge)
         {
-            await Topic.findOneAndUpdate({_id: newTopic._id}, {$addToSet: {topicTopicEdges: new_topic_to_topic_edge}});
+            await Topic.findOneAndUpdate({_id: newTopic._id}, {$addToSet: {topic_topic_edges: new_topic_to_topic_edge}});
             new_edges_id_array.push(new_topic_to_topic_edge._id);
         }
     }));
     if (new_edges_id_array.length>0)
-        await Topic.findOneAndUpdate({_id: topic._id}, {$addToSet: {topicTopicEdges: {$each: new_edges_id_array}}, last_wikipidia_search: Date.now()});
+        await Topic.findOneAndUpdate({_id: topic._id}, {$addToSet: {topic_topic_edges: {$each: new_edges_id_array}}, last_wikipidia_search: Date.now()});
 }
 
 function checkAuthAndReturnUserID(token)

@@ -1,9 +1,9 @@
 const parseDomain = require("parse-domain");
 const {Topic} = require('../models/topics');
-const {TopicTopicEdge} = require('../models/topic_to_topic_edges');
-const {SiteTopicEdge} = require('../models/siteTopicEdges');
+const {Topic_topic_edge} = require('../models/topic_to_topic_edges');
+const {Page_topic_edge} = require('../models/page_topic_edges');
 const {Domain} = require('../models/domains');
-const {Site} = require('../models/sites');
+const {Page} = require('../models/pages');
 
 async function topic_save(topic)
 {
@@ -16,15 +16,15 @@ async function topic_save(topic)
     return topic;
 }
 
-async function site_save(site)
+async function page_save(page)
 {
     try{
-        await site.save()
+        await page.save()
     }catch(error){ 
-        if (error.code == 11000) site = await Site.findOne({siteURL: site.siteURL});
+        if (error.code == 11000) page = await Page.findOne({pageURL: page.pageURL});
         else return null;
     }
-    return site;
+    return page;
 }
 
 async function domain_save(domain)
@@ -42,30 +42,30 @@ async function domain_save(domain)
     return domain;
 }
 
-async function add_and_update_domain(new_site)
+async function add_and_update_domain(new_page)
 {
-  var site_domainURL = parseDomain(new_site.siteURL);
-  if (site_domainURL.subdomain != "")
-    site_domainURL = site_domainURL.subdomain + '.' + site_domainURL.domain + '.' + site_domainURL.tld;
+  var page_domainURL = parseDomain(new_page.pageURL);
+  if (page_domainURL.subdomain != "")
+    page_domainURL = page_domainURL.subdomain + '.' + page_domainURL.domain + '.' + page_domainURL.tld;
   else
-    site_domainURL = site_domainURL.domain + '.' + site_domainURL.tld;
-  domain = new Domain({domainURL: site_domainURL});
+    page_domainURL = page_domainURL.domain + '.' + page_domainURL.tld;
+  domain = new Domain({domainURL: page_domainURL});
   domain = await domain_save(domain);
   if (!domain)
     console.log("fatal domain adding/update error");
   else
-    await Domain.findByIdAndUpdate(domain._id, {$addToSet: {sites: new_site._id}});
-  await Site.findByIdAndUpdate(new_site._id, {domain: domain._id});
-  new_site.domain = domain._id;
-  return new_site;
+    await Domain.findByIdAndUpdate(domain._id, {$addToSet: {pages: new_page._id}});
+  await Page.findByIdAndUpdate(new_page._id, {domain: domain._id});
+  new_page.domain = domain._id;
+  return new_page;
 }
 
-async function site_to_topic_edge_save(edge)
+async function page_to_topic_edge_save(edge)
 {
     try{
         await edge.save()
     }catch(error){ 
-        if (error.code == 11000) edge = await SiteTopicEdge.findOne({site: edge.site, topic: edge.topic});
+        if (error.code == 11000) edge = await Page_topic_edge.findOne({page: edge.page, topic: edge.topic});
         else return null;
     }
     return edge;
@@ -78,7 +78,7 @@ async function topic_to_topic_edge_save(edge)
     try{
         await edge.save()
     }catch(error){ 
-        if (error.code == 11000) edge = await TopicTopicEdge.findOne({topic1: edge.topic1, topic2: edge.topic2});
+        if (error.code == 11000) edge = await Topic_topic_edge.findOne({topic1: edge.topic1, topic2: edge.topic2});
         else return null;
     }
     return edge;
@@ -117,16 +117,16 @@ async function comment_ranking_save(comment_ranking)
 async function topic_to_topic_edges_save(edges)
 {
     try{
-        res = await TopicTopicEdge.insertMany(edges, {w: 1, ordered: false });
+        res = await Topic_topic_edge.insertMany(edges, {w: 1, ordered: false });
     }catch(error){ 
         return error;
     }
 }
 
-async function site_to_topic_edges_save(edges)
+async function page_to_topic_edges_save(edges)
 {
     try{
-        res = await SiteTopicEdge.insertMany(edges, {w: 1, ordered: false });
+        res = await Page_topic_edge.insertMany(edges, {w: 1, ordered: false });
     }catch(error){ 
         return error;
     }
@@ -134,10 +134,10 @@ async function site_to_topic_edges_save(edges)
 
 exports.topic_save = topic_save;
 exports.topic_to_topic_edges_save=topic_to_topic_edges_save;
-exports.site_to_topic_edges_save=site_to_topic_edges_save;
+exports.page_to_topic_edges_save=page_to_topic_edges_save;
 exports.domain_save = domain_save;
-exports.site_to_topic_edge_save = site_to_topic_edge_save;
-exports.site_save = site_save;
+exports.page_to_topic_edge_save = page_to_topic_edge_save;
+exports.page_save = page_save;
 exports.topic_to_topic_edge_save = topic_to_topic_edge_save;
 exports.add_and_update_domain = add_and_update_domain;
 exports.edge_ranking_save = edge_ranking_save;

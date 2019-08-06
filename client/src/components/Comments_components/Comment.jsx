@@ -73,7 +73,7 @@ class Comment extends Component {
             <text style={user_name_style}>&nbsp;&nbsp;{this.state.comment.user.userName}</text>
             <br/><text>{this.state.comment.text}</text>
             <br/><text style={redText}>{this.state.rank_error}</text>
-            <br/><text onClick= {() => this.add_commnet_text_clicked()} style={add_comment_text_style}>{this.state.add_comment_text}</text>
+            <text onClick= {() => this.add_commnet_text_clicked()} style={add_comment_text_style}>{this.state.add_comment_text}</text>
             <div hidden={this.state.is_add_comment_hidden}>
             <Add_comment parrent_object_data={this.state.add_comment_vars}/>
           </div>

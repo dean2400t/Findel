@@ -1,7 +1,7 @@
 const Joi = require('joi');
 const mongoose = require('mongoose');
 
-const domainSchema = new mongoose.Schema({
+const domain_Schema = new mongoose.Schema({
   domainURL: {
     type: String,
     required: true,
@@ -16,7 +16,7 @@ const domainSchema = new mongoose.Schema({
     default: 1
   },
 
-  trustworthy_weight:{
+  credibility_weight:{
     type: Number,
     default: 1
     },
@@ -30,9 +30,9 @@ const domainSchema = new mongoose.Schema({
     type: Boolean
   },
 
-  sites:[{
+  pages:[{
     type: mongoose.Schema.ObjectId, 
-    ref: 'sites'
+    ref: 'pages'
   }],
 
   usersRanking:
@@ -48,9 +48,9 @@ const domainSchema = new mongoose.Schema({
   
 });
   
-  const Domain = mongoose.model('domains', domainSchema);
+  const Domain = mongoose.model('domains', domain_Schema);
   
-  function validateDomain(domain) {
+  function validate_domain(domain) {
     const schema = {
       domainURL: Joi.string().min(4).max(1024).required()
     };
@@ -58,4 +58,4 @@ const domainSchema = new mongoose.Schema({
   }
   
   exports.Domain = Domain;
-  exports.validateDomain = validateDomain;
+  exports.validate_domain = validate_domain;

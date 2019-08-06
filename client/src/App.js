@@ -10,14 +10,14 @@ import { faCheckSquare, faCoffee } from '@fortawesome/free-solid-svg-icons';
 
 import axios from 'axios';
 import './App.css';
-import SearchPage from './components/SearchPage';
+import SearchPage from './components/SearchPageComponents/SearchPage';
 import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegistrationComponents/register';
-import UserSearchHistory from './components/User_Search_History_Page';
-import UserFavorites from './components/User_favorites_page';
+import UserSearchHistory from './components/user_search_history_components/User_Search_History_Page';
+import UserFavorites from './components/user_favorites_components/User_favorites_page';
 import DomainsPage from './components/Domains_components/DomainsPage';
 import Topics_page from './components/Topics_components/topics_page';
-import Site_page from './components/Site_components/site_page';
+import Page_page from './components/Page_components/Page_page';
 import Cookies from 'universal-cookie';
 import { createBrowserHistory } from 'history';
  
@@ -98,21 +98,21 @@ class App extends Component {
           
 
           <text text className="link_text" onClick={() => this.push_to_history_and_go('/')}>חפש</text>
-          <text className="link_text" style={this.state.displayLoggingComponents} onClick={() => this.push_to_history_and_go('/Login')}> - התחבר</text>
-          <text className="link_text" style={this.state.displayRegisterComponents} onClick={() => this.push_to_history_and_go('/Register')}> -  רישום </text>
-          <text className="link_text" style={this.state.displayUserDataComponents} onClick={() => this.push_to_history_and_go('/UserSearchHistory')}> - היסטורית חיפוש</text>
-          <text className="link_text" style={this.state.displayUserDataComponents} onClick={() => this.push_to_history_and_go('/UserFavorites')}> - אתרים שדירגתי כטובים</text>
+          <text className="link_text" style={this.state.displayLoggingComponents} onClick={() => this.push_to_history_and_go('/Login_page')}> - התחבר</text>
+          <text className="link_text" style={this.state.displayRegisterComponents} onClick={() => this.push_to_history_and_go('/Register_page')}> -  רישום </text>
+          <text className="link_text" style={this.state.displayUserDataComponents} onClick={() => this.push_to_history_and_go('/UserSearchHistory_page')}> - היסטורית חיפוש</text>
+          <text className="link_text" style={this.state.displayUserDataComponents} onClick={() => this.push_to_history_and_go('/UserFavorites_page')}> - דפים שדירגתי כטובים</text>
           <text className="link_text" onClick={() => this.push_to_history_and_go('/DomainsPage')}> - דומיינים</text>
           <hr />
 
           <Route exact path="/" component={SearchPage} />
-          <Route path="/Login" component={LoginPage} />
-          <Route path="/Register" component={RegisterPage} />
-          <Route path="/UserSearchHistory" component={UserSearchHistory} />
-          <Route path="/UserFavorites" component={UserFavorites} />
-          <Route path="/DomainsPage" component={DomainsPage} />
-          <Route path="/TopicsPage/:topic" component={Topics_page} />
-          <Route path="/SitePage/:siteURL" component={Site_page} />
+          <Route path="/Login_page" component={LoginPage} />
+          <Route path="/Register_page" component={RegisterPage} />
+          <Route path="/UserSearchHistory_page" component={UserSearchHistory} />
+          <Route path="/UserFavorites_page" component={UserFavorites} />
+          <Route path="/Domains_page" component={DomainsPage} />
+          <Route path="/Topics_page/:topic" component={Topics_page} />
+          <Route path="/Page_page/:pageURL" component={Page_page} />
           
         </div>
       </Router>

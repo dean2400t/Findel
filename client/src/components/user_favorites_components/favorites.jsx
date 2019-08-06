@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
-import Topics from './topics';
+import Pages from './Pages';
 import PropsTypes from 'prop-types';
-import './favorites.css';
+import './Favorites.css';
 class Favorites extends Component {
     render() {
-        return this.props.favorites.map((topic)=>(
+        return this.props.favorites.map((favorite)=>(
             <div className="favorites_div">
-                <text>{topic.topicName}: <br/></text>
-                <Topics key={topic.id} topic={topic} />
+                <text>{favorite.topic.topicName}: <br/></text>
+                <Pages key={favorite.topic._id} pages={favorite.pages} />
             </div>
-          ));
+        ));
     }
 }
 Favorites.PropsTypes={

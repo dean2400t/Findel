@@ -2,13 +2,12 @@ import React, { Component } from 'react';
 import PropsTypes from 'prop-types';
 import Cookies from 'universal-cookie';
 import './Topic_component.css';
-import Topic_functions from './topic_functions';
+import topic_topic_edge_rank_function from './topic_topic_edge_rank_function';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faArrowAltCircleUp} from '@fortawesome/free-solid-svg-icons';
 import {faArrowAltCircleDown} from '@fortawesome/free-solid-svg-icons';
 
 const cookies = new Cookies();
-const topic_functions=new Topic_functions();
 class Topic_component extends Component {
     constructor(props) {
         super(props);
@@ -54,11 +53,11 @@ class Topic_component extends Component {
   }
   rank_click_up(rank_type)
   {
-    topic_functions.ranking_function(this, rank_type, "up")
+    topic_topic_edge_rank_function(this, rank_type, "up")
   }
   rank_click_down(rank_type)
   {
-    topic_functions.ranking_function(this, rank_type, "down")
+    topic_topic_edge_rank_function(this, rank_type, "down")
   }
 }
 Topic_component.PropsTypes={

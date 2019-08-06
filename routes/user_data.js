@@ -2,8 +2,9 @@ var express = require('express');
 const auth = require('../middleware/security/auth');
 const {User} = require('../models/users');
 const {Topic} = require('../models/topics');
-const {Site} = require('../models/sites');
-const {SiteTopicEdge}=require('../models/siteTopicEdges');
+const {Page} = require('../models/pages');
+const {Page_topic_edge}=require('../models/page_topic_edges');
+const {Page_topic_edges_ranking} = (require('../models/page_topic_edges_ranking'))
 var router = express.Router();
 
 var dateFromObjectId = function (objectId) {
@@ -13,24 +14,24 @@ var dateFromObjectId = function (objectId) {
 };
 
 
-function binaryFindSiteByIDs(sites, id, start, end) { 
+function binary_find_page_by_ID(pages, id, start, end) { 
   if (start > end) return null; 
   let mid=Math.floor((start + end)/2); 
-  if (sites[mid]._id.equals(id)) return sites[mid]; 
-  if(sites[mid]._id > id)  
-      return binaryFindSiteByIDs(sites, id, start, mid-1); 
+  if (pages[mid]._id.equals(id)) return pages[mid]; 
+  if(pages[mid]._id > id)  
+      return binary_find_page_by_ID(pages, id, start, mid-1); 
   else
-      return binaryFindSiteByIDs(sites, id, mid+1, end); 
+      return binary_find_page_by_ID(pages, id, mid+1, end); 
 }
 
-function binaryFindTopicByIDs(topics, id, start, end) { 
+function binary_find_topic_by_IDs(topics, id, start, end) { 
     if (start > end) return null; 
     let mid=Math.floor((start + end)/2); 
     if (topics[mid]._id.equals(id)) return topics[mid]; 
     if(topics[mid]._id > id)  
-        return binaryFindTopicByIDs(topics, id, start, mid-1); 
+        return binary_find_topic_by_IDs(topics, id, start, mid-1); 
     else
-        return binaryFindTopicByIDs(topics, id, mid+1, end); 
+        return binary_find_topic_by_IDs(topics, id, mid+1, end); 
   }
 
 router.get('/searchHistory', auth, async function(req, res) {
@@ -51,7 +52,7 @@ router.get('/searchHistory', auth, async function(req, res) {
   var searches=[];
   for (var index=0; index<topicsIDs.length; index++)
   {
-    var topic=binaryFindTopicByIDs(topics, topicsIDs[index], 0, topics.length);
+    var topic=binary_find_topic_by_IDs(topics, topicsIDs[index], 0, topics.length);
     if (topic)
       searches.push({topic: topic.topicName, searchDate: topicSearchDate[index]});
   }
@@ -65,37 +66,32 @@ router.get('/favorites', auth, async function(req, res) {
   if (!user)
     return res.status(400).send("User not found in database");
   
-  var favorites={};
+  var positive_liked_rankings = await Page_topic_edges_ranking.find({
+    user: user._id, rank_type: "liked", rankCode: 1
+  }).populate({ 
+    path: 'edge',
+    populate: {
+      path: 'page topic'
+    }
+ });
   
-  if (user.favorites!=null)
+  var topic_and_liked_pages = {};
+  var favorites =[];
+  if (positive_liked_rankings.length>0)
   {
-    var edges_ids=[];
-    for (var fav_index=0; fav_index<user.favorites.length; fav_index++)
-      edges_ids.push(user.favorites[fav_index]);
-    var siteTopicEdges=await SiteTopicEdge.find({_id: { $in: edges_ids}});
-    var topicsIDs=[];
-    var sitesIDs=[];
-    siteTopicEdges.forEach(edge => {
-      topicsIDs.push(edge.topic);
-      sitesIDs.push(edge.site);
-    });
-    var topics=await Topic.find({_id: { $in: topicsIDs}}).sort();
-    var sites=await Site.find({_id: { $in: sitesIDs}}).sort();
-    siteTopicEdges.forEach(edge => {
-      var topic= binaryFindTopicByIDs(topics, edge.topic._id, 0, topics.length);
-      var site= binaryFindSiteByIDs(sites, edge.site._id, 0, sites.length);
-      if (favorites[topic.topicName]==null)
-        favorites[topic.topicName]=[];
-      favorites[topic.topicName].push({siteURL: site.siteURL, formatedURL: site.siteFormatedURL});
-    });
-    var favorites_array=[];
-    Object.keys(favorites).forEach(topic => {
-      favorites_array.push({
-        topicName: topic,
-        sites: favorites[topic]
-      })
+    positive_liked_rankings.forEach(ranking => {
+      if (topic_and_liked_pages[ranking.edge.topic._id] == null)
+        topic_and_liked_pages[ranking.edge.topic._id] = {
+          topic: ranking.edge.topic,
+          pages: []
+        };
+      topic_and_liked_pages[ranking.edge.topic._id].pages.push(ranking.edge.page);
     });
   }
-  return res.status(200).send(favorites_array);
+  var favorites =[];
+  Object.values(topic_and_liked_pages).forEach(topic_and_liked_pages =>{
+    favorites.push(topic_and_liked_pages)
+  })
+  return res.status(200).send(favorites);
 });
 module.exports = router;
