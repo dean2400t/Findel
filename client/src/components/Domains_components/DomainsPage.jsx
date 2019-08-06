@@ -20,9 +20,9 @@ class DomainsPage extends Component {
               domains.sort((domain_a, domain_b) => {return domain_b.score-domain_a.score;})
               domains.forEach(domain => {
                 domain.id=this.id;
-                domain.sites=[];
-                domain.request_sites_of_domain_function= () => this.request_sites_of_domain(domain._id);
-                domain.is_more_sites_button_hidden=false;
+                domain.pages=[];
+                domain.request_pages_of_domain_function= () => this.request_pages_of_domain(domain._id);
+                domain.is_more_pages_button_hidden=false;
                 this.id++;
               });
               this.setDomains(domains)
@@ -56,25 +56,25 @@ class DomainsPage extends Component {
       );
           
     }
-    request_sites_of_domain = (domain_id) =>
+    request_pages_of_domain = (domain_id) =>
     {
-      axios.get("/api/present_data/domain_sites/?id="+domain_id)
+      axios.get("/api/present_data/domain_pages/?id="+domain_id)
           .then((result) => {
               // Get the result
               // If we want text, call result.text()
               return result.data;
           }).then((domain) => {
               // Do something with the result
-                domain.sites.forEach(site => {
-                  site.id=this.id;
+                domain.pages.forEach(page => {
+                  page.id=this.id;
                   this.id++;
                 });
               var domains=this.state.domains;
               for (var index=0; index<domains.length; index++)
                 if (domains[index]._id == domain._id)
                 {
-                    domains[index].sites=domain.sites;
-                    domains[index].is_more_sites_button_hidden=true;
+                    domains[index].pages=domain.pages;
+                    domains[index].is_more_pages_button_hidden=true;
                     break;
                 }
               this.setDomains(domains)

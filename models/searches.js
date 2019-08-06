@@ -1,7 +1,8 @@
 const Joi = require('joi');
+Joi.objectId = require('joi-objectid')(Joi);
 const mongoose = require('mongoose');
 
-const searchSchema = new mongoose.Schema({
+const search_Schema = new mongoose.Schema({
   topic: {
     type: mongoose.Schema.ObjectId, 
     ref: 'topics',
@@ -9,14 +10,14 @@ const searchSchema = new mongoose.Schema({
   }
 });
   
-  const Search = mongoose.model('searches', searchSchema);
+  const Search = mongoose.model('searches', search_Schema);
   
-  function validateSearch(search) {
+  function validate_search(search) {
     const schema = {
-        topic: Joi.string().min(2).max(100).required()
+        topic: Joi.objectId().required()
     };
     return Joi.validate(search, schema);
   }
-  exports.searchSchema = searchSchema;
+  exports.search_Schema = search_Schema;
   exports.Search = Search; 
-  exports.validateSearch = validateSearch;
+  exports.validate_search = validate_search;

@@ -16,7 +16,7 @@ module.exports=async function googleSearch(search)
     var results3= await cusSearch.cse.list(params);
     params.start=31;
     var results4= await cusSearch.cse.list(params);
-    var sites=[];
+    var pages=[];
     var allRes=[];
     allRes.push(results1);
     allRes.push(results2);
@@ -28,12 +28,12 @@ module.exports=async function googleSearch(search)
                 if (allRes[r].data.items[index]!=null)
                 {
                     var order_index_by_google=index+r*10;
-                    sites.push({siteURL: allRes[r].data.items[index].link,
+                    pages.push({pageURL: allRes[r].data.items[index].link,
                     formattedUrl: allRes[r].data.items[index].formattedUrl,
                     snippet: allRes[r].data.items[index].snippet,
                     order_index_by_google: order_index_by_google
                 });
                 }
-    sites.sort((site_a, site_b)=>{if (site_b.siteURL>site_a.siteURL) return -1; else return 1;});
-    return sites;
+    pages.sort((page_a, page_b)=>{if (page_b.pageURL>page_a.pageURL) return -1; else return 1;});
+    return pages;
 }

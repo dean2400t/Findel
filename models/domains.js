@@ -1,40 +1,61 @@
 const Joi = require('joi');
 const mongoose = require('mongoose');
-const {UserRanking}=require('./userRanking');
 
-const domainSchema = new mongoose.Schema({
+const domain_Schema = new mongoose.Schema({
   domainURL: {
     type: String,
     required: true,
+    unique: true,
+    trim: true,
     minlength: 4,
-    maxlength: 512
+    maxlength: 1024
   },
 
-  score:{
-  type: Number
+  liked_weight:{
+    type: Number,
+    default: 1
   },
+
+  credibility_weight:{
+    type: Number,
+    default: 1
+    },
+
+  educational_weight:{
+    type: Number,
+    default: 1
+    },
 
   is_verified:{
     type: Boolean
   },
 
-  sites:[{
+  pages:[{
     type: mongoose.Schema.ObjectId, 
-    ref: 'sites'
+    ref: 'pages'
   }],
 
-  userRankings: [UserRanking.schema]
+  usersRanking:
+    [{
+      type: mongoose.Schema.ObjectId, 
+      ref: 'site-topic-edges-ranking'
+    }],
+
+  root_comments:[{
+      type: mongoose.Schema.ObjectId, 
+      ref: 'comments'
+    }]
   
 });
   
-  const Domain = mongoose.model('domains', domainSchema);
+  const Domain = mongoose.model('domains', domain_Schema);
   
-  function validateDomain(domain) {
+  function validate_domain(domain) {
     const schema = {
-      domainURL: Joi.string().min(4).max(512).required()
+      domainURL: Joi.string().min(4).max(1024).required()
     };
     return Joi.validate(domain, schema);
   }
   
   exports.Domain = Domain;
-  exports.validateDomain = validateDomain;
+  exports.validate_domain = validate_domain;

@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import Asearch from './Asearch';
+import Search from './Search';
 import PropsTypes from 'prop-types';
 
 class Searches extends Component {
     render() {
         
-        return this.props.searches.map((aSearch)=>(
-            <Asearch key={aSearch.id} aSearch={aSearch} />
+        return this.props.searches.map((search)=>(
+            <Search key={search.id} search={search} />
           ));
     }
 }

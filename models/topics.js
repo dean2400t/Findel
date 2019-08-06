@@ -1,12 +1,14 @@
 const Joi = require('joi');
 const mongoose = require('mongoose');
 
-const topicSchema = new mongoose.Schema({
+const topic_Schema = new mongoose.Schema({
   topicName: {
     type: String,
     required: true,
+    unique: true,
+    trim: true,
     minlength: 1,
-    maxlength: 255
+    maxlength: 1024
   },
   lastGoogleUpdate:{
     type: Date
@@ -14,24 +16,28 @@ const topicSchema = new mongoose.Schema({
   last_wikipidia_search:{
     type: Date
   },
-  siteTopicEdges:[{
+  page_topic_edges:[{
     type: mongoose.Schema.ObjectId, 
     ref: 'site-topic-edges'
   }],
-  topicTopicEdges:[{
+  topic_topic_edges:[{
     type: mongoose.Schema.ObjectId, 
     ref: 'topic-topic-edges'
+  }],
+  root_comments:[{
+    type: mongoose.Schema.ObjectId, 
+    ref: 'comments'
   }]
 });
   
-  const Topic = mongoose.model('topics', topicSchema);
+  const Topic = mongoose.model('topics', topic_Schema);
   
-  function validateTopic(topic) {
+  function validate_topic(topic) {
     const schema = {
-        topicName: Joi.string().min(1).max(255).required()
+        topicName: Joi.string().min(1).max(1024).required()
     };
     return Joi.validate(topic, schema);
   }
   
   exports.Topic = Topic; 
-  exports.validateTopic = validateTopic;
+  exports.validate_topic = validate_topic;

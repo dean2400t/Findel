@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import Site_component from './Site_component';
+import Page_component from './Page_component';
 import PropsTypes from 'prop-types';
 
 class Domain_component extends Component {
     render() {
         
-        return this.props.domain.sites.map((site)=>(
-            <Site_component key={site.id} site={site} />
+        return this.props.domain.pages.map((page)=>(
+            <Page_component key={page.id} page={page} />
           ));
     }
 }

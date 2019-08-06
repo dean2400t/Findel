@@ -1,8 +1,9 @@
 const Joi = require('joi');
+Joi.objectId = require('joi-objectid')(Joi);
 const mongoose = require('mongoose');
 const jwt=require('jsonwebtoken');
 const config = require('config');
-const {searchSchema} = require('./searches');
+const {search_Schema} = require('./searches');
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -13,6 +14,8 @@ const userSchema = new mongoose.Schema({
   userName:{
     type: String,
     required: true,
+    unique: true,
+    trim: true,
     minlength: 2,
     maxlength: 255
   },
@@ -48,30 +51,40 @@ const userSchema = new mongoose.Schema({
   },
   userScore:
   {
-    type: Number
+    type: Number,
+    default: 1,
+    required: true
   },
-  searches:[searchSchema],
-  favorites: [{
-    type: mongoose.Schema.ObjectId, 
-    ref: 'site-topic-edges'}],
-  
-  disliked: [{
-    type: mongoose.Schema.ObjectId, 
-    ref: 'site-topic-edges'}],
+  searches:[search_Schema],
 
-  connected_topics_upvoted: [{
+  page_topic_edges_ranking: [{
     type: mongoose.Schema.ObjectId, 
-    ref: 'topic-topic-edges'}],
-
-  connected_topics_downvoted: [{
-    type: mongoose.Schema.ObjectId, 
-    ref: 'topic-topic-edges'}],
+    ref: 'page-topic-edges-ranking'}],
   
-  site_Topic_Edges_Added:[{
+  topic_topic_edges_ranking: [{
     type: mongoose.Schema.ObjectId, 
-    ref: 'site-topic-edges'
-  }]
+    ref: 'topic-topic-edges-ranking'}],
+
+  page_topic_edges_added: [{
+    type: mongoose.Schema.ObjectId, 
+    ref: 'page-topic-edges'
+  }],
+  
+  topic_topic_edges_added: [{
+    type: mongoose.Schema.ObjectId, 
+    ref: 'topic-topic-edges'
+  }],
+
+  comments_added: [{
+    type: mongoose.Schema.ObjectId, 
+    ref: 'comments'
+  }],
+  
+  comments_ranking: [{
+    type: mongoose.Schema.ObjectId, 
+    ref: 'topic-topic-edges-ranking'}]
   });
+  
   
   userSchema.methods.generateAuthToken = function() { 
     var jwtPrivateKey=config.get('jwtPrivateKey');

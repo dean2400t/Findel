@@ -4,7 +4,10 @@ var express = require('express');
 var router = express.Router();
 const {Domain} = require('../models/domains');
 const {Topic} = require('../models/topics');
-const {TopicTopicEdge} = require('../models/topic_to_topic_edges');
+const {Topic_topic_edge} = require('../models/topic_to_topic_edges');
+const {Page} = require('../models/pages');
+const {Comments} = require('../models/comments');
+const extract_comments_from_database = require('../middleware/extract_comments_from_database');
 
 function checkAuthAndReturnUserID(token)
 {
@@ -22,12 +25,12 @@ router.get('/domains', async function(req, res) {
    return res.status(200).send(domains);
 });
 
-router.get('/domain_sites', async function(req, res) {
+router.get('/domains', async function(req, res) {
    var domain_id = req.query.id;
-   var domain_and_sites = await Domain.findById(domain_id)
-      .populate('sites', 'siteURL siteFormatedURL')
-      .select('score sites domainURL _id');
-   return res.status(200).send(domain_and_sites);
+   var domain_and_pages = await Domain.findById(domain_id)
+      .populate('pages', 'pageURL pageFormatedURL')
+      .select('score pages domainURL _id');
+   return res.status(200).send(domain_and_pages);
 });
 
 router.get('/connected_topics',async function(req, res) {
@@ -38,29 +41,90 @@ router.get('/connected_topics',async function(req, res) {
    var token=req.headers['findel-auth-token'];
    var userID= checkAuthAndReturnUserID(token);
 
-   var connected_topics_edges=await TopicTopicEdge.find({$or: [{ topic1: topic }, { topic2: topic } ]}).populate('topic1').populate('topic2');
+   if (userID != '')
+        var connected_topics_edges = await Topic_topic_edge.find(
+            {$or: [{ topic1: topic }, { topic2: topic } ]})
+            .populate('topic1')
+            .populate('topic2')
+            .populate({
+                path: 'usersRanking',
+                match: { user: userID}
+            });
+    else
+        var connected_topics_edges = await Topic_topic_edge.find(
+            {$or: [{ topic1: topic }, { topic2: topic } ]})
+            .populate('topic1')
+            .populate('topic2');
+   
    connected_topics_data=[];
    connected_topics_edges.forEach(edge => {
       var connected_topic=edge.topic1;
       if (edge.topic1.topicName==topicName)
          connected_topic=edge.topic2;
-      var userRankCode=0;
-      if (userID!="")
-      {
-         for (var rankIndex=0; rankIndex<edge.usersRanking.length && userRankCode==0; rankIndex++)
-            if (edge.usersRanking[rankIndex].userID.equals(userID))
-               userRankCode=edge.usersRanking[rankIndex].rankCode;
-      }
+      
+      if (userID != "")
+        var user_rankings = edge.usersRanking;
+      else
+        var user_rankings = [];
+
       connected_topics_data.push({
          edgeID: edge._id,
          connected_topic_name:connected_topic.topicName,
-         edge_weight: edge.weight,
+         liked_weight: edge.liked_weight,
          web_scrape_score: edge.web_scrape_score,
          last_web_scrape: edge.last_web_scrape,
-         userRankCode: userRankCode
+         user_rankings: user_rankings
       });
    });
 
-   return res.status(200).send(connected_topics_data);
+   var comments = await extract_comments_from_database(topic.root_comments, userID);
+
+   data={
+      topic: topic,
+      topics: connected_topics_data,
+      comments: comments
+   }
+   return res.status(200).send(data);
 });
+
+
+router.get('/page_data',async function(req, res) {
+   var pageFormatedURL = req.query.pageURL;
+   var token=req.headers['findel-auth-token'];
+   var userID= checkAuthAndReturnUserID(token);
+
+   if (userID != '')
+      var page_topic_edges_populateQuery = [
+         {path:'usersRanking', match:{ user: userID}, model: 'topic-topic-edges-ranking'}, 
+         {path:'topic', model: 'topics'}
+         ];
+   else
+      var page_topic_edges_populateQuery = [ 
+         {path:'topic', model: 'topics'}
+         ];
+
+   page = await Page.findOne({pageFormatedURL: pageFormatedURL})
+      .populate('domain')
+      .populate({
+         path: 'page_topic_edges',
+         populate: page_topic_edges_populateQuery
+      });
+   
+   if (!page)
+      return res.status(400).send("Page " + pageURL +" not found in database");
+   
+   var comments = await extract_comments_from_database(page.root_comments, userID);
+   
+   return res.status(200).send({
+      pageID: page.id,
+      pageURL: page.pageURL,
+      pageFormatedURL: page.pageFormatedURL,
+      pageSnap: page.pageSnap,
+      domain: page.domain,
+      page_topic_edges: page.page_topic_edges,
+      comments: comments
+   });
+
+});
+
 module.exports = router;
