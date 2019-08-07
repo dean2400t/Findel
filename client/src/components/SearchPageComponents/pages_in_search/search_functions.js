@@ -287,7 +287,7 @@ class Search_functions{
             expandend_content_status: ""
         });
         this_of_searchPage.expandedCon_to_history=expandedCon;
-        
+        this_of_searchPage.save_to_history();
     }
 
     async best_pages_results(this_of_searchPage, rk_results)
