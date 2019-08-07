@@ -107,7 +107,7 @@ class SearchPage extends Component {
                 <div className="search_box_div">
                     <img id="findelTheme" src="/publicComponents/findelTheme"/>
                     <div>
-                        <input id="search_text_box" type="text" value={this.state.inputValue} onChange={evt => this.updateTXT(evt)} onKeyPress={this.handleKeyPress}></input>
+                        <input className="text_input" id="search_text_box" type="text" value={this.state.inputValue} onChange={evt => this.updateTXT(evt)} onKeyPress={this.handleKeyPress}></input>
                         <button id="searchBTN" name="searchBTN" onClick={() => this.search_button_function()}>{this.state.search_button_text} <i className={this.state.search_button_iconClass}></i></button><br/>
                         <input type="radio" onClick={() => this.deep_search_radio_button_clicked()} checked={!this.state.is_simple_search_selected} value=''/> חיפוש עמוק
                         <input type="radio" id="simple_search_radio_button" onClick={() => this.simple_search_radio_button_clicked()} checked={this.state.is_simple_search_selected} value=''/> חיפוש פשוט
@@ -124,15 +124,16 @@ class SearchPage extends Component {
                 <div className="add_content_and_pages_div" style={{backgroundColor:'#0587c3'}}>
                     <div className="add_topic_to_topic_div" hidden={!this.state.was_add_topic_button_clicked}>
                         <text style={search_box_textStyle} onClick= {() => this.add_topic_button_clicked(false)}>-הוסף תוכן לנושא: &nbsp;</text><br/>
-                        <input type="text" value={this.state.add_topic_to_topic_input} onChange={evt => this.add_topic_to_topic_change_function(evt)}/><button id="add_topic_to_topic_button">+</button>
+                        <input className="text_input" type="text" value={this.state.add_topic_to_topic_input} onChange={evt => this.add_topic_to_topic_change_function(evt)}/>
+                        <button id="add_topic_to_topic_button" onClick={() => this.connect_topic()}>+</button>
                     </div>
                     <div className="add_topic_to_topic_div" hidden={this.state.was_add_topic_button_clicked}>
                         <text onClick= {() => this.add_topic_button_clicked(true)} style={search_box_textStyle}>+הוסף תוכן לנושא...</text>
                     </div>
                     <div className="add_page_to_topic_div" hidden={!this.state.was_add_page_button_clicked}>
                         <text onClick= {() => this.add_page_button_clicked(false)} style={search_box_textStyle}>-הוסף אתר לנושא: &nbsp;</text><br/>
-                        <input type="text" id="add_page_to_topic_url_input" placeholder=".....//:https" value={this.state.add_page_to_topic_input} onChange={evt => this.add_page_to_topic_change_function(evt)}/><br></br>
-                        <textarea value={this.state.add_page_to_topic_description} placeholder="תאור האתר" onChange={evt => this.add_page_to_topic_change_description_function(evt)}/><br/>
+                        <input className="text_input" type="text" id="add_page_to_topic_url_input" placeholder=".....//:https" value={this.state.add_page_to_topic_input} onChange={evt => this.add_page_to_topic_change_function(evt)}/><br></br>
+                        <textarea className="text_input" value={this.state.add_page_to_topic_description} placeholder="תאור האתר" onChange={evt => this.add_page_to_topic_change_description_function(evt)}/><br/>
                         <button id="add_page_to_topic_button" onClick={() => this.add_page()}>+</button>
                     </div>
                     <div className="add_page_to_topic_div" hidden={this.state.was_add_page_button_clicked}>
@@ -222,6 +223,24 @@ class SearchPage extends Component {
             pageDescription: this.state.add_page_to_topic_description
           };
         Axios.post('/api/addContent/add_page', opts, {
+        headers: {'findel-auth-token': this.token}}
+            ).then(response => {
+                this.setState({server_message: response.data});
+            }).catch(error=> {
+                if (error.response==undefined)
+                this.setState({server_message: "אין חיבור לשרת"});
+                else
+                this.setState({server_message: error.response.data});
+        });
+    }
+
+    connect_topic()
+    {
+        var opts={
+            current_topicName: this.state.inputValue,
+            new_topicName: this.state.add_topic_to_topic_input
+          };
+        Axios.post('/api/addContent/connect_topic', opts, {
         headers: {'findel-auth-token': this.token}}
             ).then(response => {
                 this.setState({server_message: response.data});
@@ -328,8 +347,9 @@ class SearchPage extends Component {
         .then(async(result) => {
             if (result.data.wikiText!=null && this.state.is_simple_search_selected==false)
             {
-                    this.connected_topics_edges=result.data.connected_topics_edges;
+                this.connected_topics_edges=result.data.connected_topics_edges;
                 await search_functions.search_using_wikipedia(result.data.wikiText, this);
+                this.save_to_history();
             }
             
             else if (result.data.ambig!=null)
