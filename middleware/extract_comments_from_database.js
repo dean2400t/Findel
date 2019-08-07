@@ -38,7 +38,7 @@ module.exports=async function extract_comments_from_database(root_comments_IDs_a
                 _id: ranking._id,
                 id: ranking.id,
                 rank_type: ranking.rank_type,
-                rank_code: ranking.rank_code
+                rankCode: ranking.rankCode
                 });
         });
         comments_data_to_return.push({

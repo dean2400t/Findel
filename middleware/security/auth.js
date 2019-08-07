@@ -7,7 +7,7 @@ module.exports = function (req, res, next) {
     token = req.headers['findel-auth-token'];
   if (!token)  
   {
-    return res.status(401).send('Access denied. No token provided.');
+    return res.status(401).send('יש להתחבר על מנת לבצע פעולה זאת');
   }
 
   try {

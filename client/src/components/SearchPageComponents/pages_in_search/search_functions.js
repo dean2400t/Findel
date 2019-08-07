@@ -24,6 +24,7 @@ class Search_functions{
             
             var timeToRefresh=750;
 
+            //function to show status of pages search and check if user requested to stop
             let refreshSearchStatus=setInterval(
             () => {
                 if (this_of_searchPage.pageSearchFinished==false && this_of_searchPage.did_user_ended_seach==false)
@@ -79,73 +80,6 @@ class Search_functions{
             }
         return full_pages_array;
     }
-/*
-    shuffle_pages_from_google(full_pages_array)
-    {
-        full_pages_array.sort(function(page1, page2){
-            if (page2.order_index_by_google===0) return 1;
-            if (page1.order_index_by_google===0) return -1;
-            if (page2.order_index_by_google==null && page1.order_index_by_google==null) return 0;
-            if (page2.order_index_by_google!=null && page1.order_index_by_google==null) return 1;
-            if (page2.order_index_by_google==null && page1.order_index_by_google!=null) return -1;
-            return page1.order_index_by_google-page2.order_index_by_google;
-        });
-        full_pages_array.sort(function(page1, page2){return page2.domain.score - page1.domain.score});
-        full_pages_array.sort(function(page1, page2){return page2.edgeWeight - page1.edgeWeight});
-        var shuffled_pages=[];
-
-        var full_pages_index=0;
-        while (full_pages_index<full_pages_array.length && full_pages_array[full_pages_index].edgeWeight>1)
-        {
-            shuffled_pages.push(full_pages_array[full_pages_index]);
-            full_pages_index++;
-        }
-        
-        var domains_page_array=[];
-        var domains_index=-1;
-        var domainURL="";
-
-        var still_has_some=[];
-        while (full_pages_index<full_pages_array.length)
-        {
-            if (full_pages_array[full_pages_index].domain.score<1)
-                break;
-            if (domainURL==full_pages_array[full_pages_index].domain.domainURL)
-            {
-                domains_page_array[domains_index].pages.push(full_pages_array[full_pages_index]);
-                full_pages_index++;
-            }
-            else
-            {
-                domains_index++;
-                domainURL = full_pages_array[full_pages_index].domain.domainURL;
-                domains_page_array.push({domainURL: domainURL, pages: [full_pages_array[full_pages_index]], cur_page_index: 0});
-                still_has_some.push(domains_index);
-                full_pages_index++;
-            }
-        }
-        while(still_has_some.length>0)
-            for (var has_index=0; has_index<still_has_some.length; has_index++)
-            {
-                var domain=domains_page_array[still_has_some[has_index]];
-                shuffled_pages.push(domain.pages[domain.cur_page_index]);
-                domain.cur_page_index++;
-                if (domain.cur_page_index<domain.pages.length)
-                {
-                    shuffled_pages.push(domain.pages[domain.cur_page_index]);
-                    domain.cur_page_index++;
-                }
-                if (domain.cur_page_index>=domain.pages.length)
-                {
-                    still_has_some.splice(has_index,1);
-                    has_index--;
-                }
-            }
-        for (full_pages_index; full_pages_index<full_pages_array.length; full_pages_index++)
-            shuffled_pages.push(full_pages_array[full_pages_index]);
-        return shuffled_pages;
-    }
-    */
     
     request_pages_from_Server_to_use= async (search, this_of_searchPage)=>{
         await axios.get("/api/topics_to_pages_data/?search="+search,{

@@ -3251,3 +3251,9 @@
 {"level":"info","message":"Listening on port 1337...","timestamp":"2019-08-06T22:44:25.459Z"}
 {"message":"objectId.substring is not a function","stack":"TypeError: objectId.substring is not a function\n    at dateFromObjectId (C:\\Projects\\findel\\middleware\\extract_comments_from_database.js:5:42)\n    at comments.forEach.comment (C:\\Projects\\findel\\middleware\\extract_comments_from_database.js:54:24)\n    at Array.forEach (<anonymous>)\n    at extract_comments_from_database (C:\\Projects\\findel\\middleware\\extract_comments_from_database.js:27:14)\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-08-06T22:44:30.463Z"}
 {"level":"info","message":"Listening on port 1337...","timestamp":"2019-08-06T22:44:45.438Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-08-06T22:59:00.171Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-08-06T23:03:52.474Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-08-06T23:05:33.120Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-08-06T23:07:03.400Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-08-07T07:54:35.348Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-08-07T07:55:28.762Z"}
