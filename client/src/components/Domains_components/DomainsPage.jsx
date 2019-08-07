@@ -15,13 +15,8 @@ class DomainsPage extends Component {
         this.id=1;
         axios.get("/api/present_data/domains")
           .then((result) => {
-              // Get the result
-              // If we want text, call result.text()
               return result.data;
           }).then((domains) => {
-              // Do something with the result
-
-
               domains.sort((domain_a, domain_b) => {return domain_b.educational_weight-domain_a.educational_weight;});
               domains.sort((domain_a, domain_b) => {return domain_b.credibility_weight-domain_a.credibility_weight;});
               domains.sort((domain_a, domain_b) => {return domain_b.liked_weight-domain_a.liked_weight;});
@@ -99,11 +94,15 @@ class DomainsPage extends Component {
                     domains[index].is_more_pages_button_hidden=true;
                     break;
                 }
-              this.setDomains(domains)
+              this.setState({
+                domains: domains
+              });
           }).catch((error) => {
               console.log(error);
               var domains=[];
-              this.setDomains(domains)
+              this.setState({
+                domains: domains
+              });
           });
     }
 }

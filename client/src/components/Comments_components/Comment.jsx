@@ -32,6 +32,10 @@ class Comment extends Component {
       user_name_color = "green";
     else if (this.props.comment.user.position == "Admin")
       user_name_color = "brown";
+
+    var show_comment_time=false;
+    if (this.props.comment.time_made == null)
+      show_comment_time=true;
     this.state = {
         liked_upArrowColor: liked_upArrow,
         liked_downArrowColor: liked_downArrow,
@@ -45,7 +49,8 @@ class Comment extends Component {
           object_id_collection_name: 'comments',
           root_comment_id: this.props.comment.root_comment
           },
-        user_name_color: user_name_color
+        user_name_color: user_name_color,
+        show_comment_time: show_comment_time
       }
     this.last_ranking_timeStamp = null;
     this.last_ranking_id = null;
@@ -70,7 +75,7 @@ class Comment extends Component {
               <FontAwesomeIcon icon={faArrowAltCircleDown} color={this.state.liked_downArrowColor} onClick={() => this.rank_click_down("liked")}/>
             </text>
             <text style={user_name_style}>&nbsp;&nbsp;{this.state.comment.user.userName}</text>
-            <br/><text style={user_name_style}>הגיב ב: {this.props.comment.time_made}</text>
+            <span hidden={this.state.show_comment_time}><br/><text style={user_name_style}>הגיב ב: {this.props.comment.time_made}</text></span>
             <br/><text>{this.state.comment.text}</text>
             <br/><text style={redText}>{this.state.rank_error}</text>
             <text onClick= {() => this.add_commnet_text_clicked()} style={add_comment_text_style}>{this.state.add_comment_text}</text>
