@@ -64,7 +64,7 @@ class Page_page extends Component {
         <div className='page_page'>
             <div className="Page" style={{ backgroundColor:'#0587c3'}}>
                 <h1 style={{fontSize:'10', textAlign: 'center', color: 'white', padding: '10px'}}>
-                פרטים על האתר</h1>
+                פרטים על הדף</h1>
                 
             </div>
             <div>
