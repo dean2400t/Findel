@@ -6,7 +6,7 @@ class List_for_googleAPI_component extends Component {
     render() {
         return this.props.domains_list.map((domain)=>(
             <div className="list_div">
-                <text>{domain.domainURL}: <br/></text>
+                <text>{domain.domainURL}<br/></text>
             </div>
           ));
     }
