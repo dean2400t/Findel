@@ -6,28 +6,41 @@ const domain_Schema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    trim: true,
     minlength: 4,
     maxlength: 1024
   },
 
-  liked_weight:{
+  liked_positive_points:{ 
     type: Number,
-    default: 1
+    required: true,
+    default: 0
+  },
+  liked_negative_points:{ 
+    type: Number,
+    required: true,
+    default: 0
+  },
+  
+  credibility_positive_points:{ 
+    type: Number,
+    required: true,
+    default: 0
+  },
+  credibility_negative_points:{ 
+    type: Number,
+    required: true,
+    default: 0
   },
 
-  credibility_weight:{
+  educational_positive_points:{ 
     type: Number,
-    default: 1
-    },
-
-  educational_weight:{
+    required: true,
+    default: 0
+  },
+  educational_negative_points:{ 
     type: Number,
-    default: 1
-    },
-
-  is_verified:{
-    type: Boolean
+    required: true,
+    default: 0
   },
 
   pages:[{
@@ -35,7 +48,13 @@ const domain_Schema = new mongoose.Schema({
     ref: 'pages'
   }],
 
-  usersRanking:
+  pages_usersRanking:
+    [{
+      type: mongoose.Schema.ObjectId, 
+      ref: 'pages-ranking'
+    }],
+
+  edges_to_pages_usersRanking:
     [{
       type: mongoose.Schema.ObjectId, 
       ref: 'page-topic-edges-ranking'
@@ -47,6 +66,9 @@ const domain_Schema = new mongoose.Schema({
     }]
   
 });
+  domain_Schema.index({
+    domainURL: 1
+    }, { unique: true });
   
   const Domain = mongoose.model('domains', domain_Schema);
   

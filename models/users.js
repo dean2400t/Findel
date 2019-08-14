@@ -55,34 +55,7 @@ const userSchema = new mongoose.Schema({
     default: 1,
     required: true
   },
-  searches:[search_Schema],
-
-  page_topic_edges_ranking: [{
-    type: mongoose.Schema.ObjectId, 
-    ref: 'page-topic-edges-ranking'}],
-  
-  topic_topic_edges_ranking: [{
-    type: mongoose.Schema.ObjectId, 
-    ref: 'topic-topic-edges-ranking'}],
-
-  page_topic_edges_added: [{
-    type: mongoose.Schema.ObjectId, 
-    ref: 'page-topic-edges'
-  }],
-  
-  topic_topic_edges_added: [{
-    type: mongoose.Schema.ObjectId, 
-    ref: 'topic-topic-edges'
-  }],
-
-  comments_added: [{
-    type: mongoose.Schema.ObjectId, 
-    ref: 'comments'
-  }],
-  
-  comments_ranking: [{
-    type: mongoose.Schema.ObjectId, 
-    ref: 'topic-topic-edges-ranking'}]
+  searches:[search_Schema]
   });
   
   

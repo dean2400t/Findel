@@ -172,23 +172,101 @@ function checkAuthAndReturnUserID(token)
 async function get_pages_edges_data_from_topic(topic, userID)
 {
   var pages=[];
+
+  var edge_selections =`
+    page
+    order_index_by_google
+    lastCalculated
+    num_of_links_in_page
+    jaccard_similarity
+    liked_positive_points
+    liked_negative_points
+    `
+  var page_selections=`
+    pageURL
+    pageFormatedURL
+    pageSnap
+    domain
+    liked_positive_points
+    liked_negative_points
+    credibility_positive_points
+    credibility_negative_points
+    educational_positive_points
+    educational_negative_points
+    `
   if (userID == "")
     var edges_to_pages = await Page_topic_edge.find({topic: topic})
-    .populate('page');
+    .select(edge_selections)
+    .populate({
+      path: 'page',
+      select: page_selections,
+      populate: {
+        path: 'domains',
+        select: `
+                domainURL
+                liked_positive_points
+                liked_negative_points
+                credibility_positive_points
+                credibility_negative_points
+                educational_positive_points
+                educational_negative_points
+                `
+      }
+    });
   else
+  {
+    var user_ranking_selection = `
+    rank_type
+    rankCode
+    `
+    edge_selections+= `usersRanking`;
+    page_selections+= `edges_usersRanking page_usersRanking`;
     var edges_to_pages = await Page_topic_edge.find({topic: topic})
-      .populate('page')
-      .populate({
-        path: 'usersRanking',
-        match: { user: userID}
-      });
-  
-  for (var index=0; index<edges_to_pages.length; index++)
-    edges_to_pages[index].page.domain = await Domain.findById(edges_to_pages[index].page.domain).select('-pages -userRankings');
-  
+      .select(edge_selections)
+      .populate([
+        {
+          path: 'page',
+          select: page_selections,
+          populate: 
+          [{
+            path: 'page_usersRanking',
+            select: user_ranking_selection,
+            match: { user: userID}
+          },
+          {
+            path: 'edges_usersRanking',
+            select: user_ranking_selection,
+            match: { user: userID}
+          },
+          {
+            path: 'domain',
+            select: `
+                    domainURL
+                    liked_positive_points
+                    liked_negative_points
+                    credibility_positive_points
+                    credibility_negative_points
+                    educational_positive_points
+                    educational_negative_points
+                    `
+          }]
+        },
+        {
+          path: 'usersRanking',
+          match: { user: userID },
+          select: user_ranking_selection
+        }]
+      );
+    }
+
   edges_to_pages.forEach(edge_to_page => {
     if (userID != "")
+    {
       var user_rankings = edge_to_page.usersRanking;
+      edge_to_page.page.page_usersRanking.forEach(ranking => {
+        user_rankings.push(ranking);
+      });
+    }
     else
       var user_rankings = [];
     var page = edge_to_page.page;
@@ -200,9 +278,12 @@ async function get_pages_edges_data_from_topic(topic, userID)
       pageSnap: page['pageSnap'],
       domain: page['domain'],
       user_rankings: user_rankings,
-      liked_weight: edge_to_page.liked_weight,
-      credibility_weight: edge_to_page.credibility_weight,
-      educational_weight: edge_to_page.educational_weight,
+      liked_positive_points: edge_to_page.liked_positive_points,
+      liked_negative_points: edge_to_page.liked_negative_points,
+      credibility_positive_points: page.credibility_positive_points,
+      credibility_negative_points: page.credibility_negative_points,
+      educational_positive_points: page.educational_positive_points,
+      educational_negative_points: page.educational_negative_points,
       order_index_by_google: edge_to_page.order_index_by_google
     });
   });

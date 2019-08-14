@@ -27,7 +27,8 @@ class Topic_component extends Component {
           liked_upArrowColor: liked_upArrow,
           liked_downArrowColor: liked_downArrow,
           rank_error: "",
-          edge_liked_weight: this.props.topic.liked_weight,
+          edge_liked_positive_points: this.props.topic.liked_positive_points,
+          edge_liked_negative_points: this.props.topic.liked_negative_points,
           rankCode: this.props.topic.userRankCode
         }
         this.last_ranking_timeStamp = null;
@@ -41,9 +42,11 @@ class Topic_component extends Component {
         <text style={{marginRight: '10px'}}>{this.props.topic.connected_topic_name}<br/></text>
         <text style={{marginRight: '10px'}}>
         דירוג משתמשים: 
+        ({this.state.edge_liked_positive_points})
         <FontAwesomeIcon icon={faArrowAltCircleUp} color={this.state.liked_upArrowColor} onClick={() => this.rank_click_up("liked")}/> 
-        ({this.state.edge_liked_weight}) 
+        
         <FontAwesomeIcon icon={faArrowAltCircleDown} color={this.state.liked_downArrowColor} onClick={() => this.rank_click_down("liked")}/>
+        ({this.state.edge_liked_negative_points})
         <br/></text>
         <text style={{marginRight: '10px'}}>ציון מחיפוש באתרים: {this.props.topic.web_scrape_score}<br/></text>
         <text style={{marginRight: '10px'}}>חיפוש אחרון: {this.props.topic.last_web_scrape}<br/></text>

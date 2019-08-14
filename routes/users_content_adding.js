@@ -61,12 +61,10 @@ router.post('/connect_topic', auth, async function(req, res) {
         return res.status(400).send(msg)
     }
 
-    var weight=user.userScore+1;
-    topic_topic_edge=new Topic_topic_edge({topic1: topic1._id, topic2: topic2._id, weight: weight});
+    topic_topic_edge=new Topic_topic_edge({topic1: topic1._id, topic2: topic2._id, added_by: user._id});
     topic_topic_edge = await topic_to_topic_edge_save(topic_topic_edge);
     await Topic.updateOne({_id: topic1._id}, {$addToSet: {topic_topic_edges: topic_topic_edge._id}});
     await Topic.updateOne({_id: topic2._id}, {$addToSet: {topic_topic_edges: topic_topic_edge._id}});
-    await User.updateOne({_id: user._id}, {$addToSet: {topic_topic_edges_added: topic_topic_edge._id}});
     var msg="נוצר חיבור בין " + topic1.topicName + " ל" + topic2.topicName;
     return res.status(200).send(msg);
 });
@@ -112,11 +110,10 @@ router.post('/add_page', auth, async function(req, res) {
     }
 
     var weight=user.userScore+1;
-    page_topic_edge=new Page_topic_edge({topic: topic._id, page: page._id, weight: weight});
+    page_topic_edge=new Page_topic_edge({topic: topic._id, page: page._id, weight: weight, added_by: user._id});
     page_topic_edge = await page_to_topic_edge_save(page_topic_edge);
     await Page.updateOne({_id: page._id}, {$addToSet: {page_topic_edges: page_topic_edge._id}});
     await Topic.findOneAndUpdate({_id: topic._id}, {$addToSet: {page_topic_edges: page_topic_edge._id}});
-    await User.findOneAndUpdate({_id: user._id}, {$addToSet: {page_topic_edges_added: page_topic_edge._id}});
     var msg="נוצר חיבור בין " + topic.topicName + " ל" + page.pageURL;
     return res.status(200).send(msg);
 });

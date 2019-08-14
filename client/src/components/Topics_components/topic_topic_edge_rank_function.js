@@ -45,10 +45,12 @@ export default function topic_topic_edge_rank_function(this_of_topic, rank_type,
             this_of_topic.last_ranking_id = res_data.edge_ranking_id;
             this_of_topic.last_ranking_timeStamp = recived_time;
 
-            var string_for_edge_rank_type_weight = "edge_" + rank_type + "_weight";
+            var string_for_edge_rank_type_positive_points = "edge_" + rank_type + "_positive_points";
+            var string_for_edge_rank_type_negative_points = "edge_" + rank_type + "_negative_points";
 
             var json_for_state_change = {};
-            json_for_state_change[string_for_edge_rank_type_weight] = res_data.weight;
+            json_for_state_change[string_for_edge_rank_type_positive_points] = res_data.positive_points;
+            json_for_state_change[string_for_edge_rank_type_negative_points] = res_data.negative_points;
             if (res_data.rankCode == 0)
             {
                 json_for_state_change[string_for_edge_upArrow_color] = 'black';

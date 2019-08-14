@@ -24,11 +24,18 @@ const comment_Scheme = new mongoose.Schema({
     minlength: 1,
     maxlength: 5000
   },
-  liked_weight:{
+
+  liked_positive_points:{ 
     type: Number,
-    default: 1,
-    required: true
+    required: true,
+    default: 0
   },
+  liked_negative_points:{ 
+    type: Number,
+    required: true,
+    default: 0
+  },
+
   root_comment: {
     type: mongoose.Schema.ObjectId, 
     ref: 'comments',

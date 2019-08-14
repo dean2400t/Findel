@@ -4,8 +4,13 @@ import PropsTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faArrowAltCircleUp} from '@fortawesome/free-solid-svg-icons';
 import {faArrowAltCircleDown} from '@fortawesome/free-solid-svg-icons';
+import {faHeart} from '@fortawesome/free-regular-svg-icons';
+import {faSearch} from '@fortawesome/free-solid-svg-icons';
+import {faBook} from '@fortawesome/free-solid-svg-icons';
+import {faGlobe} from '@fortawesome/free-solid-svg-icons';
 import Cookies from 'universal-cookie';
-import rank_page_topic_edge_function from './rank_page_topic_edge_function';
+import rank_function from './rank_function';
+import {ProgressBar} from 'react-bootstrap';
 
 const cookies = new Cookies();
 
@@ -45,6 +50,31 @@ class Page_ref extends Component {
             educational_downArrow = 'red'
         }
       });
+    var liked_bar_style=this.make_bar_style(
+      this.props.page_ref.liked_positive_points,
+      this.props.page_ref.liked_negative_points,
+      )
+    var credibility_bar_style=this.make_bar_style(
+      this.props.page_ref.credibility_positive_points,
+      this.props.page_ref.credibility_negative_points,
+      )
+    var educational_bar_style=this.make_bar_style(
+      this.props.page_ref.educational_positive_points,
+      this.props.page_ref.educational_negative_points,
+      )
+    var domain_liked_bar_style=this.make_bar_style(
+      this.props.page_ref.domain.liked_positive_points,
+      this.props.page_ref.domain.liked_negative_points,
+      )
+    var domain_credibility_bar_style=this.make_bar_style(
+      this.props.page_ref.domain.credibility_positive_points,
+      this.props.page_ref.domain.credibility_negative_points,
+      )
+    var domain_educational_bar_style=this.make_bar_style(
+      this.props.page_ref.domain.educational_positive_points,
+      this.props.page_ref.domain.educational_negative_points,
+      )
+
     this.state = {
       liked_upArrowColor: liked_upArrow,
       liked_downArrowColor: liked_downArrow,
@@ -53,13 +83,25 @@ class Page_ref extends Component {
       educational_upArrowColor: educational_upArrow,
       educational_downArrowColor: educational_downArrow,
       rank_error: "",
-      edge_liked_weight: this.props.page_ref.liked_weight,
-      edge_credibility_weight: this.props.page_ref.credibility_weight,
-      edge_educational_weight: this.props.page_ref.educational_weight,
+      liked_positive_points: this.props.page_ref.liked_positive_points,
+      credibility_positive_points: this.props.page_ref.credibility_positive_points,
+      educational_positive_points: this.props.page_ref.educational_positive_points,
+      liked_negative_points: this.props.page_ref.liked_negative_points,
+      credibility_negative_points: this.props.page_ref.credibility_negative_points,
+      educational_negative_points: this.props.page_ref.educational_negative_points,
       rankCode: this.props.page_ref.userRankCode,
-      domain_liked_weight: this.props.page_ref.domain.liked_weight,
-      domain_credibility_weight: this.props.page_ref.domain.credibility_weight,
-      domain_educational_weight: this.props.page_ref.domain.educational_weight
+      domain_liked_positive_points: this.props.page_ref.domain.liked_positive_points,
+      domain_credibility_positive_points: this.props.page_ref.domain.credibility_positive_points,
+      domain_educational_positive_points: this.props.page_ref.domain.educational_positive_points,
+      domain_liked_negative_points: this.props.page_ref.domain.liked_negative_points,
+      domain_credibility_negative_points: this.props.page_ref.domain.credibility_negative_points,
+      domain_educational_negative_points: this.props.page_ref.domain.educational_negative_points,
+      liked_bar_style: liked_bar_style,
+      credibility_bar_style: credibility_bar_style,
+      educational_bar_style: educational_bar_style,
+      domain_liked_bar_style: domain_liked_bar_style,
+      domain_credibility_bar_style: domain_credibility_bar_style,
+      domain_educational_bar_style: domain_educational_bar_style,
     }
     this.last_ranking_timeStamp = null;
     this.last_ranking_id = null;
@@ -72,65 +114,125 @@ class Page_ref extends Component {
           <div className="a_page_ref">
             <text><a target="_blank" rel="noopener noreferrer" href={this.props.page_ref.pageURL}>{this.props.page_ref.formatedURL}</a></text>
             <br/><text>{this.props.page_ref.pageSnap}</text>
-            <br/>
-            <text>
-              <FontAwesomeIcon icon={faArrowAltCircleUp} color={this.state.liked_upArrowColor} onClick={() => this.rank_click_up("liked")}/> 
-              ({this.state.edge_liked_weight}) 
-              <FontAwesomeIcon icon={faArrowAltCircleDown} color={this.state.liked_downArrowColor} onClick={() => this.rank_click_down("liked")}/>
-              &nbsp; ציון משתמשים שאהבו את הדף
-            </text><br/>
-            
-            <text> 
+            <table>
+            <tr>
+              <td>
+                ({this.state.liked_positive_points})
+                <FontAwesomeIcon icon={faArrowAltCircleUp} color={this.state.liked_upArrowColor} onClick={() => this.rank_click_up("liked")}/>
+              </td>
+              <td width='60%'>
+                <ProgressBar
+                variant={this.state.liked_bar_style[1]}
+                now={this.state.liked_bar_style[0]} />
+              </td> 
+              <td>
+                <FontAwesomeIcon icon={faArrowAltCircleDown} color={this.state.liked_downArrowColor} onClick={() => this.rank_click_down("liked")}/>
+                ({this.state.liked_negative_points}) 
+                <FontAwesomeIcon icon={faHeart}/>
+              </td>
+            </tr>
+            <tr>
+              <td>
+              ({this.state.credibility_positive_points}) 
               <FontAwesomeIcon icon={faArrowAltCircleUp} color={this.state.credibility_upArrowColor} onClick={() => this.rank_click_up("credibility")}/> 
-              ({this.state.edge_credibility_weight}) 
+              </td>
+              <td>
+              <ProgressBar
+                variant={this.state.credibility_bar_style[1]}
+                now={this.state.credibility_bar_style[0]} />
+              </td>
+              <td>
               <FontAwesomeIcon icon={faArrowAltCircleDown} color={this.state.credibility_downArrowColor} onClick={() => this.rank_click_down("credibility")}/>
-              &nbsp; ציון משתמשים שאמרו שהדף&nbsp;
-              <span className="field-tip">
-                  <text><u>אמין*</u></text>
-                    <span className="tip-content">
-                    •	עד כמה השפה ואוצר המילים ברמה גבוהה ומקצועית?
-                    <br/>
-                    <br/>
-                    •	כמה פרסומות קיימות בדף? באתרים המרוויחים כסף מפרסום קיים סיכוי גבוהה יותר, של גורמים חיצוניים, לממן כתבות ו/או להשפיע על תוכן האתר.
-                    <br/>
-                    <br/>
-                    •	מי כתב את הדף? האם יש לו מניעה מסוים שיכול להשפיע על שיקול דעתו?
-                    מה רמת הידע של כותב הדף בנושא? האם הוא עבר הסמכה? אקדמאי בתחום? מאיפה הנתונים שלו מגיעים? 
-                    <br/>
-                    <br/>
-                    •	האם קיים בדף משהו שאתם מזהים כשגוי או מוטה? אם כן יכול להיות שישנם עוד שגיאות והטיות.
-                    <br/>
-                    <br/>
-                    <br/>
-                    לאחר ששאלתם שאלות אלו: אם אתם ברושם שהדף אמין, סמנו אותו ככזה. אם נתקלתם באחד או מספר דברים לא תקינים, סמנו אותו כלא אמין. אם אינכם בטוחים, השאירו אותו במצב הקיים.
-                  </span>
-              </span>  
-            </text>
-            <br/>
-            
-
-            <text>
+              ({this.state.credibility_negative_points}) 
+              <FontAwesomeIcon icon={faSearch}/>
+              </td>
+            </tr>
+            <tr>
+              <td>
+              ({this.state.educational_positive_points}) 
               <FontAwesomeIcon icon={faArrowAltCircleUp} color={this.state.educational_upArrowColor} onClick={() => this.rank_click_up("educational")}/> 
-              ({this.state.edge_educational_weight}) 
+              </td>
+              <td>
+              <ProgressBar
+                variant={this.state.educational_bar_style[1]}
+                now={this.state.educational_bar_style[0]} />
+              </td>
+              <td>
               <FontAwesomeIcon icon={faArrowAltCircleDown} color={this.state.educational_downArrowColor} onClick={() => this.rank_click_down("educational")}/>
-              &nbsp; ציון מתשתמשים שאמרו שהדף מכיל תוכן חינוכי 
-            </text>
+              ({this.state.educational_negative_points}) 
+                <FontAwesomeIcon icon={faBook}/>
+              </td>
+            </tr>
+            </table>
 
-            <br/><text> {this.state.domain_liked_weight} אהבו את הדומיין</text>
-            <br/><text>{this.state.domain_credibility_weight} אמינות הדומיין</text>
-            <br/><text>{this.state.domain_educational_weight} חינוכיות הדומיין</text>
-            <br/><text style={redText}>{this.state.rank_error}</text>
+            <table>
+              <tr>
+              <td>({this.state.domain_liked_positive_points})</td>
+              <td width='60%'>
+              <ProgressBar
+                variant={this.state.domain_liked_bar_style[1]}
+                now={this.state.domain_liked_bar_style[0]} />
+              </td>
+              <td>
+                ({this.state.domain_liked_negative_points})
+                <FontAwesomeIcon icon={faGlobe}/>
+                <small><FontAwesomeIcon icon={faHeart}/></small>
+              </td>
+              </tr>
+            
+            <tr>
+              <td>({this.state.domain_credibility_positive_points})</td>
+              <td>
+              <ProgressBar
+                variant={this.state.domain_credibility_bar_style[1]}
+                now={this.state.domain_credibility_bar_style[0]} />
+              </td>
+              <td>
+                ({this.state.domain_credibility_negative_points})
+                <FontAwesomeIcon icon={faGlobe}/>
+                <small><FontAwesomeIcon icon={faSearch}/></small>
+              </td>
+            </tr>
+            <tr>
+              <td>({this.state.domain_educational_positive_points})</td>
+              <td>
+              <ProgressBar
+                variant={this.state.domain_educational_bar_style[1]}
+                now={this.state.domain_educational_bar_style[0]} />
+              </td>
+              <td>
+                ({this.state.domain_educational_negative_points})
+                <FontAwesomeIcon icon={faGlobe}/>
+                <small><FontAwesomeIcon icon={faBook}/></small>
+              </td>
+            </tr>
+            </table>
+            <text style={redText}>{this.state.rank_error}</text>
             <a target="_blank" rel="noopener noreferrer" style={more_on_page_textStyle} href={"/Page_page/"+encodeURIComponent(this.props.page_ref.formatedURL)}>עוד על הדף...</a>
           </div>
     );
   }
   rank_click_up(rank_type)
   {
-    rank_page_topic_edge_function(this, rank_type, "up")
+    rank_function(this, rank_type, "up")
   }
   rank_click_down(rank_type)
   {
-    rank_page_topic_edge_function(this, rank_type, "down")
+    rank_function(this, rank_type, "down")
+  }
+
+  make_bar_style(positive, negative)
+  {
+    if (positive == 0 && negative ==0)
+        return [50, 'warning'];
+    var now = (positive/(positive+negative))*100;
+    if (now < 10)
+      return [100, 'danger'];
+    if (now < 40)
+      return [now, 'danger'];
+    if (now < 60)
+      return [now, 'warning'];
+    return [now, 'success'];
   }
 }
 Page_ref.PropsTypes={

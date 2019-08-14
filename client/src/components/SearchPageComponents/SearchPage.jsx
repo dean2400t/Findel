@@ -6,7 +6,7 @@ import Ambigous from './AmbigousContent/Ambigous';
 import 'font-awesome/css/font-awesome.min.css';
 import './SearchPage.css';
 import Cookies from 'universal-cookie';
-import Search_functions from './pages_in_search/search_functions';
+import Search_functions from './search_functions';
 import Axios from 'axios';
 const cookies = new Cookies();
 const search_functions=new Search_functions();

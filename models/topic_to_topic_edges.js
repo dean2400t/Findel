@@ -13,11 +13,23 @@ const topic_topic_edge_Schema = new mongoose.Schema({
     ref: 'topics',
     required: true
   },
-  liked_weight:{ 
-    type: Number,
-    default: 1,
-    required: true
+
+  added_by:{
+    type: mongoose.Schema.ObjectId, 
+    ref: 'users'
   },
+
+  liked_positive_points:{ 
+    type: Number,
+    required: true,
+    default: 0
+  },
+  liked_negative_points:{ 
+    type: Number,
+    required: true,
+    default: 0
+  },
+  
   web_scrape_score:{
     type: Number,
     default: 1

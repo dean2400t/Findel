@@ -41,7 +41,8 @@ class Comment extends Component {
         liked_downArrowColor: liked_downArrow,
         comment: this.props.comment,
         rank_error: "",
-        liked_weight: this.props.comment.liked_weight,
+        likedֹ_positive_points: this.props.comment.likedֹ_positive_points,
+        likedֹ_negative_points: this.props.comment.likedֹ_negative_points,
         add_comment_text: "הגב+",
         is_add_comment_hidden: true,
         add_comment_vars: {
@@ -70,9 +71,11 @@ class Comment extends Component {
       return (
         <div className="Comment" style={comment_style}>
             <text>
+              ({this.state.likedֹ_positive_points}) 
               <FontAwesomeIcon icon={faArrowAltCircleUp} color={this.state.liked_upArrowColor} onClick={() => this.rank_click_up("liked")}/> 
-              ({this.state.liked_weight}) 
+              
               <FontAwesomeIcon icon={faArrowAltCircleDown} color={this.state.liked_downArrowColor} onClick={() => this.rank_click_down("liked")}/>
+              ({this.state.likedֹ_negative_points}) 
             </text>
             <text style={user_name_style}>&nbsp;&nbsp;{this.state.comment.user.userName}</text>
             <span hidden={this.state.show_comment_time}><br/><text style={user_name_style}>הגיב ב: {this.props.comment.time_made}</text></span>

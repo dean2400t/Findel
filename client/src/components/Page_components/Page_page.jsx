@@ -38,7 +38,7 @@ class Page_page extends Component {
           }).then((data) => {
               // Do something with the result
               data.page_topic_edges.sort((edge_a, edge_b)=>{return edge_b.web_scrape_score-edge_a.web_scrape_score;});
-              data.page_topic_edges.sort((edge_a, edge_b)=>{return edge_b.liked_weight-edge_a.liked_weight;});
+              data.page_topic_edges.sort((edge_a, edge_b)=>{return edge_b.liked_positive_points-edge_a.liked_positive_points;});
               data.page_topic_edges.forEach(edge => {
                   edge.id = this.id;
                   edge.page={ pageURL: data.pageURL }
@@ -71,9 +71,9 @@ class Page_page extends Component {
                 <h3 id="page_headLine">{this.state.pageFormatedURL}</h3>
                 <text>{this.state.pageSnap}</text>
                 <br/>
-                <text>ציון אתר: </text>
+                <text>ניקוד הדף:</text>
                 <br/>
-                <text>Domain: {this.state.domain.domainURL}</text>
+                <text>האתר: {this.state.domain.domainURL}</text>
                 <br/>
                 <Comments comments={this.state.comments} parrent_object_data={this.state.add_comment_vars}/> 
                 <Connected_topics_edges_component connected_topics_edges={this.state.page_topic_edges}/>

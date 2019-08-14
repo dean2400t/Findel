@@ -7,7 +7,6 @@ const pageSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    trim: true,
     minlength: 4,
     maxlength: 1024
   },
@@ -21,14 +20,62 @@ const pageSchema = new mongoose.Schema({
     type: String,
     maxlength: 1024
   },
+
+  liked_positive_points:{ 
+    type: Number,
+    required: true,
+    default: 0
+  },
+  liked_negative_points:{ 
+    type: Number,
+    required: true,
+    default: 0
+  },
+
+  credibility_positive_points:{ 
+    type: Number,
+    required: true,
+    default: 0
+  },
+  credibility_negative_points:{ 
+    type: Number,
+    required: true,
+    default: 0
+  },
+
+  educational_positive_points:{ 
+    type: Number,
+    required: true,
+    default: 0
+  },
+  educational_negative_points:{ 
+    type: Number,
+    required: true,
+    default: 0
+  },
+
   domain:{
     type: mongoose.Schema.ObjectId, 
     ref: 'domains'
   },
+
   page_topic_edges:[{
     type: mongoose.Schema.ObjectId, 
     ref: 'page-topic-edges'
   }],
+
+  edges_usersRanking:
+    [{
+      type: mongoose.Schema.ObjectId, 
+      ref: 'page-topic-edges-ranking'
+    }],
+
+  page_usersRanking:
+    [{
+      type: mongoose.Schema.ObjectId, 
+      ref: 'pages-ranking'
+    }],
+    
   root_comments:[{
     type: mongoose.Schema.ObjectId, 
     ref: 'comments'

@@ -67,9 +67,9 @@ class Search_functions{
             else
             return 0;
         });
-        full_pages_array.sort(function(page1, page2){return page2.educational_weight - page1.educational_weight});
-        full_pages_array.sort(function(page1, page2){return page2.credibility_weight - page1.credibility_weight});
-        full_pages_array.sort(function(page1, page2){return page2.liked_weight - page1.liked_weight});
+        full_pages_array.sort(function(page1, page2){return page2.educational_positive_points - page1.educational_positive_points});
+        full_pages_array.sort(function(page1, page2){return page2.credibility_positive_points - page1.credibility_positive_points});
+        full_pages_array.sort(function(page1, page2){return page2.liked_positive_points - page1.liked_positive_points});
         var temp;
         for (var index=0; index<full_pages_array[index]-1; index+=2)
             if (full_pages_array[index].domain.score < full_pages_array[index+1].domain.score)
@@ -106,9 +106,12 @@ class Search_functions{
                         pageSnap: pages[index].pageSnap,
                         domain: pages[index].domain,
                         user_rankings_for_edge: pages[index].user_rankings,
-                        liked_weight: pages[index].liked_weight,
-                        credibility_weight: pages[index].credibility_weight,
-                        educational_weight: pages[index].educational_weight,
+                        liked_positive_points: pages[index].liked_positive_points,
+                        credibility_positive_points: pages[index].credibility_positive_points,
+                        educational_positive_points: pages[index].educational_positive_points,
+                        liked_negative_points: pages[index].liked_negative_points,
+                        credibility_negative_points: pages[index].credibility_negative_points,
+                        educational_negative_points: pages[index].educational_negative_points,
                         order_index_by_google: pages[index].order_index_by_google
                         });
                     }
@@ -126,9 +129,12 @@ class Search_functions{
                                 pageSnap: shuffled_pages[index].pageSnap,
                                 domain: shuffled_pages[index].domain,
                                 user_rankings_for_edge: shuffled_pages[index].user_rankings_for_edge,
-                                liked_weight: shuffled_pages[index].liked_weight,
-                                credibility_weight: shuffled_pages[index].credibility_weight,
-                                educational_weight: shuffled_pages[index].educational_weight,
+                                liked_positive_points: shuffled_pages[index].liked_positive_points,
+                                credibility_positive_points: shuffled_pages[index].credibility_positive_points,
+                                educational_positive_points: shuffled_pages[index].educational_positive_points,
+                                liked_negative_points: shuffled_pages[index].liked_negative_points,
+                                credibility_negative_points: shuffled_pages[index].credibility_negative_points,
+                                educational_negative_points: shuffled_pages[index].educational_negative_points,
                                 order_index_by_google: shuffled_pages[index].order_index_by_google
                                 });
                 this_of_searchPage.pages_from_server_to_use=pagesArray;
@@ -241,9 +247,12 @@ class Search_functions{
                     pageSnap: top_pages[page_ref_index].pageSnap,
                     domain: top_pages[page_ref_index].domain,
                     user_rankings_for_edge: top_pages[page_ref_index].user_rankings_for_edge, 
-                    liked_weight: top_pages[page_ref_index].liked_weight,
-                    credibility_weight: top_pages[page_ref_index].credibility_weight,
-                    educational_weight: top_pages[page_ref_index].educational_weight});
+                    liked_positive_points: top_pages[page_ref_index].liked_positive_points,
+                    credibility_positive_points: top_pages[page_ref_index].credibility_positive_points,
+                    educational_positive_points: top_pages[page_ref_index].educational_positive_points,
+                    liked_negative_points: top_pages[page_ref_index].liked_negative_points,
+                    credibility_negative_points: top_pages[page_ref_index].credibility_negative_points,
+                    educational_negative_points: top_pages[page_ref_index].educational_negative_points});
                 this_of_searchPage.id++;
             }
         }
@@ -266,7 +275,7 @@ class Search_functions{
         connected_topics_edges.sort(function(edge1, edge2){return edge2.web_scrape_score - edge1.web_scrape_score});
         connected_topics_edges.sort(function(edge1, edge2){return edge2.linkHits - edge1.linkHits});
         connected_topics_edges.sort(function(edge1, edge2){if (edge2.topic1.topicName.length<3 && edge1.topic1.topicName.length>=3) return -1;});
-        connected_topics_edges.sort(function(edge1, edge2){return edge2.liked_weight - edge1.liked_weight});
+        connected_topics_edges.sort(function(edge1, edge2){return edge2.liked_positive_points - edge1.liked_positive_points});
         
         var expandedCon=[];
         for (var content=0; content<connected_topics_edges.length && content<10; content++)

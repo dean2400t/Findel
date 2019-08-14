@@ -49,7 +49,8 @@ module.exports=async function extract_comments_from_database(root_comments_IDs_a
             user: user_data,
             usersRanking: usersRanking_to_return,
             text: comment.text,
-            liked_weight: comment.liked_weight,
+            liked_positive_points: comment.liked_positive_points,
+            liked_negative_points: comment.liked_negative_points,
             root_comment: comment.root_comment,
             time_made: dateFromObjectId(comment.id)
         })

@@ -60,6 +60,7 @@ class Connected_topic_edge_component extends Component {
       is_num_of_links_in_page_hidden = false;
     }
     this.state = {
+      edgeID: this.props.connected_topic_edge._id,
       liked_upArrowColor: liked_upArrow,
       liked_downArrowColor: liked_downArrow,
       credibility_upArrowColor: credibility_upArrow,
@@ -67,9 +68,12 @@ class Connected_topic_edge_component extends Component {
       educational_upArrowColor: educational_upArrow,
       educational_downArrowColor: educational_downArrow,
       rank_error: "",
-      edge_liked_weight: this.props.connected_topic_edge.liked_weight,
-      edge_credibility_weight: this.props.connected_topic_edge.credibility_weight,
-      edge_educational_weight: this.props.connected_topic_edge.educational_weight,
+      edge_liked_positive_points: this.props.connected_topic_edge.liked_positive_points,
+      edge_liked_negative_points: this.props.connected_topic_edge.liked_negative_points,
+      edge_credibility_positive_points: this.props.connected_topic_edge.credibility_positive_points,
+      edge_credibility_negative_points: this.props.connected_topic_edge.credibility_negative_points,
+      edge_educational_positive_points: this.props.connected_topic_edge.educational_positive_points,
+      edge_educational_negative_points: this.props.connected_topic_edge.educational_negative_points,
       rankCode: this.props.connected_topic_edge.userRankCode,
       jaccard_similarity: jaccard_similarity,
       is_jaccard_hidden: is_jaccard_hidden,
@@ -87,26 +91,32 @@ class Connected_topic_edge_component extends Component {
             <a className="topic_link" target="_blank" rel="noopener noreferrer" href={'/?search=' + this.props.connected_topic_edge.topic.topicName}>{this.props.connected_topic_edge.topic.topicName}</a>
             <br/>
             <text>
+              ({this.state.edge_liked_positive_points}) 
               <FontAwesomeIcon icon={faArrowAltCircleUp} color={this.state.liked_upArrowColor} onClick={() => this.rank_click_up("liked")}/> 
-              ({this.state.edge_liked_weight}) 
+              
               <FontAwesomeIcon icon={faArrowAltCircleDown} color={this.state.liked_downArrowColor} onClick={() => this.rank_click_down("liked")}/>
-              &nbsp; משתמשים שאהבו את הדף בהקשר החיפוש
+              ({this.state.edge_liked_negative_points}) 
+              &nbsp; ניקוד משתמשים שאמרו שאהבו את הדף
             </text><br/>
             
             <text> 
+              ({this.state.edge_credibility_positive_points}) 
               <FontAwesomeIcon icon={faArrowAltCircleUp} color={this.state.credibility_upArrowColor} onClick={() => this.rank_click_up("credibility")}/> 
-              ({this.state.edge_credibility_weight}) 
+               
               <FontAwesomeIcon icon={faArrowAltCircleDown} color={this.state.credibility_downArrowColor} onClick={() => this.rank_click_down("credibility")}/>
-              &nbsp; ציון משתמשים שאמרו שהדף אמין
+              ({this.state.edge_credibility_negative_points})
+              &nbsp; ניקוד משתמשים שאמרו שהדף מכיל תוכן אמין
             </text>
             <br/>
             
 
             <text>
+              ({this.state.edge_educational_positive_points}) 
               <FontAwesomeIcon icon={faArrowAltCircleUp} color={this.state.educational_upArrowColor} onClick={() => this.rank_click_up("educational")}/> 
-              ({this.state.edge_educational_weight}) 
+              
               <FontAwesomeIcon icon={faArrowAltCircleDown} color={this.state.educational_downArrowColor} onClick={() => this.rank_click_down("educational")}/>
-              &nbsp; ציון מתשתמשים שאמרו שהדף מכיל תוכן חינוכי 
+              ({this.state.edge_educational_negative_points}) 
+              &nbsp; ניקוד משתמשים שאמרו שהדף מכיל תוכן חינוכי
             </text>
             <br/><text style={redText}>{this.state.rank_error}</text>
             <br/>

@@ -22,7 +22,16 @@ function checkAuthAndReturnUserID(token)
 
 
 router.get('/domains', async function(req, res) {
-   var domains = await Domain.find({}).select('liked_weight credibility_weight educational_weight domainURL _id');
+   var domains = await Domain.find({})
+   .select(
+   `liked_positive_points
+   liked_negative_points
+   credibility_positive_points
+   credibility_negative_points 
+   educational_positive_points
+   educational_negative_points
+   domainURL _id`
+   );
    return res.status(200).send(domains);
 });
 
@@ -72,7 +81,8 @@ router.get('/connected_topics',async function(req, res) {
       connected_topics_data.push({
          edgeID: edge._id,
          connected_topic_name:connected_topic.topicName,
-         liked_weight: edge.liked_weight,
+         liked_positive_points: edge.liked_positive_points,
+         liked_negative_points: edge.liked_negative_points,
          web_scrape_score: edge.web_scrape_score,
          last_web_scrape: edge.last_web_scrape,
          user_rankings: user_rankings
@@ -97,7 +107,7 @@ router.get('/page_data',async function(req, res) {
 
    if (userID != '')
       var page_topic_edges_populateQuery = [
-         {path:'usersRanking', match:{ user: userID}, model: 'topic-topic-edges-ranking'}, 
+         {path:'edges_usersRanking', match:{ user: userID}, model: 'page-topic-edges-ranking'}, 
          {path:'topic', model: 'topics'}
          ];
    else
@@ -122,6 +132,12 @@ router.get('/page_data',async function(req, res) {
       pageURL: page.pageURL,
       pageFormatedURL: page.pageFormatedURL,
       pageSnap: page.pageSnap,
+      liked_positive_points: page.liked_positive_points,
+      like_negative_points: page.liked_negative_points,
+      credibility_positive_points: page.credibility_positive_points,
+      credibility_negative_points: page.credibility_negative_points,
+      educational_positive_points: page.educational_positive_points,
+      educational_negative_points: page.educational_negative_points,
       domain: page.domain,
       page_topic_edges: page.page_topic_edges,
       comments: comments

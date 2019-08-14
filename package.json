@@ -41,7 +41,6 @@
     "morgan": "~1.9.0",
     "multer": "^1.4.1",
     "parse-domain": "^2.1.7",
-    "pug": "^2.0.0-beta11",
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
     "serve-favicon": "^2.5.0",

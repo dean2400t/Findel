@@ -17,7 +17,7 @@ export default function page_topic_edge_rank_function(this_of_edge, rank_type, u
         if (downArrow != 'red')
             rankCode = 2;
 
-    var edgeID=this_of_edge.props.page_ref.edgeID;
+    var edgeID=this_of_edge.state.edgeID;
     var opts={
         edgeID: edgeID,
         rank_type: rank_type,
@@ -45,11 +45,13 @@ export default function page_topic_edge_rank_function(this_of_edge, rank_type, u
             this_of_edge.last_ranking_id = res_data.edge_ranking_id;
             this_of_edge.last_ranking_timeStamp = recived_time;
 
-            var string_for_edge_rank_type_weight = "edge_" + rank_type + "_weight";
+            var string_for_edge_rank_type_positive_points = "edge_" + rank_type + "_positive_points";
+            var string_for_edge_rank_type_negative_points = "edge_" + rank_type + "_negative_points";
             //var string_for_domain_rank_type_weight = "domain_" + rank_type + "_weight";
 
             var json_for_state_change = {};
-            json_for_state_change[string_for_edge_rank_type_weight] = res_data.weight;
+            json_for_state_change[string_for_edge_rank_type_positive_points] = res_data.positive_points;
+            json_for_state_change[string_for_edge_rank_type_negative_points] = res_data.negative_points;
             //json_for_state_change[string_for_domain_rank_type_weight] = res_data.domain_weight;
             if (res_data.rankCode == 0)
             {

@@ -48,10 +48,12 @@ class Comments_functions {
                 this_of_comment.last_ranking_id = res_data.comment_ranking_id;
                 this_of_comment.last_ranking_timeStamp = recived_time;
 
-                var string_for_comment_rank_type_weight = rank_type + "_weight";
+                var string_for_comment_rank_type_positive_points = rank_type + "_positive_points";
+                var string_for_comment_rank_type_negative_points = rank_type + "_negative_points";
 
                 var json_for_state_change = {};
-                json_for_state_change[string_for_comment_rank_type_weight] = res_data.weight;
+                json_for_state_change[string_for_comment_rank_type_positive_points] = res_data.positive_points;
+                json_for_state_change[string_for_comment_rank_type_negative_points] = res_data.negative_points;
                 if (res_data.rankCode == 0)
                 {
                     json_for_state_change[string_for_comment_upArrow_color] = 'black';

@@ -15,6 +15,11 @@ const page_topic_edge_Schema = new mongoose.Schema({
     required: true
   },
 
+  added_by:{
+    type: mongoose.Schema.ObjectId, 
+    ref: 'users'
+  },
+
   order_index_by_google:{ 
     type: Number,
   },
@@ -31,21 +36,17 @@ const page_topic_edge_Schema = new mongoose.Schema({
     type: Number
   },
   
-  liked_weight:{ 
+  liked_positive_points:{ 
     type: Number,
     required: true,
-    default: 1
+    default: 0
   },
-  credibility_weight:{ 
+  liked_negative_points:{ 
     type: Number,
     required: true,
-    default: 1
+    default: 0
   },
-  educational_weight:{
-    type: Number,
-    required: true,
-    default: 1
-  },
+
   usersRanking:
     [{
       type: mongoose.Schema.ObjectId, 

@@ -79,7 +79,8 @@ async function get_connected_topics_edges(topic, userID)
         edges_data.push({
             edgeID: edge._id,
             topic1: edge.topic1,
-            liked_weight: edge.liked_weight,
+            liked_positive_points: edge.liked_positive_points,
+            liked_negative_points: edge.liked_negative_points,
             web_scrape_score: edge.web_scrape_score,
             is_search_required: is_search_required,
             user_rankings: user_rankings
