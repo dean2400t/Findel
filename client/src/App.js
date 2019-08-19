@@ -16,7 +16,7 @@ import RegisterPage from './components/RegistrationComponents/register';
 import UserSearchHistory from './components/user_search_history_components/User_Search_History_Page';
 import UserFavorites from './components/user_favorites_components/User_favorites_page';
 import DomainsPage from './components/Domains_components/DomainsPage';
-import Topics_page from './components/Topics_components/topics_page';
+import Topic_page from './components/Topic_components/topic_page';
 import Page_page from './components/Page_components/Page_page';
 import Cookies from 'universal-cookie';
 import { createBrowserHistory } from 'history';
@@ -111,7 +111,7 @@ class App extends Component {
           <Route path="/UserSearchHistory_page" component={UserSearchHistory} />
           <Route path="/UserFavorites_page" component={UserFavorites} />
           <Route path="/Domains_page" component={DomainsPage} />
-          <Route path="/Topics_page/:topic" component={Topics_page} />
+          <Route path="/Topic_page/:topic" component={Topic_page} />
           <Route path="/Page_page/:pageURL" component={Page_page} />
           
         </div>

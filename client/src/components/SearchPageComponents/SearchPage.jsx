@@ -118,7 +118,7 @@ class SearchPage extends Component {
                     <div id="exContents">
                         <ExpandedContent expandedContents={this.state.expandedContents}/>
                         <text><i className={this.state.expandend_content_status}></i></text>
-                        <a target="_blank" rel="noopener noreferrer" style={more_content_textStyle} href={"/Topics_page/"+this.curSearch} hidden={this.state.is_show_more_content_hidden}>עוד...</a>
+                        <a target="_blank" rel="noopener noreferrer" style={more_content_textStyle} href={"/Topic_page/"+this.curSearch} hidden={this.state.is_show_more_content_hidden}>עוד...</a>
                     </div>
                 </div>
                 <div className="add_content_and_pages_div" style={{backgroundColor:'#0587c3'}}>

@@ -10,6 +10,7 @@ class Pages_refs extends Component {
     render() {
         if (this.props.pages_ref.length > 0)
             return(
+                <div>
                 <div style={{"text-align": "right"}}>
                     <span className="field-tip">
                         <FontAwesomeIcon icon={faHeart}/>*
@@ -48,7 +49,10 @@ class Pages_refs extends Component {
                             ניקוד מצטבר מכלל הדפים באתר
                         </span>
                     </span>
+                </div>
+                <div>
                     <Pages_ref_mapper pages_ref={this.props.pages_ref}/>
+                </div>
                 </div>
             );
         else

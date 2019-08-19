@@ -17,7 +17,7 @@ export default function topic_topic_edge_rank_function(this_of_topic, rank_type,
         if (downArrow != 'red')
             rankCode = 2;
 
-    var edgeID=this_of_topic.props.topic.edgeID;
+    var edgeID=this_of_topic.props.topic_topic_edge._id;
     var opts={
         edgeID: edgeID,
         rank_type: rank_type,

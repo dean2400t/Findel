@@ -6,7 +6,6 @@ const topic_Schema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    trim: true,
     minlength: 1,
     maxlength: 1024
   },
@@ -27,7 +26,13 @@ const topic_Schema = new mongoose.Schema({
   root_comments:[{
     type: mongoose.Schema.ObjectId, 
     ref: 'comments'
-  }]
+  }],
+
+  number_of_comments:{
+    type: Number,
+    required: true,
+    default: 0
+  }
 });
   
   const Topic = mongoose.model('topics', topic_Schema);

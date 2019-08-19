@@ -11,6 +11,7 @@ import {faGlobe} from '@fortawesome/free-solid-svg-icons';
 import Cookies from 'universal-cookie';
 import rank_function from './rank_function';
 import {ProgressBar} from 'react-bootstrap';
+import make_bar_style from '../../common_functions/make_bar_style';
 
 const cookies = new Cookies();
 
@@ -50,27 +51,27 @@ class Page_ref extends Component {
             educational_downArrow = 'red'
         }
       });
-    var liked_bar_style=this.make_bar_style(
+    var liked_bar_style=make_bar_style(
       this.props.page_ref.liked_positive_points,
       this.props.page_ref.liked_negative_points,
       )
-    var credibility_bar_style=this.make_bar_style(
+    var credibility_bar_style=make_bar_style(
       this.props.page_ref.credibility_positive_points,
       this.props.page_ref.credibility_negative_points,
       )
-    var educational_bar_style=this.make_bar_style(
+    var educational_bar_style=make_bar_style(
       this.props.page_ref.educational_positive_points,
       this.props.page_ref.educational_negative_points,
       )
-    var domain_liked_bar_style=this.make_bar_style(
+    var domain_liked_bar_style=make_bar_style(
       this.props.page_ref.domain.liked_positive_points,
       this.props.page_ref.domain.liked_negative_points,
       )
-    var domain_credibility_bar_style=this.make_bar_style(
+    var domain_credibility_bar_style=make_bar_style(
       this.props.page_ref.domain.credibility_positive_points,
       this.props.page_ref.domain.credibility_negative_points,
       )
-    var domain_educational_bar_style=this.make_bar_style(
+    var domain_educational_bar_style=make_bar_style(
       this.props.page_ref.domain.educational_positive_points,
       this.props.page_ref.domain.educational_negative_points,
       )
@@ -101,10 +102,14 @@ class Page_ref extends Component {
       educational_bar_style: educational_bar_style,
       domain_liked_bar_style: domain_liked_bar_style,
       domain_credibility_bar_style: domain_credibility_bar_style,
-      domain_educational_bar_style: domain_educational_bar_style,
+      domain_educational_bar_style: domain_educational_bar_style
     }
-    this.last_ranking_timeStamp = null;
-    this.last_ranking_id = null;
+    this['last_ranking_timeStamp_liked'] = null;
+    this['last_ranking_id_liked'] = null;
+    this['last_ranking_timeStamp_credibility'] = null;
+    this['last_ranking_id_credibility'] = null;
+    this['last_ranking_timeStamp_educational'] = null;
+    this['last_ranking_id_educational'] = null;
     this.token=cookies.get('findel-auth-token') || "";
   }
   render() {
@@ -117,91 +122,94 @@ class Page_ref extends Component {
             <table>
             <tr>
               <td>
-                ({this.state.liked_positive_points})
-                <FontAwesomeIcon icon={faArrowAltCircleUp} color={this.state.liked_upArrowColor} onClick={() => this.rank_click_up("liked")}/>
+                ({this.state.liked_negative_points}) 
+                <FontAwesomeIcon icon={faArrowAltCircleDown} color={this.state.liked_downArrowColor} onClick={() => this.rank_click_down("liked")}/>
               </td>
               <td width='60%'>
                 <ProgressBar
                 variant={this.state.liked_bar_style[1]}
                 now={this.state.liked_bar_style[0]} />
-              </td> 
+              </td>
               <td>
-                <FontAwesomeIcon icon={faArrowAltCircleDown} color={this.state.liked_downArrowColor} onClick={() => this.rank_click_down("liked")}/>
-                ({this.state.liked_negative_points}) 
+                <FontAwesomeIcon icon={faArrowAltCircleUp} color={this.state.liked_upArrowColor} onClick={() => this.rank_click_up("liked")}/>
+                ({this.state.liked_positive_points})
                 <FontAwesomeIcon icon={faHeart}/>
               </td>
             </tr>
             <tr>
               <td>
-              ({this.state.credibility_positive_points}) 
-              <FontAwesomeIcon icon={faArrowAltCircleUp} color={this.state.credibility_upArrowColor} onClick={() => this.rank_click_up("credibility")}/> 
+              ({this.state.credibility_negative_points}) 
+              <FontAwesomeIcon icon={faArrowAltCircleDown} color={this.state.credibility_downArrowColor} onClick={() => this.rank_click_down("credibility")}/>
               </td>
               <td>
               <ProgressBar
                 variant={this.state.credibility_bar_style[1]}
                 now={this.state.credibility_bar_style[0]} />
               </td>
+              
               <td>
-              <FontAwesomeIcon icon={faArrowAltCircleDown} color={this.state.credibility_downArrowColor} onClick={() => this.rank_click_down("credibility")}/>
-              ({this.state.credibility_negative_points}) 
+              <FontAwesomeIcon icon={faArrowAltCircleUp} color={this.state.credibility_upArrowColor} onClick={() => this.rank_click_up("credibility")}/> 
+              ({this.state.credibility_positive_points}) 
               <FontAwesomeIcon icon={faSearch}/>
               </td>
             </tr>
             <tr>
               <td>
-              ({this.state.educational_positive_points}) 
-              <FontAwesomeIcon icon={faArrowAltCircleUp} color={this.state.educational_upArrowColor} onClick={() => this.rank_click_up("educational")}/> 
+              ({this.state.educational_negative_points}) 
+              <FontAwesomeIcon icon={faArrowAltCircleDown} color={this.state.educational_downArrowColor} onClick={() => this.rank_click_down("educational")}/>
               </td>
               <td>
               <ProgressBar
                 variant={this.state.educational_bar_style[1]}
                 now={this.state.educational_bar_style[0]} />
               </td>
+              
               <td>
-              <FontAwesomeIcon icon={faArrowAltCircleDown} color={this.state.educational_downArrowColor} onClick={() => this.rank_click_down("educational")}/>
-              ({this.state.educational_negative_points}) 
-                <FontAwesomeIcon icon={faBook}/>
+              <FontAwesomeIcon icon={faArrowAltCircleUp} color={this.state.educational_upArrowColor} onClick={() => this.rank_click_up("educational")}/> 
+              ({this.state.educational_positive_points})
+              <FontAwesomeIcon icon={faBook}/>
               </td>
             </tr>
             </table>
 
             <table>
               <tr>
-              <td>({this.state.domain_liked_positive_points})</td>
+              <td>({this.state.domain_liked_negative_points})</td>
               <td width='60%'>
               <ProgressBar
+                alignItems='left'
                 variant={this.state.domain_liked_bar_style[1]}
                 now={this.state.domain_liked_bar_style[0]} />
               </td>
               <td>
-                ({this.state.domain_liked_negative_points})
+                ({this.state.domain_liked_positive_points})
                 <FontAwesomeIcon icon={faGlobe}/>
                 <small><FontAwesomeIcon icon={faHeart}/></small>
               </td>
               </tr>
             
             <tr>
-              <td>({this.state.domain_credibility_positive_points})</td>
+              <td>({this.state.domain_credibility_negative_points})</td>
               <td>
               <ProgressBar
                 variant={this.state.domain_credibility_bar_style[1]}
                 now={this.state.domain_credibility_bar_style[0]} />
               </td>
               <td>
-                ({this.state.domain_credibility_negative_points})
+                ({this.state.domain_credibility_positive_points})
                 <FontAwesomeIcon icon={faGlobe}/>
                 <small><FontAwesomeIcon icon={faSearch}/></small>
               </td>
             </tr>
             <tr>
-              <td>({this.state.domain_educational_positive_points})</td>
+              <td>({this.state.domain_educational_negative_points})</td>
               <td>
               <ProgressBar
                 variant={this.state.domain_educational_bar_style[1]}
                 now={this.state.domain_educational_bar_style[0]} />
               </td>
               <td>
-                ({this.state.domain_educational_negative_points})
+                ({this.state.domain_educational_positive_points})
                 <FontAwesomeIcon icon={faGlobe}/>
                 <small><FontAwesomeIcon icon={faBook}/></small>
               </td>
@@ -214,25 +222,11 @@ class Page_ref extends Component {
   }
   rank_click_up(rank_type)
   {
-    rank_function(this, rank_type, "up")
+    rank_function(this, rank_type, "up");
   }
   rank_click_down(rank_type)
   {
-    rank_function(this, rank_type, "down")
-  }
-
-  make_bar_style(positive, negative)
-  {
-    if (positive == 0 && negative ==0)
-        return [50, 'warning'];
-    var now = (positive/(positive+negative))*100;
-    if (now < 10)
-      return [100, 'danger'];
-    if (now < 40)
-      return [now, 'danger'];
-    if (now < 60)
-      return [now, 'warning'];
-    return [now, 'success'];
+    rank_function(this, rank_type, "down");
   }
 }
 Page_ref.PropsTypes={

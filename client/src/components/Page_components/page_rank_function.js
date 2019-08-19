@@ -1,7 +1,7 @@
 import axios from 'axios';
-import make_bar_style from '../../common_functions/make_bar_style';
+import make_bar_style from '../common_functions/make_bar_style';
 
-export default function rank_function(this_of_page_ref, rank_type, up_or_down)
+export default function page_rank_function(this_of_page_ref, rank_type, up_or_down)
 {
     var string_for_upArrow_color = rank_type + "_upArrowColor";
     var string_for_downArrow_color = rank_type + "_downArrowColor";
@@ -17,27 +17,14 @@ export default function rank_function(this_of_page_ref, rank_type, up_or_down)
     else
         if (downArrow != 'red')
             rankCode = 2;
-
-    if (rank_type == 'liked')
-    {
-        var edgeID=this_of_page_ref.props.page_ref.edgeID;
-        var opts={
-            edgeID: edgeID,
-            rank_type: rank_type,
-            rankCode: rankCode
-        };
-        var api_path= "/api/userRanking/rank_page_topic_edge";
+            
+    var pageID=this_of_page_ref._id
+    var opts={
+    pageID: pageID,
+    rank_type: rank_type,
+    rankCode: rankCode
     }
-    else
-    {
-        var pageID=this_of_page_ref.props.page_ref.pageID
-        var opts={
-        pageID: pageID,
-        rank_type: rank_type,
-        rankCode: rankCode
-        }
-        var api_path= "/api/userRanking/rank_page";
-    }
+    var api_path= "/api/userRanking/rank_page";
 
     axios.post(api_path, opts, {
         headers: {'findel-auth-token': this_of_page_ref.token}

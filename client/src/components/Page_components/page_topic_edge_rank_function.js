@@ -1,4 +1,5 @@
 import axios from 'axios';
+import make_bar_style from '../common_functions/make_bar_style';
 
 export default function page_topic_edge_rank_function(this_of_edge, rank_type, up_or_down)
 {
@@ -28,25 +29,25 @@ export default function page_topic_edge_rank_function(this_of_edge, rank_type, u
     })
         .then((result) => {
             var res_data = result.data;
-            var recived_time = new Date(res_data.edge_ranking_date);
+            var recived_time = new Date(res_data.ranking_date);
             if (this_of_edge.last_ranking_timeStamp != null)
                 {
                     /*
                         if ids are the same then a deletion was made, so if rankcode is not 0 then
                         the deletion was received earlier
                     */
-                        if (this_of_edge.last_ranking_id == res_data.edge_ranking_id)
+                        if (this_of_edge.last_ranking_id == res_data.ranking_id)
                         if (res_data.rankCode != 0)
                             return;
                     
                     if (recived_time - this_of_edge.last_ranking_timeStamp < 0)
                         return;
                 }
-            this_of_edge.last_ranking_id = res_data.edge_ranking_id;
+            this_of_edge.last_ranking_id = res_data.ranking_id;
             this_of_edge.last_ranking_timeStamp = recived_time;
 
-            var string_for_edge_rank_type_positive_points = "edge_" + rank_type + "_positive_points";
-            var string_for_edge_rank_type_negative_points = "edge_" + rank_type + "_negative_points";
+            var string_for_edge_rank_type_positive_points = rank_type + "_positive_points";
+            var string_for_edge_rank_type_negative_points = rank_type + "_negative_points";
             //var string_for_domain_rank_type_weight = "domain_" + rank_type + "_weight";
 
             var json_for_state_change = {};
@@ -70,6 +71,11 @@ export default function page_topic_edge_rank_function(this_of_edge, rank_type, u
             }
             json_for_state_change['rankCode'] = res_data.rankCode;
 
+            var bar_style=make_bar_style(
+                res_data.positive_points,
+                res_data.negative_points
+            );
+            json_for_state_change[rank_type + '_bar_style']=bar_style;
             this_of_edge.setState(json_for_state_change);
         }).catch((error) => {
             this_of_edge.setState({rank_error: error.response.data});

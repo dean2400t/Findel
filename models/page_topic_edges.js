@@ -55,7 +55,13 @@ const page_topic_edge_Schema = new mongoose.Schema({
   root_comments:[{
     type: mongoose.Schema.ObjectId, 
     ref: 'comments'
-    }]
+    }],
+
+  number_of_comments:{
+    type: Number,
+    required: true,
+    default: 0
+  }
 });
 page_topic_edge_Schema.index({ page: 1, topic: 1}, { unique: true });
   

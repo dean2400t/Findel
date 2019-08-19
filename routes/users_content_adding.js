@@ -155,8 +155,16 @@ router.post('/addComment', auth, async function(req, res) {
         comment.root_comment=comment._id;
         if (await comment_save(comment))
         {
-            await collection.findOneAndUpdate({_id: object_id}, {$addToSet: {root_comments: comment._id}});
-            await User.findOneAndUpdate({_id: user._id}, {$addToSet: {comments_added: comment._id}});
+            await collection.findOneAndUpdate({_id: object_id}, 
+                {
+                    $addToSet: {root_comments: comment._id},
+                    $inc: {number_of_comments: 1}
+                });
+            await User.findOneAndUpdate({_id: user._id}, 
+                {
+                    $addToSet: {comments_added: comment._id},
+                    $inc: {number_of_comments: 1}
+                });
             return res.status(200).send(comment);
         }
     }
@@ -176,7 +184,11 @@ router.post('/addComment', auth, async function(req, res) {
         
         if (await comment_save(comment))
         {
-            await User.findOneAndUpdate({_id: user._id}, {$addToSet: {comments_added: comment._id}});
+            await User.findOneAndUpdate({_id: user._id}, 
+                {
+                    $addToSet: {comments_added: comment._id},
+                    $inc: {number_of_comments: 1}
+                });
             return res.status(200).send(comment);
         }
     }
