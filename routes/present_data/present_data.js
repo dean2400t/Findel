@@ -2,12 +2,10 @@
 var express = require('express');
 var router = express.Router();
 const {Domain} = require('../../models/domains');
-const {Topic} = require('../../models/topics');
-const {Topic_topic_edge} = require('../../models/topic_to_topic_edges');
-const extract_comments_from_database = require('../../middleware/extract_comments_from_database');
+
 const checkAuthAndReturnUserID = require('../../middleware/checkAuthAndReturnUserID');
 const retrieve_page_data = require('./retrieve_page_data');
-const retrieve_connected_topics = require('./retrieve_connected_topics');
+const retrieve_connected_topics = require('../topics_to_topics/retrieve_topic_and_connected_topics');
 
 router.get('/domains', async function(req, res) {
    var domains = await Domain.find({})

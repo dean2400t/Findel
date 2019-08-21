@@ -1,5 +1,3 @@
-const {usersRanking_populate} = require('./ranking_selections');
-
 function comment_selection(opts={})
 { 
     var selection = `

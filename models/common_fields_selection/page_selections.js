@@ -1,11 +1,9 @@
-const {page_usersRanking_populate,
-    edges_to_pages_usersRanking_populate} = require('./ranking_selections');
+const {page_usersRanking_populate} = require('./ranking_selections');
 
 function page_selection(opts={})
 { 
     var selection = `
         pageURL
-        pageFormatedURL
         pageSnap
         domain
         liked_positive_points

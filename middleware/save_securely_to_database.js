@@ -84,10 +84,10 @@ async function topic_to_topic_edge_save(edge)
     return edge;
 }
 
-async function edge_ranking_save(edge_ranking)
+async function ranking_save(ranking)
 {
     try{
-        await edge_ranking.save()
+        await ranking.save()
     }catch(error){ 
         return false;
     }
@@ -140,6 +140,6 @@ exports.page_to_topic_edge_save = page_to_topic_edge_save;
 exports.page_save = page_save;
 exports.topic_to_topic_edge_save = topic_to_topic_edge_save;
 exports.add_and_update_domain = add_and_update_domain;
-exports.edge_ranking_save = edge_ranking_save;
+exports.ranking_save = ranking_save;
 exports.comment_save = comment_save;
 exports.comment_ranking_save = comment_ranking_save;

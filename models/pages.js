@@ -10,12 +10,6 @@ const pageSchema = new mongoose.Schema({
     minlength: 4,
     maxlength: 1024
   },
-  pageFormatedURL:{
-    type: String,
-    required: true,
-    minlength: 4,
-    maxlength: 1024
-  },
   pageSnap:{
     type: String,
     maxlength: 1024

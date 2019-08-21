@@ -1,20 +1,3 @@
-var express = require('express');
-const auth = require('../middleware/security/auth');
-const {User} = require('../models/users');
-const {Topic} = require('../models/topics');
-const {Page} = require('../models/pages');
-const {Page_topic_edge}=require('../models/page_topic_edges');
-const {Topic_topic_edge} = require('../models/topic_to_topic_edges');
-const {Comment} = require('../models/comments');
-const {page_save, 
-       add_and_update_domain, 
-       topic_save,
-       page_to_topic_edge_save,
-       topic_to_topic_edge_save,
-       comment_save} = require('../middleware/save_securely_to_database');
-
-var router = express.Router();
-
 router.post('/connect_topic_to_topic', auth, async function(req, res) {
   
     var new_topicName=req.body.new_topicName;
@@ -67,4 +50,3 @@ router.post('/connect_topic_to_topic', auth, async function(req, res) {
     var msg="נוצר חיבור בין " + topic1.topicName + " ל" + topic2.topicName;
     return res.status(200).send(msg);
 });
-module.exports = router;

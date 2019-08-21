@@ -1,6 +1,3 @@
-const {page_usersRanking_populate,
-    edges_to_pages_usersRanking_populate} = require('./ranking_selections');
-
 function domain_selection(opts={}){
 
     var selection = `
