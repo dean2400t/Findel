@@ -1,9 +1,9 @@
 const get_score_field_name= require('../../middleware/get_score_field_name');
-const {ranking_save} = require('../middleware/save_securely_to_database');
+const {ranking_save} = require('../../middleware/save_securely_to_database');
 
-const {Topic_topic_edge} = require('../models/topic_to_topic_edges');
-const {Topic_topic_edges_ranking} = require('../models/topic_topic_edges_ranking');
-const {User} = require('../models/users');
+const {Topic_topic_edge} = require('../../models/topic_to_topic_edges');
+const {Topic_topic_edges_ranking} = require('../../models/topic_topic_edges_ranking');
+const {User} = require('../../models/users');
 
 function is_topic_topic_edge_rank_type_valid(rank_type){
     if (rank_type == "liked")
@@ -97,7 +97,7 @@ function data_to_return_for_topic_topic_edge_ranking(rank_type, rankCode, edge_r
         } 
 }
   
-module.exports = async function rank_topic_to_topic_edge(edgeID, userID, res)
+module.exports = async function rank_topic_to_topic_edge(edgeID, rank_type, rankCode, userID, res)
 {
     if (!is_topic_topic_edge_rank_type_valid(rank_type))
         return res.status(400).send("rank_type is not valid");

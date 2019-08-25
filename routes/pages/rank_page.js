@@ -1,54 +1,15 @@
-var express = require('express');
-const auth = require('../middleware/security/auth');
+const get_score_field_name= require('../../middleware/get_score_field_name');
 const {Page} = require('../models/pages');
-const {User} = require('../models/users');
-const {Domain} = require('../models/domains');
-const {Page_topic_edge}=require('../models/page_topic_edges');
-const {Topic_topic_edge} = require('../models/topic_to_topic_edges');
-const {Page_topic_edges_ranking} = require('../models/page_topic_edges_ranking');
-const {Topic_topic_edges_ranking} = require('../models/topic_topic_edges_ranking');
-
 const {Page_ranking} = require('../models/pages_ranking');
 const {ranking_save} = require('../middleware/save_securely_to_database');
-var router = express.Router();
 
 function is_page_rank_type_valid(rank_type){
-  if (rank_type == "credibility" ||
-      rank_type == "educational")
-      return true;
-  return false;
-}
-
-
-
-
-
-async function insert_ranking_edge_to_database(edges_ranking_collection, edge, user, rank_type, rankCode)
-{
-  var user_score = user.userScore;
-  if (user_score<0)
-    user_score = 0;
-  var edge_ranking = new edges_ranking_collection({
-    edge: edge._id,
-    user: user._id,
-    rank_type: rank_type,
-    rankCode: rankCode,
-    scoreAdded: user_score
-    });
-  if (await ranking_save(edge_ranking)==true)
-    return edge_ranking;
-  else
-    return null;
-}
-
-//Topic to topic ranking
-
-
-//page to topic ranking
-
-
-
-//page rankings
+    if (rank_type == "credibility" ||
+        rank_type == "educational")
+        return true;
+    return false;
+  }
+  
 async function insert_ranking_page_to_database(page, user, rank_type, rankCode)
 {
   var user_score = user.userScore;
@@ -158,23 +119,10 @@ function data_to_return_for_page_ranking(rank_type, rankCode, page_ranking, page
     } 
 }
 
-router.post('/rank_page', auth, async function(req, res) {
-  
-  var pageID=req.body.pageID;
-  var rank_type = req.body.rank_type;
-  var rankCode=req.body.rankCode;
-  if (!pageID)
-    return res.status(400).send("No pageID was sent");
-  if (!rank_type)
-    return res.status(400).send("No rank_type was sent");
+module.exports = async function rank_page(pageID, rank_type, rankCode, userID, res)
+{ 
   if (!is_page_rank_type_valid(rank_type))
     return res.status(400).send("rank_type is not valid");
-  if (!rankCode && rankCode!==0)
-    return res.status(400).send("No rank_code was sent");
-  if (rankCode<0 || rankCode>2)
-    return res.status(400).send("rankCode must be 0, 1, or 2");
-  if (!Number.isInteger(rankCode))
-  return res.status(400).send("rankCode must be 0, 1, or 2");
     
   var page=await Page.findById(pageID).populate('domain');
   if (!page)
@@ -226,5 +174,4 @@ router.post('/rank_page', auth, async function(req, res) {
         return res.status(200).send(data_to_return_for_page_ranking(rank_type, rankCode, page_ranking, page, domain));
   }
   return res.status(400).send("Failed to enter ranking");
-});
-module.exports = router;
+}

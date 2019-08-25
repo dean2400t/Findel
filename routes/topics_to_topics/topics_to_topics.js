@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+const auth = require('../../middleware/security/auth');
 
 const search_for_connected_topics_in_db_and_wikipedia= require('./search_for_connected_topics_in_db_and_wikipedia')
 const retrieve_topic_and_connected_topics= require('./retrieve_topic_and_connected_topics');
@@ -42,7 +43,7 @@ router.post('/rank_topic_topic_edge', auth, async function(req, res) {
     if (!Number.isInteger(rankCode))
     return res.status(400).send("rankCode must be 0, 1, or 2");
 
-    rank_topic_to_topic_edge(edgeID, user._id, res);
+    rank_topic_to_topic_edge(edgeID, rank_type, rankCode, user._id, res);
 });
 
 router.post('/insert_topic_topic_edges_Scores', function(req, res) {

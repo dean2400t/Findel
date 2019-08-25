@@ -1,6 +1,6 @@
 const get_collection_from_collection_name = require('../../middleware/get_collection_from_collection_name');
-const {User} = require('../models/users');
-const {Comment} = require('../models/comments');
+const {User} = require('../../models/users');
+const {Comment} = require('../../models/comments');
 const {comment_save} = require('../../middleware/save_securely_to_database');
 module.exports=async function add_comment(text, object_id, object_id_collection_name, root_comment_id, userID, res)
 {

@@ -1,14 +1,27 @@
+var express = require('express');
+var router = express.Router();
+const auth = require('../../middleware/security/auth');
+
 const checkAuthAndReturnUserID=require('../../middleware/checkAuthAndReturnUserID');
-const update_and_retrieve_topic_to_pages_edges= require('./update_and_retrieve_topic_to_pages_edges');
-const rank_page_to_topic_edge= require('./rank_page_to_topic_edge');
-const connect_page_to_topic= require('./connect_page_to_topic');
 const {Page_topic_edge}= require('../../models/page_topic_edges');
 
-router.get('/update_and_retrieve_topic_to_pages_edges', async function(req, res) {
+const help = require('./help');
+const update_and_retrieve_topic_to_pages_edges_using_google= require('./update_and_retrieve_topic_to_pages_edges_using_google');
+const rank_page_to_topic_edge= require('./rank_page_to_topic_edge');
+const connect_page_to_topic= require('./connect_page_to_topic');
+
+router.get('/help', function(req, res) {
+  return res.status(200).send(help());
+});
+
+router.get('/update_and_retrieve_topic_to_pages_edges_using_google', async function(req, res) {
     var search=req.query.search;
+    var force_google_search= req.query.force_google_search;
+    if (force_google_search != true)
+      force_google_search == false
     var token=req.headers['findel-auth-token'];
     var userID= checkAuthAndReturnUserID(token);
-    return update_and_retrieve_topic_to_pages_edges(search, userID, res);
+    return await update_and_retrieve_topic_to_pages_edges_using_google(search, force_google_search, userID, res);
   });
 
 router.post('/rank_page_topic_edge', auth, async function(req, res) {
@@ -28,7 +41,7 @@ router.post('/rank_page_topic_edge', auth, async function(req, res) {
   if (!Number.isInteger(rankCode))
   return res.status(400).send("rankCode must be 0, 1, or 2");
   
-  rank_page_to_topic_edge(edgeID, userID, res)
+  return await rank_page_to_topic_edge(edgeID, rank_type, rankCode, userID, res)
 });
 
 router.post('/insert_page_topic_edge_scores', async function(req, res) {
@@ -57,6 +70,19 @@ router.post('/connect_page_to_topic', auth, async function(req, res) {
   if (pageURL.length<10)
       return res.status(400).send("אתר חייב להכיל יותר מ10 אותיות");
   
-  return connect_page_to_topic(topicName, pageURL, pageDescription, user._id)
+  return await connect_page_to_topic(topicName, pageURL, pageDescription, user._id, res)
+});
+
+router.get('/web_scrape', async function(req, res) {
+  var edgeID = req.query.edgeID;
+  var force_scrape=req.query.force_scrape;
+
+  if (!edgeID)
+    return res.status(400).send("אין edgeID בגוף הבקשה");
+  
+  if (force_scrape != true)
+    force_scrape=false;
+
+  return await web_scrape(edgeID, force_scrape, res);
 });
 module.exports = router;

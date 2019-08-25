@@ -1,26 +1,38 @@
-const {Page} = require('../models/pages');
-const {Topic} = require('../models/topics');
-const {Page_topic_edge} = require('../models/page_topic_edges');
-const webScrapeURL=require('../middleware/webScrape');
+const {page_to_topic_selection}= require('../../models/common_fields_selection/page_topic_edges_selections');
+const {page_populate}= require('../../models/common_fields_selection/page_selections');
+const {Page_topic_edge} = require('../../models/page_topic_edges');
 
-var express = require('express');
-var router = express.Router();
+let axios = require('axios');
+async function webScrapeURL(url)
+{
+  var texts="";
+  await axios.get(url)
+  .then((response) => {
 
-router.get('/', async function(req, res, next) {
-    var pageID=req.query.pageID;
+      if(response.status === 200) {
+      const html = response.data;
+      texts=html;
+  }
+  }, (error) => {
+    console.log(error);
+
+    } );
+  return texts;
+}
+
+module.exports= async function web_scrape(edgeID, force_scrape, res)
+{
     var edgeID = req.query.edgeID;
     var force_scrape=req.query.force_scrape;
     
-    var topic=await Topic.findOne({topicName: topic});
-    
-    var page = await Page.findById(pageID);
-    if (!page)
-        return res.status(400).send("Page not in database");
-    var edge= await Page_topic_edge.findById(edgeID);
+    var edge= await Page_topic_edge.findById(edgeID)
+    .select(page_to_topic_selection())
+    .populate(page_populate())
+    .lean();
     if (!edge)
         return res.status(400).send("Topic to page edge not in database");
 
-    var url = page.pageURL
+    var url = edge.page.pageURL
     if (edge.lastCalculated != null && force_scrape == "false")
     {
         var lastCalculated=new Date() - edge.lastCalculated;
@@ -41,5 +53,4 @@ router.get('/', async function(req, res, next) {
             return res.status(404).send("Page can't be scraped");
     }
     return res.status(404).send("Page can't be scraped");
-});
-module.exports = router;
+}

@@ -1,8 +1,7 @@
 const get_score_field_name= require('../../middleware/get_score_field_name');
-const {ranking_save} = require('../middleware/save_securely_to_database');
 
-const {Comments_ranking} = require('../models/comments_rankings');
-const {Comment} = require('../models/comments');
+const {Comments_ranking} = require('../../models/comments_rankings');
+const {Comment} = require('../../models/comments');
 const {ranking_save} = require('../../middleware/save_securely_to_database');
 
 function is_comment_rank_type_valid(rank_type){
@@ -101,7 +100,7 @@ module.exports=async function rank_comment(commentID, rank_type, rankCode, userI
     if (!comment)
         return res.status(400).send("Comment not found in database");
 
-    var user=await User.findById(req.user._id)
+    var user=await User.findById(userID)
     .select('_id userScore')
     .lean();
     if (!user)

@@ -1,5 +1,5 @@
-router.post('/connect_topic_to_topic', auth, async function(req, res) {
-  
+exports.module= async function connect_topic_to_topic()
+{ 
     var new_topicName=req.body.new_topicName;
     var current_topicName = req.body.current_topicName;
     if (!new_topicName)
@@ -49,4 +49,4 @@ router.post('/connect_topic_to_topic', auth, async function(req, res) {
     await Topic.updateOne({_id: topic2._id}, {$addToSet: {topic_topic_edges: topic_topic_edge._id}});
     var msg="נוצר חיבור בין " + topic1.topicName + " ל" + topic2.topicName;
     return res.status(200).send(msg);
-});
+}

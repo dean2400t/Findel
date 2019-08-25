@@ -7,7 +7,7 @@ class Page_in_search extends Component {
   render() {
     return (
       <div className="page_in_seach">
-          <p>{this.props.page_in_search.formatedURL} <i className={this.props.page_in_search.scrape}></i></p>
+          <p>{this.props.page_in_search.pageURL} <i className={this.props.page_in_search.scrape}></i></p>
       </div>
     );
   }

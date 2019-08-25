@@ -13,17 +13,6 @@ var dateFromObjectId = function (objectId) {
     return dateFormated;
 };
 
-
-function binary_find_page_by_ID(pages, id, start, end) { 
-  if (start > end) return null; 
-  let mid=Math.floor((start + end)/2); 
-  if (pages[mid]._id.equals(id)) return pages[mid]; 
-  if(pages[mid]._id > id)  
-      return binary_find_page_by_ID(pages, id, start, mid-1); 
-  else
-      return binary_find_page_by_ID(pages, id, mid+1, end); 
-}
-
 function binary_find_topic_by_IDs(topics, id, start, end) { 
     if (start > end) return null; 
     let mid=Math.floor((start + end)/2); 

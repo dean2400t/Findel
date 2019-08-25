@@ -119,14 +119,12 @@ Function searches google by topic and update database accordingly
 async function search_Google_and_orgenize(topic)
 {
   var search=topic.topicName;
-  var pages=[];
   var pages_from_google=await googleSearch(search);
   pages_in_database = await add_new_pages_and_return_pages_from_database(pages_from_google);
   var pages_in_db_which_are_not_connected= await filter_already_connected_pages_in_database(pages_in_database, pages_from_google, topic);
 
   //Build edges for current topic to found google pages
   var edge;
-  var pages=[];
   var new_page_topic_edges=[];
   await Promise.all(pages_in_db_which_are_not_connected.map(async (not_connected_page_in_db) => {
     var page_from_google=binary_find_page_in_pages_by_url(pages_from_google, not_connected_page_in_db,0, pages_from_google.length-1);
@@ -138,14 +136,11 @@ async function search_Google_and_orgenize(topic)
     {
       new_page_topic_edges.push(edge._id);
       await Page.updateOne({_id: not_connected_page_in_db.id}, {$addToSet: {page_topic_edges: edge._id}});
-      pages.push(not_connected_page_in_db);
     }
   }));
 
   if (new_page_topic_edges.length>0)
     await Topic.findOneAndUpdate({_id: topic._id}, {$addToSet: {page_topic_edges: {$each: new_page_topic_edges}}, lastGoogleUpdate: Date.now()});
-
-  return pages;
 }
 
 async function retrieve_topic_to_pages_edges_from_topic(topic, userID)
@@ -156,14 +151,14 @@ async function retrieve_topic_to_pages_edges_from_topic(topic, userID)
       .populate(
           page_populate({
             userID: userID,
-            populate:{ domain_populate() }
+            populate:domain_populate()
           })
       )
       .lean();
   return topic_to_pages_edges;
 }
 
-module.exports = async function update_and_retrieve_topic_to_pages_edges(search, userID, res)
+module.exports = async function update_and_retrieve_topic_to_pages_edges(search, force_google_search, userID, res)
 {
     var topic=await Topic.findOne({topicName: search})
     .select(topic_selection())
@@ -175,11 +170,11 @@ module.exports = async function update_and_retrieve_topic_to_pages_edges(search,
       var numOfDaysToLive=3;
   
       //Topic was google searched recently
-      if(googleSearchAge<numOfDaysToLive*86400000)
+      if(googleSearchAge<numOfDaysToLive*86400000 && force_google_search==false)
         return res.status(200).send(await retrieve_topic_to_pages_edges_from_topic(topic, userID));
   
       //Topic needs to be google searched again
-      pages= await search_Google_and_orgenize(topic);
+      await search_Google_and_orgenize(topic);
       return res.status(200).send(await retrieve_topic_to_pages_edges_from_topic(topic, userID));
     }
   
@@ -194,6 +189,6 @@ module.exports = async function update_and_retrieve_topic_to_pages_edges(search,
         var search=new Search({topic: topic._id})
         await User.updateOne({_id: userID}, {$push: {searches: search}});
       }
-    pages= await search_Google_and_orgenize(topic);
+    await search_Google_and_orgenize(topic);
     return res.status(200).send(await retrieve_topic_to_pages_edges_from_topic(topic, userID));
 }

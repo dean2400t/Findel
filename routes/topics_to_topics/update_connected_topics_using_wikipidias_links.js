@@ -21,7 +21,7 @@ module.exports= async function update_connected_topics_using_wikipidias_links(to
     if (last_wikipidia_search<numOfDaysToLive*86400000)
         return
   }
-  var topic= await retrieve_topic_and_connected_topics(topic, userID, null);
+  var topic= await retrieve_topic_and_connected_topics(topic, null, null);
   var topic_topic_edges= topic.topic_topic_edges;
   var edge_to_topic_of_link_name=null;
   var new_edges_id_array=[];
