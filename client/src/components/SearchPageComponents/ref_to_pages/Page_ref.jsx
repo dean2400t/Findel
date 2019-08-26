@@ -25,55 +25,58 @@ class Page_ref extends Component {
     var educational_upArrow='black';
     var educational_downArrow='black';
 
-    var users_rankings = this.props.page_ref.user_rankings_for_edge
-    users_rankings.forEach(ranking => {
-        if (ranking.rank_type == "liked")
-        {
-          if (ranking.rankCode == 1)
-            liked_upArrow = 'green'
-          else
-            liked_downArrow = 'red'
-        }
+    if (this.props.page_ref.user_rankings_for_edge !== undefined)
+    {
+      var users_rankings = this.props.page_ref.user_rankings_for_edge
+      users_rankings.forEach(ranking => {
+          if (ranking.rank_type == "liked")
+          {
+            if (ranking.rankCode == 1)
+              liked_upArrow = 'green'
+            else
+              liked_downArrow = 'red'
+          }
 
-        if (ranking.rank_type == "credibility")
-        {
-          if (ranking.rankCode == 1)
-            credibility_upArrow = 'green'
-          else
-            credibility_downArrow = 'red'
-        }
+          if (ranking.rank_type == "credibility")
+          {
+            if (ranking.rankCode == 1)
+              credibility_upArrow = 'green'
+            else
+              credibility_downArrow = 'red'
+          }
 
-        if (ranking.rank_type == "educational")
-        {
-          if (ranking.rankCode == 1)
-            educational_upArrow = 'green'
-          else
-            educational_downArrow = 'red'
-        }
-      });
+          if (ranking.rank_type == "educational")
+          {
+            if (ranking.rankCode == 1)
+              educational_upArrow = 'green'
+            else
+              educational_downArrow = 'red'
+          }
+        });
+    }
     var liked_bar_style=make_bar_style(
       this.props.page_ref.liked_positive_points,
       this.props.page_ref.liked_negative_points,
       )
     var credibility_bar_style=make_bar_style(
-      this.props.page_ref.credibility_positive_points,
-      this.props.page_ref.credibility_negative_points,
+      this.props.page_ref.page.credibility_positive_points,
+      this.props.page_ref.page.credibility_negative_points,
       )
     var educational_bar_style=make_bar_style(
-      this.props.page_ref.educational_positive_points,
-      this.props.page_ref.educational_negative_points,
+      this.props.page_ref.page.educational_positive_points,
+      this.props.page_ref.page.educational_negative_points,
       )
     var domain_liked_bar_style=make_bar_style(
-      this.props.page_ref.domain.liked_positive_points,
-      this.props.page_ref.domain.liked_negative_points,
+      this.props.page_ref.page.domain.liked_positive_points,
+      this.props.page_ref.page.domain.liked_negative_points,
       )
     var domain_credibility_bar_style=make_bar_style(
-      this.props.page_ref.domain.credibility_positive_points,
-      this.props.page_ref.domain.credibility_negative_points,
+      this.props.page_ref.page.domain.credibility_positive_points,
+      this.props.page_ref.page.domain.credibility_negative_points,
       )
     var domain_educational_bar_style=make_bar_style(
-      this.props.page_ref.domain.educational_positive_points,
-      this.props.page_ref.domain.educational_negative_points,
+      this.props.page_ref.page.domain.educational_positive_points,
+      this.props.page_ref.page.domain.educational_negative_points,
       )
 
     this.state = {
@@ -85,18 +88,18 @@ class Page_ref extends Component {
       educational_downArrowColor: educational_downArrow,
       rank_error: "",
       liked_positive_points: this.props.page_ref.liked_positive_points,
-      credibility_positive_points: this.props.page_ref.credibility_positive_points,
-      educational_positive_points: this.props.page_ref.educational_positive_points,
+      credibility_positive_points: this.props.page_ref.page.credibility_positive_points,
+      educational_positive_points: this.props.page_ref.page.educational_positive_points,
       liked_negative_points: this.props.page_ref.liked_negative_points,
-      credibility_negative_points: this.props.page_ref.credibility_negative_points,
-      educational_negative_points: this.props.page_ref.educational_negative_points,
+      credibility_negative_points: this.props.page_ref.page.credibility_negative_points,
+      educational_negative_points: this.props.page_ref.page.educational_negative_points,
       rankCode: this.props.page_ref.userRankCode,
-      domain_liked_positive_points: this.props.page_ref.domain.liked_positive_points,
-      domain_credibility_positive_points: this.props.page_ref.domain.credibility_positive_points,
-      domain_educational_positive_points: this.props.page_ref.domain.educational_positive_points,
-      domain_liked_negative_points: this.props.page_ref.domain.liked_negative_points,
-      domain_credibility_negative_points: this.props.page_ref.domain.credibility_negative_points,
-      domain_educational_negative_points: this.props.page_ref.domain.educational_negative_points,
+      domain_liked_positive_points: this.props.page_ref.page.domain.liked_positive_points,
+      domain_credibility_positive_points: this.props.page_ref.page.domain.credibility_positive_points,
+      domain_educational_positive_points: this.props.page_ref.page.domain.educational_positive_points,
+      domain_liked_negative_points: this.props.page_ref.page.domain.liked_negative_points,
+      domain_credibility_negative_points: this.props.page_ref.page.domain.credibility_negative_points,
+      domain_educational_negative_points: this.props.page_ref.page.domain.educational_negative_points,
       liked_bar_style: liked_bar_style,
       credibility_bar_style: credibility_bar_style,
       educational_bar_style: educational_bar_style,
@@ -117,7 +120,7 @@ class Page_ref extends Component {
     var more_on_page_textStyle={color: '#0587c3'};
     return (
           <div className="a_page_ref">
-            <text><a target="_blank" rel="noopener noreferrer" href={this.props.page_ref.pageURL}>{this.props.page_ref.formatedURL}</a></text>
+            <text><a target="_blank" rel="noopener noreferrer" href={this.props.page_ref.page.pageURL}>{this.props.page_ref.page.pageURL}</a></text>
             <br/><text>{this.props.page_ref.pageSnap}</text>
             <table>
             <tr>

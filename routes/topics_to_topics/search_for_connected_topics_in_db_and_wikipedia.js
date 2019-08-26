@@ -1,8 +1,10 @@
-const {Topic, validate_topic} = require('../../models/topics');
-const {topic_to_topic_edge_save, topic_save} = require('../../middleware/save_securely_to_database');
-const {Topic_topic_edge} = require('../../models/topic_to_topic_edges');
+const {Topic} = require('../../models/topics');
 const {Search} = require('../../models/searches');
 const {User} =require('../../models/users');
+const {topic_save}= require('../../middleware/save_securely_to_database');
+
+const {topic_selection}= require('../../models/common_fields_selection/topic_selections');
+
 var wtf = require('wtf_wikipedia');
 var extractAmbigiousFromText =require ("../../middleware/extractAmbigiousFromText");
 
@@ -26,7 +28,7 @@ function remove_duplicate_wikipedia_links(links)
         return links_name_array
     }
 
-async function get_connected_topics_edges_for_search(topic, userID)
+async function get_topic_and_connected_topics_edges_for_search(topic, userID)
 {
     
     var topic= await retrieve_topic_and_connected_topics(topic.topicName, userID, null);
@@ -44,13 +46,14 @@ async function get_connected_topics_edges_for_search(topic, userID)
         edge.is_search_required= is_search_required;
     });
     
-    return edges_to_topics;
+    return topic;
 }
 
 module.exports= async function search_for_connected_topics_in_db_and_wikipedia(search, userID, res)
 {
     var topic=await Topic.findOne({topicName: search})
-    .select(topic_selection());
+    .select(topic_selection())
+    .lean();
     if (!topic)
     {
         topic = new Topic({topicName: search});
@@ -75,10 +78,10 @@ module.exports= async function search_for_connected_topics_in_db_and_wikipedia(s
         {
             //update database with links from wikipedia
             var links_name_array = remove_duplicate_wikipedia_links(links);
-            await update_connected_topics_using_wikipidias_links(topic, links_name_array, userID);
-            var connected_topics_edges = await get_connected_topics_edges_for_search(topic, userID);
-            var wikiText=doc.text();
-                return res.status(200).send({connected_topics_edges: connected_topics_edges, wikiText: wikiText});
+            await update_connected_topics_using_wikipidias_links(topic, links_name_array);
+            var topic = await get_topic_and_connected_topics_edges_for_search(topic, null);
+            topic.wikiText=doc.text();
+            return res.status(200).send(topic);
         }
         else
         if (doc.templates()!=null)
@@ -103,7 +106,6 @@ module.exports= async function search_for_connected_topics_in_db_and_wikipedia(s
         }
     }
     
-    //no data from wikipedia. return connected topics from database
-    var connected_topics_edges= await get_connected_topics_edges_for_search(topic, userID);
-    return res.status(200).send({connected_topics_edges: connected_topics_edges});
+    //no data from wikipedia. return topic with connected topics from database
+    return res.status(200).send(await get_topic_and_connected_topics_edges_for_search(topic, null));
 }

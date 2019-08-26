@@ -19,7 +19,7 @@ export default async function main_search_function(this_of_searchPage, do_deep_s
     
     await request_topic_and_connected_topics_from_server(this_of_searchPage)
     
-    if (this_of_searchPage.ambigousData.length==0)
+    if (this_of_searchPage.topic != null)
     {
         await request_pages_from_server(this_of_searchPage.curSearch, this_of_searchPage);
         
@@ -34,7 +34,7 @@ export default async function main_search_function(this_of_searchPage, do_deep_s
             display_expended_content(this_of_searchPage);
             this_of_searchPage.search_button_function_stop_search();
         }
-        else if (this_of_searchPage.pages_from_server_to_use!=null)
+        else if (this_of_searchPage.page_to_topic_edges_from_server_to_use!=null)
         {
             display_pages_scrape_process(this_of_searchPage);
             
@@ -45,18 +45,17 @@ export default async function main_search_function(this_of_searchPage, do_deep_s
                 this_of_searchPage.connected_topics_edges[index].linkHits=0;
                 links.push({topicName: this_of_searchPage.connected_topics_edges[index].topic.topicName, index_in_connected_topics_edges:index});
             }
-            this_of_searchPage.rabinKarp= new Rabin_Karp_search(3001, 20, this_of_searchPage.pages_from_server_to_use.length);
+            this_of_searchPage.rabinKarp= new Rabin_Karp_search(3001, 20, this_of_searchPage.page_to_topic_edges_from_server_to_use.length);
             this_of_searchPage.rabinKarp.hashWikiLinks(links);
-            this_of_searchPage.jaccard_similarity=new Jaccard_similarity(20399, 10, wikiText)
+            this_of_searchPage.jaccard_similarity=new Jaccard_similarity(20399, 10, this_of_searchPage.wikiText)
             this_of_searchPage.pagesTempState=this_of_searchPage.state.pages_in_search;
             
-            //start scraping asynchronously
-            web_scrape_pages(this_of_searchPage);
+            
 
             var timeToRefresh=750;
             //function to show status of pages search and check if user requested to stop
             let refreshSearchStatus=setInterval(
-            async () => {
+            () => {
                 if (this_of_searchPage.pageSearchFinished==false && this_of_searchPage.did_user_ended_seach==false)
                     this_of_searchPage.setState({pages_in_search: this_of_searchPage.pagesTempState});
                 else
@@ -72,7 +71,8 @@ export default async function main_search_function(this_of_searchPage, do_deep_s
             }
             ,timeToRefresh
             );
-
+            //start scraping asynchronously
+            web_scrape_pages(this_of_searchPage);
         }
         else
             this_of_searchPage.search_button_function_stop_search();

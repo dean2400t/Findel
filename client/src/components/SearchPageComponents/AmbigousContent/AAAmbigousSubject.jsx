@@ -5,7 +5,7 @@ class AAAmbigousSubject extends Component {
   render() {
     return (
     <div className="subject">
-      <text>{this.props.subject.name}: {this.props.subject.description}
+      <text>
       <a target="_blank" rel="noopener noreferrer" href={'/?search=' + this.props.subject.name}>
       {this.props.subject.name}</a>: 
       {this.props.subject.description}</text>

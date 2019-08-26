@@ -11,7 +11,7 @@ const {
 
 module.exports= async function retrieve_topic_and_connected_topics(topicName, userID, res)
 {
-    var topic = await Topic.findOne({topicName:topicName})
+    var topic = await Topic.findOne({topicName: topicName})
     .select(topic_selection({
         userID: userID,
         include_edges: `topic_topic_edges`
@@ -30,7 +30,6 @@ module.exports= async function retrieve_topic_and_connected_topics(topicName, us
                 }
             ]
           }))
-    .populate()
     .lean();
     
     topic.topic_topic_edges.forEach(edge => {

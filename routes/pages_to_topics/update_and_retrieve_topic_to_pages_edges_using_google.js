@@ -85,12 +85,11 @@ function binary_find_page_in_edges_by_url(edges, page, start, end) {
       return binary_find_page_in_edges_by_url(edges, page, mid+1, end); 
 }
 
-async function filter_already_connected_pages_in_database(pages_in_database, pages_from_google, topic)
+async function filter_already_connected_pages_in_database(topic, pages_in_database, pages_from_google, topic)
 {
-  if (topic.page_topic_edges.length>0)
+  var topic_to_pages_edges = await retrieve_topic_to_pages_edges_from_topic(topic, null)
+  if (topic_to_pages_edges.length > 0)
   {
-    var topic_to_pages_edges = await retrieve_topic_to_pages_edges_from_topic(topic, null)
-
     var already_connected_edges= topic_to_pages_edges;
     already_connected_edges.sort((edge1, edge2) => {if (edge2.page.pageURL>edge1.page.pageURL) return -1; else return 1;});
     
@@ -121,7 +120,7 @@ async function search_Google_and_orgenize(topic)
   var search=topic.topicName;
   var pages_from_google=await googleSearch(search);
   pages_in_database = await add_new_pages_and_return_pages_from_database(pages_from_google);
-  var pages_in_db_which_are_not_connected= await filter_already_connected_pages_in_database(pages_in_database, pages_from_google, topic);
+  var pages_in_db_which_are_not_connected= await filter_already_connected_pages_in_database(topic, pages_in_database, pages_from_google, topic);
 
   //Build edges for current topic to found google pages
   var edge;
@@ -146,7 +145,7 @@ async function search_Google_and_orgenize(topic)
 async function retrieve_topic_to_pages_edges_from_topic(topic, userID)
 {
 
-    var topic_to_pages_edges = await Page_topic_edge.find({topic: topic})
+    var topic_to_pages_edges = await Page_topic_edge.find({topic: topic._id})
       .select(page_topic_edges_selection({userID: userID}))
       .populate(
           page_populate({

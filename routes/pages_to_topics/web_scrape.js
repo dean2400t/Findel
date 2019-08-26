@@ -1,6 +1,8 @@
-const {page_to_topic_selection}= require('../../models/common_fields_selection/page_topic_edges_selections');
-const {page_populate}= require('../../models/common_fields_selection/page_selections');
 const {Page_topic_edge} = require('../../models/page_topic_edges');
+
+const {page_topic_edges_selection}= require('../../models/common_fields_selection/page_topic_edges_selections');
+const {page_populate}= require('../../models/common_fields_selection/page_selections');
+
 
 let axios = require('axios');
 async function webScrapeURL(url)
@@ -22,17 +24,14 @@ async function webScrapeURL(url)
 
 module.exports= async function web_scrape(edgeID, force_scrape, res)
 {
-    var edgeID = req.query.edgeID;
-    var force_scrape=req.query.force_scrape;
-    
     var edge= await Page_topic_edge.findById(edgeID)
-    .select(page_to_topic_selection())
+    .select(page_topic_edges_selection())
     .populate(page_populate())
     .lean();
     if (!edge)
         return res.status(400).send("Topic to page edge not in database");
 
-    var url = edge.page.pageURL
+    var url = encodeURI(edge.page.pageURL);
     if (edge.lastCalculated != null && force_scrape == "false")
     {
         var lastCalculated=new Date() - edge.lastCalculated;

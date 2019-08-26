@@ -9,6 +9,7 @@ const help = require('./help');
 const update_and_retrieve_topic_to_pages_edges_using_google= require('./update_and_retrieve_topic_to_pages_edges_using_google');
 const rank_page_to_topic_edge= require('./rank_page_to_topic_edge');
 const connect_page_to_topic= require('./connect_page_to_topic');
+const web_scrape= require('./web_scrape');
 
 router.get('/help', function(req, res) {
   return res.status(200).send(help());

@@ -33,11 +33,17 @@ class SearchPage extends Component {
         this.id=1;
         
         var search_text_box ='';
+        var is_deep_search_needed= false;
         if (this.history.location.state!=undefined)
         {
             var history=this.history.location.state;
             if (history.search_text_box!=null)
                 search_text_box= history.search_text_box
+        }
+        else if (my_search != null)
+        {
+            search_text_box=my_search;
+            is_deep_search_needed= true;
         }
         
         this.pages_from_server_to_use=[];
@@ -65,7 +71,7 @@ class SearchPage extends Component {
         };
         
         if (search_text_box != '')
-            main_search_function(this, false);
+            main_search_function(this, is_deep_search_needed);
       }
     render() {
         var search_box_textStyle={color: '#F0F8FF', cursor: 'pointer'};

@@ -1,3 +1,7 @@
+const {Topic} = require('../../models/topics');
+const {Topic_topic_edge} = require('../../models/topic_to_topic_edges');
+const {topic_save, topic_to_topic_edge_save}= require('../../middleware/save_securely_to_database');
+
 const retrieve_topic_and_connected_topics= require('./retrieve_topic_and_connected_topics');
 
 function binary_search_topic_and_edge_in_topics_and_edges_array(topics_and_edges_array, link_name, start, end) { 
@@ -13,7 +17,7 @@ function binary_search_topic_and_edge_in_topics_and_edges_array(topics_and_edges
 
 
 
-module.exports= async function update_connected_topics_using_wikipidias_links(topic, links_name_array, userID){
+module.exports= async function update_connected_topics_using_wikipidias_links(topic, links_name_array){
   if (topic.last_wikipidia_search!=null)
   {
     var last_wikipidia_search=new Date() - topic.last_wikipidia_search;
@@ -21,7 +25,7 @@ module.exports= async function update_connected_topics_using_wikipidias_links(to
     if (last_wikipidia_search<numOfDaysToLive*86400000)
         return
   }
-  var topic= await retrieve_topic_and_connected_topics(topic, null, null);
+  var topic= await retrieve_topic_and_connected_topics(topic.topicName, null, null);
   var topic_topic_edges= topic.topic_topic_edges;
   var edge_to_topic_of_link_name=null;
   var new_edges_id_array=[];

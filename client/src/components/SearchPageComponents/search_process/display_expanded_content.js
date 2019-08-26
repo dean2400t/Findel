@@ -18,7 +18,7 @@ export default function display_expended_content(this_of_searchPage)
     }
     this_of_searchPage.setState({
         expandedContents: expandedCon,
-        is_show_more_content_hidden: true,
+        is_show_more_content_hidden: false,
         expandend_content_status: ""
     });
     this_of_searchPage.expandedCon_to_history=expandedCon;

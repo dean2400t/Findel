@@ -15,7 +15,7 @@ router.get('/search_for_connected_topics_in_db_and_wikipedia', async function(re
 
     if (!search)
         return res.status(400).send("אין search כנושא לחיפוש בבקשה");
-    search_for_connected_topics_in_db_and_wikipedia(search, userID);
+    search_for_connected_topics_in_db_and_wikipedia(search, userID, res);
 });
 
 router.get('/retrieve_topic_and_connected_topics', async function(req, res) {

@@ -30,7 +30,14 @@ module.exports=async function googleSearch(search)
                 if (allRes[r].data.items[index]!=null)
                 {
                     var order_index_by_google=index+r*10;
-                    pages.push({pageURL: decodeURI(allRes[r].data.items[index].link),
+                    var pageURL= allRes[r].data.items[index].link;
+                    try {
+                        var decoded_url= decodeURI(pageURL)
+                        pageURL= decoded_url;
+                    } catch (error) {
+                        
+                    }
+                    pages.push({pageURL: pageURL,
                     snippet: allRes[r].data.items[index].snippet,
                     order_index_by_google: order_index_by_google
                 });
