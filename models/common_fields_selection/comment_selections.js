@@ -11,7 +11,7 @@ function comment_selection(opts={})
         `
     if (opts['userID'] != null)
         selection+=`
-        usersRanking
+        rankings
         `
     
     return selection;

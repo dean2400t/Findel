@@ -43,7 +43,7 @@ const userSchema = new mongoose.Schema({
     minlength: 3,
     maxlength: 20
   },
-  userScore:
+  user_score:
   {
     type: Number,
     default: 1,

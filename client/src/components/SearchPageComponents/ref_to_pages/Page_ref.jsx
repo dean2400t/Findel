@@ -25,35 +25,36 @@ class Page_ref extends Component {
     var educational_upArrow='black';
     var educational_downArrow='black';
 
-    if (this.props.page_ref.user_rankings_for_edge !== undefined)
-    {
-      var users_rankings = this.props.page_ref.user_rankings_for_edge
-      users_rankings.forEach(ranking => {
+    if (this.props.page_ref.rankings !== undefined)
+      this.props.page_ref.rankings.forEach(ranking => {
           if (ranking.rank_type == "liked")
           {
-            if (ranking.rankCode == 1)
+            if (ranking.rank_code == 1)
               liked_upArrow = 'green'
             else
               liked_downArrow = 'red'
           }
-
-          if (ranking.rank_type == "credibility")
-          {
-            if (ranking.rankCode == 1)
-              credibility_upArrow = 'green'
-            else
-              credibility_downArrow = 'red'
-          }
-
-          if (ranking.rank_type == "educational")
-          {
-            if (ranking.rankCode == 1)
-              educational_upArrow = 'green'
-            else
-              educational_downArrow = 'red'
-          }
         });
-    }
+
+    if (this.props.page_ref.page.rankings !== undefined)
+      this.props.page_ref.page.rankings.forEach(ranking => {
+        if (ranking.rank_type == "credibility")
+            {
+              if (ranking.rank_code == 1)
+                credibility_upArrow = 'green'
+              else
+                credibility_downArrow = 'red'
+            }
+
+            if (ranking.rank_type == "educational")
+            {
+              if (ranking.rank_code == 1)
+                educational_upArrow = 'green'
+              else
+                educational_downArrow = 'red'
+            }
+          });
+
     var liked_bar_style=make_bar_style(
       this.props.page_ref.liked_positive_points,
       this.props.page_ref.liked_negative_points,
@@ -93,7 +94,7 @@ class Page_ref extends Component {
       liked_negative_points: this.props.page_ref.liked_negative_points,
       credibility_negative_points: this.props.page_ref.page.credibility_negative_points,
       educational_negative_points: this.props.page_ref.page.educational_negative_points,
-      rankCode: this.props.page_ref.userRankCode,
+      rank_code: this.props.page_ref.userrank_code,
       domain_liked_positive_points: this.props.page_ref.page.domain.liked_positive_points,
       domain_credibility_positive_points: this.props.page_ref.page.domain.credibility_positive_points,
       domain_educational_positive_points: this.props.page_ref.page.domain.educational_positive_points,

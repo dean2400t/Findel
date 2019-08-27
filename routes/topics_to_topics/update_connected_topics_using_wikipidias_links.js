@@ -1,5 +1,5 @@
 const {Topic} = require('../../models/topics');
-const {Topic_topic_edge} = require('../../models/topic_to_topic_edges');
+const {Topic_topic_edge} = require('../../models/topic_topic_edges');
 const {topic_save, topic_to_topic_edge_save}= require('../../middleware/save_securely_to_database');
 
 const retrieve_topic_and_connected_topics= require('./retrieve_topic_and_connected_topics');
@@ -33,7 +33,10 @@ module.exports= async function update_connected_topics_using_wikipidias_links(to
   if (topic_topic_edges.length>0)
   {
     topic_topic_edges.sort((edge_a, edge_b) => {if (edge_b.topic.topicName>edge_a.topic.topicName) return 1 ; else return -1;});
-    await Promise.all(links_name_array.map(async (link_name) => {
+    
+    for (index=0; index< links_name_array.length; index++)
+    {
+        link_name= links_name_array[index];
         edge_to_topic_of_link_name = binary_search_topic_and_edge_in_topics_and_edges_array(topic_topic_edges, link_name, 0, topic_topic_edges.length-1);
         if (!edge_to_topic_of_link_name)
         {
@@ -51,10 +54,12 @@ module.exports= async function update_connected_topics_using_wikipidias_links(to
                 new_edges_id_array.push(new_topic_to_topic_edge._id);
             }
         }
-    }));
+    }
   }
   else
-    await Promise.all(links_name_array.map(async (link_name) => {
+    for (index=0; index< links_name_array.length; index++)
+    {
+      link_name= links_name_array[index];
         var newTopic=new Topic({topicName: link_name});
         newTopic = await topic_save(newTopic);
         if (topic.topicName < newTopic.topicName)
@@ -67,7 +72,7 @@ module.exports= async function update_connected_topics_using_wikipidias_links(to
             await Topic.findOneAndUpdate({_id: newTopic._id}, {$addToSet: {topic_topic_edges: new_topic_to_topic_edge}});
             new_edges_id_array.push(new_topic_to_topic_edge._id);
         }
-    }));
-    if (new_edges_id_array.length>0)
-        await Topic.findOneAndUpdate({_id: topic._id}, {$addToSet: {topic_topic_edges: {$each: new_edges_id_array}}, last_wikipidia_search: Date.now()});
+    }
+  if (new_edges_id_array.length>0)
+    await Topic.findOneAndUpdate({_id: topic._id}, {$addToSet: {topic_topic_edges: {$each: new_edges_id_array}}, last_wikipidia_search: Date.now()});
 }

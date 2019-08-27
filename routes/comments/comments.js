@@ -38,19 +38,19 @@ router.post('/rank_comment', auth, async function(req, res) {
   
     var commentID=req.body.commentID;
     var rank_type = req.body.rank_type;
-    var rankCode=req.body.rankCode;
+    var rank_code=req.body.rank_code;
     if (!commentID)
         return res.status(400).send("No commentID was sent");
     if (!rank_type)
         return res.status(400).send("No rank_type was sent");
-    if (!rankCode && rankCode!==0)
+    if (!rank_code && rank_code!==0)
         return res.status(400).send("No rank_code was sent");
-    if (rankCode<0 || rankCode>2)
-        return res.status(400).send("rankCode must be 0, 1, or 2");
-    if (!Number.isInteger(rankCode))
-        return res.status(400).send("rankCode must be 0, 1, or 2");
+    if (rank_code<0 || rank_code>2)
+        return res.status(400).send("rank_code must be 0, 1, or 2");
+    if (!Number.isInteger(rank_code))
+        return res.status(400).send("rank_code must be 0, 1, or 2");
 
-    return await rank_comment(commentID, rank_type, rankCode, req.user._id, res);
+    return await rank_comment(commentID, rank_type, rank_code, req.user._id, res);
 });
 
 

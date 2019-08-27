@@ -5,7 +5,9 @@ const auth = require('../../middleware/security/auth');
 const checkAuthAndReturnUserID=require('../../middleware/checkAuthAndReturnUserID');
 
 const help = require('./help');
+
 const retrieve_page_data= require('./retrieve_page_data');
+const rank_page=  require('./rank_page');
 
 router.get('/help', function(req, res) {
   return res.status(200).send(help());
@@ -25,21 +27,19 @@ router.post('/rank_page', auth, async function(req, res) {
 
     var pageID=req.body.pageID;
     var rank_type = req.body.rank_type;
-    var rankCode=req.body.rankCode;
+    var rank_code=req.body.rank_code;
     if (!pageID)
       return res.status(400).send("No pageID was sent");
     if (!rank_type)
       return res.status(400).send("No rank_type was sent");
-    if (!is_page_rank_type_valid(rank_type))
-      return res.status(400).send("rank_type is not valid");
-    if (!rankCode && rankCode!==0)
+    if (!rank_code && rank_code!==0)
       return res.status(400).send("No rank_code was sent");
-    if (rankCode<0 || rankCode>2)
-      return res.status(400).send("rankCode must be 0, 1, or 2");
-    if (!Number.isInteger(rankCode))
-    return res.status(400).send("rankCode must be 0, 1, or 2");
+    if (rank_code<0 || rank_code>2)
+      return res.status(400).send("rank_code must be 0, 1, or 2");
+    if (!Number.isInteger(rank_code))
+    return res.status(400).send("rank_code must be 0, 1, or 2");
     
-    return await rank_page(pageID, rank_type, rankCode, user._id, res)
+    return await rank_page(pageID, rank_type, rank_code, req.user._id, res)
   });
   
 

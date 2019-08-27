@@ -8,35 +8,35 @@ export default function rank_function(this_of_page_ref, rank_type, up_or_down)
     var upArrow = this_of_page_ref.state[string_for_upArrow_color];
     var downArrow = this_of_page_ref.state[string_for_downArrow_color];
 
-    var rankCode = 0;
+    var rank_code = 0;
     if (up_or_down == "up")
     {
         if (upArrow != 'green')
-            rankCode = 1;
+            rank_code = 1;
     }
     else
         if (downArrow != 'red')
-            rankCode = 2;
+            rank_code = 2;
 
     if (rank_type == 'liked')
     {
-        var edgeID=this_of_page_ref.props.page_ref.edgeID;
+        var edgeID=this_of_page_ref.props.page_ref._id;
         var opts={
             edgeID: edgeID,
             rank_type: rank_type,
-            rankCode: rankCode
+            rank_code: rank_code
         };
-        var api_path= "/api/userRanking/rank_page_topic_edge";
+        var api_path= "/api/pages_to_topics/rank_page_topic_edge";
     }
     else
     {
-        var pageID=this_of_page_ref.props.page_ref.pageID
+        var pageID=this_of_page_ref.props.page_ref.page._id
         var opts={
         pageID: pageID,
         rank_type: rank_type,
-        rankCode: rankCode
+        rank_code: rank_code
         }
-        var api_path= "/api/userRanking/rank_page";
+        var api_path= "/api/pages/rank_page";
     }
 
     axios.post(api_path, opts, {
@@ -48,11 +48,11 @@ export default function rank_function(this_of_page_ref, rank_type, up_or_down)
             if (this_of_page_ref.last_ranking_timeStamp != null)
                 {
                     /*
-                        if ids are the same then a deletion was made, so if rankcode is not 0 then
+                        if ids are the same then a deletion was made, so if rank_code is not 0 then
                         the deletion was received earlier
                     */
                         if (this_of_page_ref['last_ranking_id_'+rank_type] == res_data.ranking_id)
-                            if (res_data.rankCode != 0)
+                            if (res_data.rank_code != 0)
                                 return;
                     
                     if (recived_time - this_of_page_ref['last_ranking_timeStamp_'+rank_type] < 0)
@@ -71,12 +71,12 @@ export default function rank_function(this_of_page_ref, rank_type, up_or_down)
             json_for_state_change[string_for_domain_rank_type_positive_points] = res_data.domain_positive_points;
             json_for_state_change[string_for_rank_type_negative_points] = res_data.negative_points;
             json_for_state_change[string_for_domain_rank_type_negative_points] = res_data.domain_negative_points;
-            if (res_data.rankCode == 0)
+            if (res_data.rank_code == 0)
             {
                 json_for_state_change[string_for_upArrow_color] = 'black';
                 json_for_state_change[string_for_downArrow_color] = 'black';
             }
-            else if (res_data.rankCode == 1)
+            else if (res_data.rank_code == 1)
             {
                 json_for_state_change[string_for_upArrow_color] = 'green';
                 json_for_state_change[string_for_downArrow_color] = 'black';
@@ -86,7 +86,7 @@ export default function rank_function(this_of_page_ref, rank_type, up_or_down)
                 json_for_state_change[string_for_upArrow_color] = 'black';
                 json_for_state_change[string_for_downArrow_color] = 'red';
             }
-            json_for_state_change['rankCode'] = res_data.rankCode;
+            json_for_state_change['rank_code'] = res_data.rank_code;
 
             var bar_style=make_bar_style(
                 res_data.positive_points,

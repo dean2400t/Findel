@@ -4,7 +4,7 @@ const {User} = require('../models/users');
 const {Topic} = require('../models/topics');
 const {Page} = require('../models/pages');
 const {Page_topic_edge}=require('../models/page_topic_edges');
-const {Page_topic_edges_ranking} = (require('../models/page_topic_edges_ranking'))
+const {Ranking} = (require('../models/rankings'));
 var router = express.Router();
 
 var dateFromObjectId = function (objectId) {
@@ -55,8 +55,8 @@ router.get('/favorites', auth, async function(req, res) {
   if (!user)
     return res.status(400).send("User not found in database");
   
-  var positive_liked_rankings = await Page_topic_edges_ranking.find({
-    user: user._id, rank_type: "liked", rankCode: 1
+  var positive_liked_rankings = await Ranking.find({
+    user: user._id, object_collection_name: 'page-topic-edges', rank_type: "liked", rankCode: 1
   }).populate({ 
     path: 'edge',
     populate: {

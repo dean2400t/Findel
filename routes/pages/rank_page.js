@@ -1,177 +1,37 @@
-const get_score_field_name= require('../../middleware/get_score_field_name');
-const {Page} = require('../models/pages');
-const {Page_ranking} = require('../models/pages_ranking');
-const {ranking_save} = require('../middleware/save_securely_to_database');
+const rank= require('../../middleware/rank');
+
+const {Page} = require('../../models/pages');
+
+const {page_selection} = require('../../models/common_fields_selection/page_selections');
+const {domain_populate} = require('../../models/common_fields_selection/domain_selections');
 
 function is_page_rank_type_valid(rank_type){
-    if (rank_type == "credibility" ||
-        rank_type == "educational")
-        return true;
-    return false;
-  }
-  
-async function insert_ranking_page_to_database(page, user, rank_type, rankCode)
-{
-  var user_score = user.userScore;
-  if (user_score<0)
-    user_score = 0;
-  var page_ranking = new Page_ranking({
-    page: page._id,
-    user: user._id,
-    rank_type: rank_type,
-    rankCode: rankCode,
-    scoreAdded: user_score
-    });
-  if (await ranking_save(page_ranking)==true)
-    return page_ranking;
-  else
-    return null;
-  }
-
-async function update_scores_to_page_ranking_insertion(page_ranking, page, domain, user, rank_type)
-{
-  var score_field_name = get_score_field_name(rank_type, page_ranking.rankCode);
-  var field_and_score_in_json = {};
-  field_and_score_in_json[score_field_name] = page_ranking.scoreAdded;
-
-  await Domain.findOneAndUpdate({_id: domain._id},
-    {$inc: field_and_score_in_json, $push: {pages_usersRanking: page_ranking._id}});
-  domain[score_field_name] += page_ranking.scoreAdded;
-
-  await Page.findOneAndUpdate({_id: page._id},
-    {$inc: field_and_score_in_json, $push: {page_usersRanking: page_ranking._id}});
-
-  page[score_field_name] += page_ranking.scoreAdded;
-  await User.findOneAndUpdate({_id: user._id},
-    {$push: {page_ranking: page_ranking._id}});
-  return true;
-}
-
-async function remove_page_ranking_and_update_scores_in_db(page_ranking, page, domain, user, rank_type)
-{
-  var delete_result = await Page_ranking.deleteOne(
-    {page: page._id, user: user._id, rank_type: rank_type});
-  
-  if (delete_result != null)
-    if (delete_result.n == 1)
-    {
-      var score_field_name = get_score_field_name(rank_type, page_ranking.rankCode);
-      var field_and_score_in_json = {};
-      field_and_score_in_json[score_field_name] = -page_ranking.scoreAdded;
-      await Domain.findOneAndUpdate({_id: domain._id},
-        {$inc: field_and_score_in_json, $pull: {pages_usersRanking: page_ranking._id}});
-      domain[score_field_name] -= page_ranking.scoreAdded;
-
-      await Page.findOneAndUpdate({_id: page._id},
-        {$inc: field_and_score_in_json, $pull: {page_usersRanking: page_ranking._id}});
-        page[score_field_name] -= page_ranking.scoreAdded;
-
-      await User.findOneAndUpdate({_id: user._id},
-        {$pull: {pages_ranking: page_ranking._id}});
+  if (rank_type == "credibility" ||
+      rank_type == "educational")
       return true;
-    }
-  return false
+  return false;
 }
 
-function data_to_return_for_page_ranking(rank_type, rankCode, page_ranking, page, domain)
-{
-  var positive_score_field_name = get_score_field_name(rank_type, 1);
-  var negative_score_field_name = get_score_field_name(rank_type, 2);
-
-  var positive_points = page[positive_score_field_name];
-  var negative_points = page[negative_score_field_name];
-  var domain_positive_points = domain[positive_score_field_name];
-  var domain_negative_points = domain[negative_score_field_name];
-  var page_positive_points = page[positive_score_field_name];
-  var page_negative_points = page[negative_score_field_name];
-
-
-  if (rankCode == 1)
-  {
-    positive_points -= page_ranking.scoreAdded
-    positive_points += 1;
-    domain_positive_points -= page_ranking.scoreAdded
-    domain_positive_points += 1;
-    page_positive_points -= page_ranking.scoreAdded
-    page_positive_points += 1;
-  }
-  else if (rankCode == 2)
-  {
-    negative_points -= page_ranking.scoreAdded
-    negative_points += 1;
-    domain_negative_points -= page_ranking.scoreAdded
-    domain_negative_points += 1;
-    page_negative_points -= page_ranking.scoreAdded
-    page_negative_points += 1;
-  }
-
-  return {
-    rankCode: rankCode,
-    pageID: page._id,
-    positive_points: positive_points,
-    negative_points: negative_points,
-    domain_positive_points: domain_positive_points,
-    domain_negative_points: domain_negative_points,
-    page_positive_points: page_positive_points,
-    page_negative_points: page_negative_points,
-    ranking_date: page_ranking._id.getTimestamp(),
-    ranking_id: page_ranking.id
-    } 
-}
-
-module.exports = async function rank_page(pageID, rank_type, rankCode, userID, res)
+module.exports = async function rank_page(pageID, rank_type, rank_code, userID, res)
 { 
   if (!is_page_rank_type_valid(rank_type))
-    return res.status(400).send("rank_type is not valid");
-    
-  var page=await Page.findById(pageID).populate('domain');
+    return res.status(400).send("This ranking: "+ rank_type +" is not allowed for page");
+
+  var page= await Page.findOne({_id: pageID})
+  .select(page_selection())
+  .populate(domain_populate())
+  .lean();
   if (!page)
-    return res.status(400).send("Page not found in database");
+    return res.status(400).send("Page not found");
 
-  var user=await User.findById(req.user._id);
-  if (!user)
-    return res.status(400).send("User not found in database");
-  
-  var domain= page.domain;
-  
-  var page_ranking = await Page_ranking.findOne(
-    {page: page._id, user: user._id, rank_type: rank_type});
-  if (!page_ranking)
-  {
-    if (rankCode == 0)
-      return res.status(400).send("Page is already not ranked");
-    else
-    {
-      page_ranking = await insert_ranking_page_to_database(
-        page, user, rank_type, rankCode);
-      if (!page_ranking)
-        return res.status(400).send("Double request");
-      
-      if (await update_scores_to_page_ranking_insertion(
-        page_ranking, page, domain, user, rank_type) == true)
-          return res.status(200).send(data_to_return_for_page_ranking(rank_type, rankCode, page_ranking, page, domain));
-    }
-  }
+  const update_remove_response_handlers= require('./rank_page_update_remove_response_handlers');
 
-  if (page_ranking.rankCode == rankCode)
-    if (rankCode == 1 || rankCode == 2)
-      return res.status(200).send(data_to_return_for_page_ranking(rank_type, rankCode, page_ranking, page, domain));
-
-  if (await remove_page_ranking_and_update_scores_in_db(
-    page_ranking, page, domain, user, rank_type) == true)
-  {
-    if (rankCode == 0)
-      return res.status(200).send(data_to_return_for_page_ranking(rank_type, rankCode, page_ranking, page, domain));
-    
-    page_ranking = await insert_ranking_page_to_database(
-      page, user, rank_type, rankCode);
-    if (!page_ranking)
-      return res.status(400).send("Double request");
-    
-    
-    if (await update_scores_to_page_ranking_insertion(
-      page_ranking, page, domain, user, rank_type)==true)
-        return res.status(200).send(data_to_return_for_page_ranking(rank_type, rankCode, page_ranking, page, domain));
-  }
-  return res.status(400).send("Failed to enter ranking");
+  return await rank(
+    page, 
+    'pages', 
+    rank_type, 
+    rank_code, 
+    userID, 
+    update_remove_response_handlers,
+    res)
 }

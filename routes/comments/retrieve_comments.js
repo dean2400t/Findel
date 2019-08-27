@@ -1,5 +1,5 @@
 const {Comment} = require('../../models/comments');
-const {comment_selection} = require('../../models/common_fields_selection/comments_selections');
+const {comment_selection} = require('../../models/common_fields_selection/comment_selections');
 const {usersRanking_populate} = require('../../models/common_fields_selection/ranking_selections');
 
 var dateFromObjectId = function (objectId) {

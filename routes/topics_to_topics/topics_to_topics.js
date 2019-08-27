@@ -6,7 +6,7 @@ const search_for_connected_topics_in_db_and_wikipedia= require('./search_for_con
 const retrieve_topic_and_connected_topics= require('./retrieve_topic_and_connected_topics');
 const rank_topic_to_topic_edge= require('./rank_topic_topic_edge');
 const checkAuthAndReturnUserID = require('../../middleware/checkAuthAndReturnUserID');
-const {Topic_topic_edge}= require('../../models/topic_to_topic_edges');
+const {Topic_topic_edge}= require('../../models/topic_topic_edges');
 
 router.get('/search_for_connected_topics_in_db_and_wikipedia', async function(req, res) {
     var search=req.query.search;
@@ -31,19 +31,19 @@ router.get('/retrieve_topic_and_connected_topics', async function(req, res) {
 router.post('/rank_topic_topic_edge', auth, async function(req, res) {
     var edgeID=req.body.edgeID;
     var rank_type = req.body.rank_type;
-    var rankCode=req.body.rankCode;
+    var rank_code=req.body.rank_code;
     if (!edgeID)
       return res.status(400).send("No edgeID was sent");
     if (!rank_type)
       return res.status(400).send("No rank_type was sent");
-    if (!rankCode && rankCode!==0)
+    if (!rank_code && rank_code!==0)
       return res.status(400).send("No rank_code was sent");
-    if (rankCode<0 || rankCode>2)
-      return res.status(400).send("rankCode must be 0, 1, or 2");
-    if (!Number.isInteger(rankCode))
-    return res.status(400).send("rankCode must be 0, 1, or 2");
+    if (rank_code<0 || rank_code>2)
+      return res.status(400).send("rank_code must be 0, 1, or 2");
+    if (!Number.isInteger(rank_code))
+    return res.status(400).send("rank_code must be 0, 1, or 2");
 
-    rank_topic_to_topic_edge(edgeID, rank_type, rankCode, user._id, res);
+    rank_topic_to_topic_edge(edgeID, rank_type, rank_code, user._id, res);
 });
 
 router.post('/insert_topic_topic_edges_Scores', function(req, res) {

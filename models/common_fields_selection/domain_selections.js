@@ -13,8 +13,7 @@ function domain_selection(opts={}){
         selection+=opts['include_edges'];
     
     if (opts['userID'] != null)
-        selection += `edges_usersRanking 
-        domain_usersRanking`
+        selection += `rankings`
         
     return selection;
 }

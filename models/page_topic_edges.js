@@ -47,14 +47,10 @@ const page_topic_edge_Schema = new mongoose.Schema({
     default: 0
   },
 
-  usersRanking:
+  rankings:
     [{
       type: mongoose.Schema.ObjectId, 
-      ref: 'page-topic-edges-ranking'
-    }],
-  root_comments:[{
-    type: mongoose.Schema.ObjectId, 
-    ref: 'comments'
+      ref: 'rankings'
     }],
 
   number_of_comments:{
@@ -70,8 +66,7 @@ page_topic_edge_Schema.index({ page: 1, topic: 1}, { unique: true });
   function validate_page_topic_edge(page_topic_edge_Schema) {
     const schema = {
         site: Joi.objectId().required(),
-        topic: Joi.objectId().required(),
-        weight: Joi.number.required()
+        topic: Joi.objectId().required()
     };
     return Joi.validate(page_topic_edge_Schema, schema);
   }

@@ -1,7 +1,7 @@
 const {Page} = require('../models/pages');
 const {Topic} = require('../models/topics');
 const {Page_topic_edge} = require('../models/page_topic_edges');
-const {Topic_topic_edge} = require('../models/topic_to_topic_edges');
+const {Topic_topic_edge} = require('../models/topic_topic_edges');
 const {Domain} = require('../models/domains');
 const {Comment} = require('../models/comments');
 module.exports=async function get_collection_from_collection_name(collection_name)

@@ -58,16 +58,22 @@ const pageSchema = new mongoose.Schema({
     ref: 'page-topic-edges'
   }],
 
-  edges_usersRanking:
+  accumulate_rankings:
     [{
       type: mongoose.Schema.ObjectId, 
       ref: 'page-topic-edges-ranking'
     }],
 
-  page_usersRanking:
+    rankings:
     [{
       type: mongoose.Schema.ObjectId, 
-      ref: 'pages-ranking'
+      ref: 'rankings'
+    }],
+  
+    accumulate_rankings:
+    [{
+      type: mongoose.Schema.ObjectId, 
+      ref: 'accumulate-rankings'
     }],
     
   root_comments:[{

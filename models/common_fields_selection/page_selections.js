@@ -1,4 +1,4 @@
-const {page_usersRanking_populate} = require('./ranking_selections');
+const {rankings_populate} = require('./ranking_selections');
 
 function page_selection(opts={})
 { 
@@ -17,7 +17,7 @@ function page_selection(opts={})
         selection+=opts['include_edges'];
         
     if (opts['userID'] != null)
-        selection += `page_usersRanking`
+        selection += `rankings`
     return selection;
 }
 
@@ -33,7 +33,11 @@ function page_populate(opts={})
     {
         if (populate.populate == null)
             populate.populate = [];
-        populate.populate.push(page_usersRanking_populate({userID: opts['userID']}));
+        populate.populate.push(rankings_populate(
+            {
+                userID: opts['userID'],
+                object_collection_name: 'pages'
+            }));
     }
     return populate;
 }

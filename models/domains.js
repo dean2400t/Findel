@@ -48,17 +48,17 @@ const domain_Schema = new mongoose.Schema({
     ref: 'pages'
   }],
 
-  pages_usersRanking:
-    [{
-      type: mongoose.Schema.ObjectId, 
-      ref: 'pages-ranking'
-    }],
+  rankings:
+  [{
+    type: mongoose.Schema.ObjectId, 
+    ref: 'rankings'
+  }],
 
-  edges_to_pages_usersRanking:
-    [{
-      type: mongoose.Schema.ObjectId, 
-      ref: 'page-topic-edges-ranking'
-    }],
+  accumulate_rankings:
+  [{
+    type: mongoose.Schema.ObjectId, 
+    ref: 'accumulate-rankings'
+  }],
 
   root_comments:[{
       type: mongoose.Schema.ObjectId, 

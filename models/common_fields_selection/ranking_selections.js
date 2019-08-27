@@ -6,53 +6,25 @@ function rankings_selection()
         `
 }
 
-function usersRanking_populate(opts={})
+function rankings_populate(opts={})
 {
-    var populate = {
-        path: 'usersRanking',
-        select: rankings_selection()
-        }
     if (opts['userID'] != null)
-        populate.match= {user: opts['userID']}
-    return populate;
-}
-
-function edges_usersRanking_populate(opts={})
-{
-    var populate = {
-        path: 'edges_usersRanking',
-        select: rankings_selection()
-        }
-    if (opts['userID'] != null)
-        populate.match= {user: opts['userID']}
-    return populate;
-}
-
-function page_usersRanking_populate(opts={})
-{
-    var populate = {
-        path: 'page_usersRanking',
-        select: rankings_selection()
-        }
-    if (opts['userID'] != null)
-        populate.match= {user: opts['userID']}
-    return populate;
-}
-
-function edges_to_pages_usersRanking_populate(opts={})
-{
-    var populate = {
-        path: 'edges_to_pages_usersRanking',
-        select: rankings_selection()
-        }
-    if (opts['userID'] != null)
-        populate.match= {user: opts['userID']}
+    {
+        var populate = {
+            path: 'rankings',
+            select: rankings_selection(),
+            match: {
+                user: opts['userID'],
+                object_collection_name: opts['collection_name']
+                }
+            }
+    }
+    else 
+        var populate=[];
     return populate;
 }
 
 
 module.exports.rankings_selection = rankings_selection;
-module.exports.usersRanking_populate = usersRanking_populate;
-module.exports.edges_usersRanking_populate = edges_usersRanking_populate;
-module.exports.page_usersRanking_populate = page_usersRanking_populate;
-module.exports.edges_to_pages_usersRanking_populate = edges_to_pages_usersRanking_populate;
+module.exports.rankings_populate = rankings_populate;
+

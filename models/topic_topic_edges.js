@@ -37,10 +37,10 @@ const topic_topic_edge_Schema = new mongoose.Schema({
   last_web_scrape:{
     type: Date
   },
-  usersRanking:
+  rankings:
     [{
       type: mongoose.Schema.ObjectId, 
-      ref: 'topic-topic-edges-ranking'
+      ref: 'rankings'
     }],
   root_comments:[{
       type: mongoose.Schema.ObjectId, 

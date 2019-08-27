@@ -1,13 +1,13 @@
-
-
 const {page_topic_edges_selection}= require('../../models/common_fields_selection/page_topic_edges_selections');
 const {topic_selection}= require('../../models/common_fields_selection/topic_selections');
 const {page_selection, page_populate}= require('../../models/common_fields_selection/page_selections');
 const {domain_populate}= require('../../models/common_fields_selection/domain_selections');
+const {rankings_populate}= require('../../models/common_fields_selection/ranking_selections');
 
 const {Topic, validate_topic} = require('../../models/topics');
 const {Page_topic_edge} = require('../../models/page_topic_edges');
 const {Page} = require('../../models/pages');
+const {Ranking}= require('../../models/rankings');
 const googleSearch=require('../../middleware/googleSearch');
 const {add_and_update_domain, 
        page_to_topic_edge_save,
@@ -56,19 +56,21 @@ async function add_new_pages_and_return_pages_from_database(pages)
     .select(page_selection());
     var new_pages_to_add=find_which_pages_are_not_in_DataBase(pages, pages_in_database);
     
-    await Promise.all(new_pages_to_add.map(async (new_page_to_add) => {
-      var page=new Page({pageURL: new_page_to_add.pageURL,
-        pageSnap:  new_page_to_add.snippet
+    for (var new_page_index=0; new_page_index< new_pages_to_add.length; new_page_index++)
+    {
+      var new_page= new_pages_to_add[new_page_index];
+      var new_page=new Page({pageURL: new_page.pageURL,
+        pageSnap:  new_page.snippet
       });
-      page = await page_save(page);
-      if (!page)
+      new_page = await page_save(new_page);
+      if (!new_page)
         console.log("fatal page save error");
       else
       {
-        page = await add_and_update_domain(page);
-        pages_in_database.push(page);
+        new_page = await add_and_update_domain(new_page);
+        pages_in_database.push(new_page);
       }
-    }));
+    };
   }
   return pages_in_database;
 }
@@ -94,7 +96,10 @@ async function filter_already_connected_pages_in_database(topic, pages_in_databa
     already_connected_edges.sort((edge1, edge2) => {if (edge2.page.pageURL>edge1.page.pageURL) return -1; else return 1;});
     
     var pages_in_db_which_are_not_connected=[];
-    await Promise.all(pages_in_database.map(async (page_in_database) => {
+
+    for (var index = 0; index < pages_in_database.length; index++)
+    {
+      var page_in_database= pages_in_database[index]
       var connected_edge = binary_find_page_in_edges_by_url(already_connected_edges, page_in_database, 0, already_connected_edges.length-1);
       if (!connected_edge)
         pages_in_db_which_are_not_connected.push(page_in_database);
@@ -106,7 +111,7 @@ async function filter_already_connected_pages_in_database(topic, pages_in_databa
             page_from_google={order_index_by_google: null};
           await Page_topic_edge.findByIdAndUpdate(connected_edge._id, {order_index_by_google: page_from_google.order_index_by_google});
         }
-    }));
+    };
     return pages_in_db_which_are_not_connected;
   }
   else
@@ -125,7 +130,10 @@ async function search_Google_and_orgenize(topic)
   //Build edges for current topic to found google pages
   var edge;
   var new_page_topic_edges=[];
-  await Promise.all(pages_in_db_which_are_not_connected.map(async (not_connected_page_in_db) => {
+
+  for (var index=0; index< pages_in_db_which_are_not_connected.length; index++)
+  {
+    not_connected_page_in_db= pages_in_db_which_are_not_connected[index];
     var page_from_google=binary_find_page_in_pages_by_url(pages_from_google, not_connected_page_in_db,0, pages_from_google.length-1);
     if (!page_from_google)
       page_from_google={order_index_by_google: null};
@@ -136,7 +144,7 @@ async function search_Google_and_orgenize(topic)
       new_page_topic_edges.push(edge._id);
       await Page.updateOne({_id: not_connected_page_in_db.id}, {$addToSet: {page_topic_edges: edge._id}});
     }
-  }));
+  }
 
   if (new_page_topic_edges.length>0)
     await Topic.findOneAndUpdate({_id: topic._id}, {$addToSet: {page_topic_edges: {$each: new_page_topic_edges}}, lastGoogleUpdate: Date.now()});
@@ -150,9 +158,10 @@ async function retrieve_topic_to_pages_edges_from_topic(topic, userID)
       .populate(
           page_populate({
             userID: userID,
-            populate:domain_populate()
+            populate:[domain_populate()]
           })
       )
+      .populate(rankings_populate({userID: userID}))
       .lean();
   return topic_to_pages_edges;
 }

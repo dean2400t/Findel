@@ -41,10 +41,10 @@ const comment_Scheme = new mongoose.Schema({
     ref: 'comments',
     required: true
   },
-  usersRanking:
+  rankings:
     [{
       type: mongoose.Schema.ObjectId, 
-      ref: 'comments-ranking'
+      ref: 'rankings'
     }]
   
 });
