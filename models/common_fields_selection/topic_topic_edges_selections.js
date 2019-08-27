@@ -1,4 +1,4 @@
-const {rankings_populate} = require('./ranking_selections');
+const {rankings_populate} = require('./rankings_selections');
 
 function topic_topic_edges_selection(opts={})
 { 
@@ -10,6 +10,7 @@ function topic_topic_edges_selection(opts={})
         liked_positive_points
         liked_negative_points
         number_of_comments
+        last_web_scrape
         `
     if (opts['userID'] != null)
         selection+=`
@@ -31,9 +32,9 @@ function topic_topic_edges_populate(opts={})
     {
         if (populate.populate == null)
             populate.populate = [];
-        populate.populate.push(usersRanking_populate({ 
+        populate.populate.push(rankings_populate({ 
             userID: opts['userID'],
-        object_collection_name: 'topic-topic-edges'
+            object_collection_name: 'topic-topic-edges'
     }));
     }
     return populate;

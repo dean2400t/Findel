@@ -220,7 +220,7 @@ class Page_ref extends Component {
             </tr>
             </table>
             <text style={redText}>{this.state.rank_error}</text>
-            <a target="_blank" rel="noopener noreferrer" style={more_on_page_textStyle} href={"/Page_page/"+encodeURIComponent(this.props.page_ref.formatedURL)}>עוד על הדף...</a>
+            <a target="_blank" rel="noopener noreferrer" style={more_on_page_textStyle} href={"/Page_page/"+encodeURIComponent(this.props.page_ref.page.pageURL)}>עוד על הדף...</a>
           </div>
     );
   }

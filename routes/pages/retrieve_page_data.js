@@ -17,16 +17,16 @@ const {
 } = require('../../models/common_fields_selection/page_topic_edges_selections');
 
 const {
-   page_usersRanking_populate
-} = require('../../models/common_fields_selection/ranking_selections');
+   rankings_populate
+} = require('../../models/common_fields_selection/rankings_selections');
 
 
-module.exports= async function retrieve_page_data(pageFormatedURL, userID, res)
+module.exports= async function retrieve_page_data(pageURL, userID, res)
 {
     if (userID == '')
       userID == null;
 
-   var page = await Page.findOne({pageFormatedURL: pageFormatedURL})
+   var page = await Page.findOne({pageURL: pageURL})
       .select(page_selection(
          {
             include_edges: `page_topic_edges`,
@@ -41,7 +41,12 @@ module.exports= async function retrieve_page_data(pageFormatedURL, userID, res)
                topic_populate()
             ]
          }))
-      .populate(page_usersRanking_populate({userID: userID}))
+      .populate(rankings_populate(
+         {
+            userID: userID,
+            object_collection_name: 'pages'
+            
+         }))
       .lean();
    
    if (!page)

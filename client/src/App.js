@@ -112,7 +112,7 @@ class App extends Component {
           <Route path="/UserFavorites_page" component={UserFavorites} />
           <Route path="/Domains_page" component={DomainsPage} />
           <Route path="/Topic_page/:topic" component={Topic_page} />
-          <Route path="/Page_page/:pageURL" component={Page_page} />
+          <Route path="/Page_page/:encoded_pageURL" component={Page_page} />
           
         </div>
       </Router>

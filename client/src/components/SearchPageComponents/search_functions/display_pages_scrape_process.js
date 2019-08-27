@@ -2,10 +2,10 @@ export default function display_pages_scrape_process(this_of_searchPage)
 {
     var pageToSearchArray=[];
     var stats="fa fa-spinner fa-spin";
-    for (var index=0; index<this_of_searchPage.page_to_topic_edges_from_server_to_use.length; index++)
+    for (var index=0; index<this_of_searchPage.page_topic_edges_from_server_to_use.length; index++)
         {
             pageToSearchArray.push({id: this_of_searchPage.id, 
-                pageURL: this_of_searchPage.page_to_topic_edges_from_server_to_use[index].page.pageURL, 
+                pageURL: this_of_searchPage.page_topic_edges_from_server_to_use[index].page.pageURL, 
                 scrape: stats});
             this_of_searchPage.id++;
         }

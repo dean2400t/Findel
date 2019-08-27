@@ -14,12 +14,20 @@ router.get('/help', function(req, res) {
 });
 
 router.get('/page_data',async function(req, res) {
-    var pageFormatedURL = req.query.pageURL;
-    if (!pageFormatedURL)
-       return res.status(400).send("No pageFormatedURL was sent")
+    var encoded_pageURL = req.query.encoded_pageURL;
+    
+    if (!encoded_pageURL)
+       return res.status(400).send("No encoded_pageURL was sent")
+    
+    try {
+      var pageURL=decodeURI(encoded_pageURL);
+    } catch (error) {
+      return res.status(400).send("faild to decode url");
+    }
+    
     var token=req.headers['findel-auth-token'];
     var userID= checkAuthAndReturnUserID(token);
-    return await retrieve_page_data(pageFormatedURL, userID, res);
+    return await retrieve_page_data(pageURL, userID, res);
  });
 
  

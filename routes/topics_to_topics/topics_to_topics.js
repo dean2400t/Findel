@@ -43,7 +43,7 @@ router.post('/rank_topic_topic_edge', auth, async function(req, res) {
     if (!Number.isInteger(rank_code))
     return res.status(400).send("rank_code must be 0, 1, or 2");
 
-    rank_topic_to_topic_edge(edgeID, rank_type, rank_code, user._id, res);
+    rank_topic_to_topic_edge(edgeID, rank_type, rank_code, req.user._id, res);
 });
 
 router.post('/insert_topic_topic_edges_Scores', function(req, res) {

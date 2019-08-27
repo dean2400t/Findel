@@ -1,4 +1,4 @@
-export default function sort_page_to_topic_edges(full_page_topic_edges_array)
+export default function sort_page_topic_edges(full_page_topic_edges_array)
 {
     full_page_topic_edges_array.sort(function(page_topic_edge1, page_topic_edge2){
         if (page_topic_edge2.order_index_by_google===0) return 1;

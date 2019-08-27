@@ -3,7 +3,7 @@ import axios from 'axios';
 import hash_and_search_page from './hash_and_search_page';
 
 export default async function web_scrape_pages(this_of_searchPage){
-    var promiseArray = this_of_searchPage.page_to_topic_edges_from_server_to_use.map(page_to_topic_edge=>{
+    var promiseArray = this_of_searchPage.page_topic_edges_from_server_to_use.map(page_to_topic_edge=>{
         return axios.get("/api/pages_to_topics/web_scrape/?pageID="+page_to_topic_edge.page._id + "&edgeID=" + page_to_topic_edge._id + "&force_scrape=false",{
         })
         .then((result) => {

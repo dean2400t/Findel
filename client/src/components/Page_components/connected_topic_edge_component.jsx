@@ -16,12 +16,12 @@ class Connected_topic_edge_component extends Component {
 
     var liked_upArrow='black';
     var liked_downArrow='black';
-    var users_rankings = this.props.connected_topic_edge.usersRanking
-    if (users_rankings)
-      users_rankings.forEach(ranking => {
+    var rankings = this.props.connected_topic_edge.rankings
+    if (rankings)
+      rankings.forEach(ranking => {
           if (ranking.rank_type == "liked")
           {
-            if (ranking.rankCode == 1)
+            if (ranking.rank_code == 1)
               liked_upArrow = 'green'
             else
               liked_downArrow = 'red'
@@ -57,7 +57,7 @@ class Connected_topic_edge_component extends Component {
       rank_error: "",
       liked_positive_points: this.props.connected_topic_edge.liked_positive_points,
       liked_negative_points: this.props.connected_topic_edge.liked_negative_points,
-      rankCode: this.props.connected_topic_edge.userRankCode,
+      rank_code: this.props.connected_topic_edge.userrank_code,
       jaccard_similarity: jaccard_similarity,
       is_jaccard_hidden: is_jaccard_hidden,
       num_of_links_in_page: num_of_links_in_page,

@@ -9,7 +9,7 @@ import web_scrape_pages from './web_scrape_pages';
 import rank_pages from './rank_pages';
 import search_for_expended_content from './search_for_expended_content';
 import display_expended_content from './display_expanded_content';
-import update_topic_to_topic_edges_results from './update_topic_to_topic_edges_results';
+import update_topic_topic_edges_results from './update_topic_topic_edges_results';
 
 export default async function main_search_function(this_of_searchPage, do_deep_search)
 {
@@ -34,7 +34,7 @@ export default async function main_search_function(this_of_searchPage, do_deep_s
             display_expended_content(this_of_searchPage);
             this_of_searchPage.search_button_function_stop_search();
         }
-        else if (this_of_searchPage.page_to_topic_edges_from_server_to_use!=null)
+        else if (this_of_searchPage.page_topic_edges_from_server_to_use!=null)
         {
             display_pages_scrape_process(this_of_searchPage);
             
@@ -45,7 +45,7 @@ export default async function main_search_function(this_of_searchPage, do_deep_s
                 this_of_searchPage.connected_topics_edges[index].linkHits=0;
                 links.push({topicName: this_of_searchPage.connected_topics_edges[index].topic.topicName, index_in_connected_topics_edges:index});
             }
-            this_of_searchPage.rabinKarp= new Rabin_Karp_search(3001, 20, this_of_searchPage.page_to_topic_edges_from_server_to_use.length);
+            this_of_searchPage.rabinKarp= new Rabin_Karp_search(3001, 20, this_of_searchPage.page_topic_edges_from_server_to_use.length);
             this_of_searchPage.rabinKarp.hashWikiLinks(links);
             this_of_searchPage.jaccard_similarity=new Jaccard_similarity(20399, 10, this_of_searchPage.wikiText)
             this_of_searchPage.pagesTempState=this_of_searchPage.state.pages_in_search;
@@ -65,7 +65,7 @@ export default async function main_search_function(this_of_searchPage, do_deep_s
                     rank_pages(this_of_searchPage);
                     search_for_expended_content(this_of_searchPage);
                     display_expended_content(this_of_searchPage);
-                    update_topic_to_topic_edges_results(this_of_searchPage);
+                    update_topic_topic_edges_results(this_of_searchPage);
                     this_of_searchPage.search_button_function_stop_search();
                 }
             }

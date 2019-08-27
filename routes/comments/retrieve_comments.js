@@ -1,6 +1,6 @@
 const {Comment} = require('../../models/comments');
 const {comment_selection} = require('../../models/common_fields_selection/comment_selections');
-const {usersRanking_populate} = require('../../models/common_fields_selection/ranking_selections');
+const {rankings_populate} = require('../../models/common_fields_selection/rankings_selections');
 
 var dateFromObjectId = function (objectId) {
     var date= new Date(parseInt(objectId.substring(0, 8), 16) * 1000);
@@ -18,7 +18,11 @@ async function extract_comments_from_database(root_comments_IDs_array, userID)
     var comments = await Comment.find({root_comment: {$in: root_comments_IDs_array}})
     .select(comment_selection({userID: userID}))
     .populate('user', 'userName position')
-    .populate(usersRanking_populate({userID: userID}))
+    .populate(rankings_populate(
+        {
+            userID: userID,
+            object_collection_name: 'comments'
+        }))
     .lean();
 
     comments.forEach(comment => {

@@ -11,7 +11,7 @@ class Topics_page extends Component {
     constructor(props) {
         super(props);
         var temp_topic={
-          topic_topic_edges:[]
+          topic_topic_edges: []
         };
 
         const {topic} = this.props.match.params
@@ -28,7 +28,7 @@ class Topics_page extends Component {
         };
         this.id=1;
         this.token=cookies.get('findel-auth-token') || "";
-        axios.get("/api/present_data/connected_topics/?topic="+topic,{
+        axios.get("/api/topics_to_topics/retrieve_topic_and_connected_topics/?topicName="+topic,{
           headers: {'findel-auth-token': this.token}})
           .then((result) => {
               return result.data;
@@ -56,7 +56,6 @@ class Topics_page extends Component {
               });
           }).catch((error) => {
               console.log(error);
-              this.setState({topic: []})
           });
       }
     render() {

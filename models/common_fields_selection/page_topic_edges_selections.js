@@ -1,4 +1,4 @@
-const {rankings_populate} = require('./ranking_selections');
+const {rankings_populate} = require('./rankings_selections');
 
 function page_topic_edges_selection(opts={})
 { 

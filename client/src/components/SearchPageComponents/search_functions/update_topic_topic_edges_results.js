@@ -1,13 +1,13 @@
 import axios from 'axios';
 
-export default async function update_topic_to_topic_edges_results(this_of_searchPage)
+export default async function update_topic_topic_edges_results(this_of_searchPage)
 {
     var connected_topics_edges=this_of_searchPage.connected_topics_edges;
     var edges_to_update=[];
     connected_topics_edges.forEach(connected_topic_edge => {
         if (connected_topic_edge.is_search_required)
             edges_to_update.push({
-                _id: connected_topic_edge.edgeID,
+                _id: connected_topic_edge._id,
                 web_scrape_score: connected_topic_edge.linkHits
             })
     });

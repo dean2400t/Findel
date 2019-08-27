@@ -13,11 +13,13 @@ class Topic_component extends Component {
         super(props);
         var liked_upArrow='black';
         var liked_downArrow='black';
-        var user_rankings = this.props.topic_topic_edge.usersRanking;
-        user_rankings.forEach(ranking => {
+        var rankings = this.props.topic_topic_edge.rankings;
+        if (!rankings)
+          rankings=[];
+        rankings.forEach(ranking => {
         if (ranking.rank_type == "liked")
         {
-          if (ranking.rankCode == 1)
+          if (ranking.rank_code == 1)
             liked_upArrow = 'green'
           else
             liked_downArrow = 'red'
@@ -29,7 +31,6 @@ class Topic_component extends Component {
           rank_error: "",
           edge_liked_positive_points: this.props.topic_topic_edge.liked_positive_points,
           edge_liked_negative_points: this.props.topic_topic_edge.liked_negative_points,
-          rankCode: this.props.topic_topic_edge.userRankCode
         }
         this.last_ranking_timeStamp = null;
         this.last_ranking_id = null;
@@ -39,14 +40,17 @@ class Topic_component extends Component {
     var redText={color: "red"};
     return (
       <div className="topic">
-        <text style={{marginRight: '10px'}}>{this.props.topic_topic_edge.topic.topicName}<br/></text>
+        <a target="_blank" rel="noopener noreferrer" href={'/?search=' + this.props.topic_topic_edge.topic.topicName}>
+          <text style={{marginRight: '10px'}}>{this.props.topic_topic_edge.topic.topicName}<br/></text>
+        </a>
         <text style={{marginRight: '10px'}}>
-        דירוג משתמשים: 
-        ({this.state.edge_liked_positive_points})
-        <FontAwesomeIcon icon={faArrowAltCircleUp} color={this.state.liked_upArrowColor} onClick={() => this.rank_click_up("liked")}/> 
         
-        <FontAwesomeIcon icon={faArrowAltCircleDown} color={this.state.liked_downArrowColor} onClick={() => this.rank_click_down("liked")}/>
+        דירוג משתמשים: 
         ({this.state.edge_liked_negative_points})
+        <FontAwesomeIcon icon={faArrowAltCircleDown} color={this.state.liked_downArrowColor} onClick={() => this.rank_click_down("liked")}/>
+        <FontAwesomeIcon icon={faArrowAltCircleUp} color={this.state.liked_upArrowColor} onClick={() => this.rank_click_up("liked")}/> 
+        ({this.state.edge_liked_positive_points})
+
         <br/></text>
         <text style={{marginRight: '10px'}}>ציון מחיפוש באתרים: {this.props.topic_topic_edge.web_scrape_score}<br/></text>
         <text style={{marginRight: '10px'}}>חיפוש אחרון: {this.props.topic_topic_edge.last_web_scrape}<br/></text>

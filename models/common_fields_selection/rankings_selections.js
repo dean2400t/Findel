@@ -2,7 +2,7 @@ function rankings_selection()
 { 
     return `
         rank_type
-        rankCode
+        rank_code
         `
 }
 
@@ -15,7 +15,7 @@ function rankings_populate(opts={})
             select: rankings_selection(),
             match: {
                 user: opts['userID'],
-                object_collection_name: opts['collection_name']
+                object_collection_name: opts['object_collection_name']
                 }
             }
     }

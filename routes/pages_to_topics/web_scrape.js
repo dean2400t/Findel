@@ -32,7 +32,7 @@ module.exports= async function web_scrape(edgeID, force_scrape, res)
         return res.status(400).send("Topic to page edge not in database");
 
     var url = encodeURI(edge.page.pageURL);
-    if (edge.lastCalculated != null && force_scrape == "false")
+    if (edge.lastCalculated != null && force_scrape == false)
     {
         var lastCalculated=new Date() - edge.lastCalculated;
         var numOfDaysToLive=2;

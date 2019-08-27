@@ -6,8 +6,8 @@ import Ambigous from './AmbigousContent/Ambigous';
 import 'font-awesome/css/font-awesome.min.css';
 import './SearchPage.css';
 import Cookies from 'universal-cookie';
-import main_search_function from './search_process/main_search_function';
-import rank_pages from './search_process/rank_pages';
+import main_search_function from './search_functions/main_search_function';
+import rank_pages from './search_functions/rank_pages';
 import axios from 'axios';
 const cookies = new Cookies();
 
@@ -46,8 +46,8 @@ class SearchPage extends Component {
             is_deep_search_needed= true;
         }
         
-        this.pages_from_server_to_use=[];
-        this.full_pages_list_from_server=[];
+        this.page_topic_edges_from_server_to_use=[];
+        this.full_page_topic_edges_list_from_server=[];
         this.page_displayed_so_far_index=0;
         this.state = {
         search_text_box: search_text_box,
@@ -246,10 +246,9 @@ class SearchPage extends Component {
     }
 
     more_pages_clicked(){
-        this.pages_from_server_to_use=[];
         var num_of_pages_to_add=10;
-        for (var index=this.page_displayed_so_far_index+1; index< this.page_displayed_so_far_index+1+num_of_pages_to_add && index<this.full_pages_list_from_server.length; index++)
-            this.pages_from_server_to_use.push(this.full_pages_list_from_server[index]);
+        for (var index=this.page_displayed_so_far_index+1; index< this.page_displayed_so_far_index+1+num_of_pages_to_add && index<this.full_page_topic_edges_list_from_server.length; index++)
+            this.page_topic_edges_from_server_to_use.push(this.full_page_topic_edges_list_from_server[index]);  
         rank_pages(this);
     }
 

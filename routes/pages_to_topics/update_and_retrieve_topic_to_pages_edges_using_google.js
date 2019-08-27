@@ -2,7 +2,7 @@ const {page_topic_edges_selection}= require('../../models/common_fields_selectio
 const {topic_selection}= require('../../models/common_fields_selection/topic_selections');
 const {page_selection, page_populate}= require('../../models/common_fields_selection/page_selections');
 const {domain_populate}= require('../../models/common_fields_selection/domain_selections');
-const {rankings_populate}= require('../../models/common_fields_selection/ranking_selections');
+const {rankings_populate}= require('../../models/common_fields_selection/rankings_selections');
 
 const {Topic, validate_topic} = require('../../models/topics');
 const {Page_topic_edge} = require('../../models/page_topic_edges');
@@ -161,8 +161,13 @@ async function retrieve_topic_to_pages_edges_from_topic(topic, userID)
             populate:[domain_populate()]
           })
       )
-      .populate(rankings_populate({userID: userID}))
+      .populate(rankings_populate(
+        {
+          userID: userID,
+          object_collection_name: 'page-topic-edges'
+        }))
       .lean();
+
   return topic_to_pages_edges;
 }
 

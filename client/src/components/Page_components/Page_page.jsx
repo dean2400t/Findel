@@ -12,6 +12,7 @@ import {faHeart} from '@fortawesome/free-regular-svg-icons';
 import {faSearch} from '@fortawesome/free-solid-svg-icons';
 import {faBook} from '@fortawesome/free-solid-svg-icons';
 import {faGlobe} from '@fortawesome/free-solid-svg-icons';
+import {faCircle} from '@fortawesome/free-solid-svg-icons';
 import {ProgressBar} from 'react-bootstrap';
 import make_bar_style from '../common_functions/make_bar_style';
 import page_rank_function from './page_rank_function';
@@ -21,7 +22,13 @@ class Page_page extends Component {
     constructor(props) {
         super(props);
         var topics=[];
-        const {pageURL} = this.props.match.params;
+        const {encoded_pageURL} = this.props.match.params;
+        try {
+            var pageURL=decodeURI(encoded_pageURL);
+        } catch (error) {
+            console.log("failed to decode url");
+        }
+        
         var domain= {domainURL: ""};
         this.state = {
             page_loading: true,
@@ -33,7 +40,7 @@ class Page_page extends Component {
             domain_educational_bar_style: [0, 'info'],
             pageID: "",
             topics:topics,
-            page: pageURL,
+            pageURL: pageURL,
             domain: domain,
             page_topic_edges: [],
             add_comment_vars: {
@@ -46,120 +53,107 @@ class Page_page extends Component {
         };
         this.id=1;
         this.token=cookies.get('findel-auth-token') || "";
-        axios.get("/api/present_data/page_data/?pageURL="+pageURL,{
-          headers: {'findel-auth-token': this.token}})
-          .then((result) => {
-              return result.data;
-          }).then((page) => {
-              var page_topic_edges=page.page_topic_edges;
-              page_topic_edges.sort((edge_a, edge_b)=>{return edge_b.web_scrape_score-edge_a.web_scrape_score;});
-              page_topic_edges.sort((edge_a, edge_b)=>{return edge_b.liked_positive_points-edge_a.liked_positive_points;});
-              page_topic_edges.forEach(edge => {
-                  edge.id = this.id;
-                  edge.page={ pageURL: page.pageURL }
-                  this.id++;
-              });
-              
+        if (pageURL)
+            axios.get("/api/pages/page_data/?encoded_pageURL="+encoded_pageURL,{
+            headers: {'findel-auth-token': this.token}})
+            .then((result) => {
+                return result.data;
+            }).then((page) => {
+                var page_topic_edges=page.page_topic_edges;
+                page_topic_edges.sort((edge_a, edge_b)=>{return edge_b.web_scrape_score-edge_a.web_scrape_score;});
+                page_topic_edges.sort((edge_a, edge_b)=>{return edge_b.liked_positive_points-edge_a.liked_positive_points;});
+                page_topic_edges.forEach(edge => {
+                    edge.id = this.id;
+                    edge.page={ pageURL: page.pageURL }
+                    this.id++;
+                });
+                
+                var credibility_upArrow='black';
+                var credibility_downArrow='black';
+                var educational_upArrow='black';
+                var educational_downArrow='black';
 
-            var liked_upArrow='black';
-            var liked_downArrow='black';
-            var credibility_upArrow='black';
-            var credibility_downArrow='black';
-            var educational_upArrow='black';
-            var educational_downArrow='black';
+                if (page.rankings)
+                    page.rankings.forEach(ranking => {
+                        if (ranking.rank_type == "credibility")
+                        {
+                        if (ranking.rank_code == 1)
+                            credibility_upArrow = 'green'
+                        else
+                            credibility_downArrow = 'red'
+                        }
 
-            var users_rankings = [...page.page_usersRanking];
-            users_rankings.forEach(ranking => {
-                if (ranking.rank_type == "liked")
-                {
-                if (ranking.rankCode == 1)
-                    liked_upArrow = 'green'
-                else
-                    liked_downArrow = 'red'
-                }
+                        if (ranking.rank_type == "educational")
+                        {
+                        if (ranking.rank_code == 1)
+                            educational_upArrow = 'green'
+                        else
+                            educational_downArrow = 'red'
+                        }
+                    });
 
-                if (ranking.rank_type == "credibility")
-                {
-                if (ranking.rankCode == 1)
-                    credibility_upArrow = 'green'
-                else
-                    credibility_downArrow = 'red'
-                }
+                var liked_bar_style=make_bar_style(
+                page.liked_positive_points,
+                page.liked_negative_points,
+                )
+                var credibility_bar_style=make_bar_style(
+                page.credibility_positive_points,
+                page.credibility_negative_points,
+                )
+                var educational_bar_style=make_bar_style(
+                page.educational_positive_points,
+                page.educational_negative_points,
+                )
+                var domain_liked_bar_style=make_bar_style(
+                page.domain.liked_positive_points,
+                page.domain.liked_negative_points,
+                )
+                var domain_credibility_bar_style=make_bar_style(
+                page.domain.credibility_positive_points,
+                page.domain.credibility_negative_points,
+                )
+                var domain_educational_bar_style=make_bar_style(
+                page.domain.educational_positive_points,
+                page.domain.educational_negative_points,
+                )
+                
+                /*
+                data.comments = arrange_comments(data.comments);
+                data.add_comment_vars= {
+                    object_id: data.pageID,
+                    object_id_collection_name: 'pages',
+                    root_comment_id: null,
+                    parrent_comments_array: data.comments,
+                    number_of_overall_comments: number_of_overall_comments
+                    }
+                    */
+                page.credibility_upArrowColor= credibility_upArrow;
+                page.credibility_downArrowColor= credibility_downArrow;
+                page.educational_upArrowColor= educational_upArrow;
+                page.educational_downArrowColor= educational_downArrow;
+                page.rank_error= "";
+                page.domain_liked_positive_points= page.domain.liked_positive_points;
+                page.domain_credibility_positive_points= page.domain.credibility_positive_points;
+                page.domain_educational_positive_points= page.domain.educational_positive_points;
+                page.domain_liked_negative_points= page.domain.liked_negative_points;
+                page.domain_credibility_negative_points= page.domain.credibility_negative_points;
+                page.domain_educational_negative_points= page.domain.educational_negative_points;
+                page.liked_bar_style= liked_bar_style;
+                page.credibility_bar_style= credibility_bar_style;
+                page.educational_bar_style= educational_bar_style;
+                page.domain_liked_bar_style= domain_liked_bar_style;
+                page.domain_credibility_bar_style= domain_credibility_bar_style;
+                page.domain_educational_bar_style= domain_educational_bar_style
+                this['last_ranking_timeStamp_credibility'] = null;
+                this['last_ranking_id_credibility'] = null;
+                this['last_ranking_timeStamp_educational'] = null;
+                this['last_ranking_id_educational'] = null;
 
-                if (ranking.rank_type == "educational")
-                {
-                if (ranking.rankCode == 1)
-                    educational_upArrow = 'green'
-                else
-                    educational_downArrow = 'red'
-                }
+                page.page_loading=false;
+                this.setState(page);
+            }).catch((error) => {
+                console.log(error);
             });
-            var liked_bar_style=make_bar_style(
-            page.liked_positive_points,
-            page.liked_negative_points,
-            )
-            var credibility_bar_style=make_bar_style(
-            page.credibility_positive_points,
-            page.credibility_negative_points,
-            )
-            var educational_bar_style=make_bar_style(
-            page.educational_positive_points,
-            page.educational_negative_points,
-            )
-            var domain_liked_bar_style=make_bar_style(
-            page.domain.liked_positive_points,
-            page.domain.liked_negative_points,
-            )
-            var domain_credibility_bar_style=make_bar_style(
-            page.domain.credibility_positive_points,
-            page.domain.credibility_negative_points,
-            )
-            var domain_educational_bar_style=make_bar_style(
-            page.domain.educational_positive_points,
-            page.domain.educational_negative_points,
-            )
-              
-              /*
-              data.comments = arrange_comments(data.comments);
-              data.add_comment_vars= {
-                object_id: data.pageID,
-                object_id_collection_name: 'pages',
-                root_comment_id: null,
-                parrent_comments_array: data.comments,
-                number_of_overall_comments: number_of_overall_comments
-                }
-                */
-            page.liked_upArrowColor= liked_upArrow;
-            page.liked_downArrowColor= liked_downArrow;
-            page.credibility_upArrowColor= credibility_upArrow;
-            page.credibility_downArrowColor= credibility_downArrow;
-            page.educational_upArrowColor= educational_upArrow;
-            page.educational_downArrowColor= educational_downArrow;
-            page.rank_error= "";
-            page.domain_liked_positive_points= page.domain.liked_positive_points;
-            page.domain_credibility_positive_points= page.domain.credibility_positive_points;
-            page.domain_educational_positive_points= page.domain.educational_positive_points;
-            page.domain_liked_negative_points= page.domain.liked_negative_points;
-            page.domain_credibility_negative_points= page.domain.credibility_negative_points;
-            page.domain_educational_negative_points= page.domain.educational_negative_points;
-            page.liked_bar_style= liked_bar_style;
-            page.credibility_bar_style= credibility_bar_style;
-            page.educational_bar_style= educational_bar_style;
-            page.domain_liked_bar_style= domain_liked_bar_style;
-            page.domain_credibility_bar_style= domain_credibility_bar_style;
-            page.domain_educational_bar_style= domain_educational_bar_style
-            this['last_ranking_timeStamp_liked'] = null;
-            this['last_ranking_id_liked'] = null;
-            this['last_ranking_timeStamp_credibility'] = null;
-            this['last_ranking_id_credibility'] = null;
-            this['last_ranking_timeStamp_educational'] = null;
-            this['last_ranking_id_educational'] = null;
-
-            page.page_loading=false;
-            this.setState(page);
-          }).catch((error) => {
-              console.log(error);
-          });
       }
     render() {
         
@@ -171,7 +165,7 @@ class Page_page extends Component {
                 
             </div>
             <div>
-                <h3 id="page_headLine">{this.state.pageFormatedURL}</h3>
+                <h3 id="page_headLine">{this.state.pageURL}</h3>
                 <div hidden={this.state.page_loading}>
                     <text>{this.state.pageSnap}</text>
                     <br/>
@@ -180,6 +174,7 @@ class Page_page extends Component {
                         <tr>
                         <td>
                             ({this.state.liked_negative_points})
+                            <FontAwesomeIcon icon={faCircle} color='black'/>
                         </td>
                         <td >
                             <ProgressBar
@@ -187,6 +182,7 @@ class Page_page extends Component {
                             now={this.state.liked_bar_style[0]} />
                         </td>
                         <td align='left'>
+                            <FontAwesomeIcon icon={faCircle} color='black'/>
                             ({this.state.liked_positive_points})
                             <FontAwesomeIcon icon={faHeart}/>
                         </td>
