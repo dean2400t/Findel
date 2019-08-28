@@ -8,7 +8,7 @@ const topics_to_topics=require('../routes/topics_to_topics/topics_to_topics');
 const comments= require('../routes/comments/comments')
 const publicComponents = require('../routes/publicComponents');
 const tests = require('../routes/tests');
-const user_data=require('../routes/user_data');
+const user_data=require('../routes/user_data/user_data');
 const error = require('../middleware/error');
 var cors = require('cors')
 
@@ -22,7 +22,7 @@ module.exports = function (app){
   app.use('/api/pages_to_topics', pages_to_topics);
   app.use('/api/topics_to_topics', topics_to_topics);
   app.use('/publicComponents', publicComponents);
-  app.use('/api/userData', user_data);
+  app.use('/api/user_data', user_data);
   app.use('/api/comments', comments);
   app.use('/tests', tests);
   app.use(error);

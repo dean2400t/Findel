@@ -1,9 +1,13 @@
-function rankings_selection()
+function rankings_selection(opts={})
 { 
-    return `
+    var selection = `
         rank_type
         rank_code
         `
+    if (opts['include_edges']!=null)
+        selection+= opts['include_edges'];
+    
+    return selection;
 }
 
 function rankings_populate(opts={})

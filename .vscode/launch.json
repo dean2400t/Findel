@@ -8,7 +8,7 @@
             "type": "chrome",
             "request": "launch",
             "name": "Launch Chrome",
-            "url": "http://localhost:3000/Page_page/https%3A%2F%2Fhe.wikipedia.org%2Fwiki%2F%D7%A9%D7%91%D7%99%D7%9C_%D7%94%D7%97%D7%9C%D7%91",
+            "url": "http://localhost:3000/UserFavorites_page",
             "webRoot": "${workspaceFolder}\\client\\src"
         },
         {
