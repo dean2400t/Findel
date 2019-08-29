@@ -17,6 +17,7 @@ class Add_comment extends Component {
     render() {
         return (
             <div className="Add_comment">
+                <Comments_Array_mapper comments={this.state.comments_added}/>
                 <textarea value={this.state.comment_text}
                 id='comment_textArea'
                 rows={6}
@@ -26,7 +27,6 @@ class Add_comment extends Component {
                 <button onClick={() => this.send_comment_to_server()}>הכנס תגובה</button>
                 <br/>
                 <text>{this.state.server_message}</text>
-                <Comments_Array_mapper comments={this.state.comments_added}/>
             </div>
         );
     }
@@ -44,10 +44,10 @@ class Add_comment extends Component {
         var opts={
             text: this.state.comment_text,
             object_id: this.props.parrent_object_data.object_id,
-            collection_name: this.props.parrent_object_data.object_id_collection_name,
+            object_id_collection_name: this.props.parrent_object_data.object_id_collection_name,
             root_comment_id: this.props.parrent_object_data.root_comment_id
           };
-        axios.post('/api/addContent/addComment', opts, {
+        axios.post('/api/comments/add_comment', opts, {
         headers: {'findel-auth-token': this.token}}
             ).then(response => {
                 response.data.collection_name=response.data.object_id_collection_name;

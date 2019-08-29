@@ -9,6 +9,7 @@ import Cookies from 'universal-cookie';
 import main_search_function from './search_functions/main_search_function';
 import rank_pages from './search_functions/rank_pages';
 import axios from 'axios';
+import Comments_loader from '../Comments_components/Comments_loader';
 const cookies = new Cookies();
 
 
@@ -67,7 +68,13 @@ class SearchPage extends Component {
         is_more_pages_button_hidden: true,
         is_simple_search_selected: false,
         is_show_more_content_hidden: true,
-        expandend_content_status: ""
+        expandend_content_status: "",
+        is_topic_loaded: false,
+        data_for_comments: {
+            object_id: "",
+            object_id_collection_name: '',
+            number_of_comments: 0
+          }
         };
         
         if (search_text_box != '')
@@ -117,6 +124,10 @@ class SearchPage extends Component {
                     </div>
                 </div>
             </div>
+        <div hidden={!this.state.is_topic_loaded} style={{textAlign: 'right'}}>
+            <Comments_loader data_for_comments={this.state.data_for_comments}/> 
+            <br/>
+        </div>
         <div id="pages_ref">
             <Pages_ref pages_ref={this.state.pages_ref}/>
             <button onClick= {() => this.more_pages_clicked()} hidden={this.state.is_more_pages_button_hidden}>אתרים נוספים...</button>
@@ -198,7 +209,7 @@ class SearchPage extends Component {
             pageURL: this.state.add_page_to_topic_input,
             pageDescription: this.state.add_page_to_topic_description
           };
-        axios.post('/api/addContent/add_page', opts, {
+        axios.post('/api/pages_to_topics/connect_page_to_topic', opts, {
         headers: {'findel-auth-token': this.token}}
             ).then(response => {
                 this.setState({server_message: response.data});
@@ -216,7 +227,7 @@ class SearchPage extends Component {
             current_topicName: this.state.search_text_box,
             new_topicName: this.state.add_topic_to_topic_input
           };
-        axios.post('/api/addContent/connect_topic', opts, {
+        axios.post('/api/topics_to_topics/connect_topic_to_topic', opts, {
         headers: {'findel-auth-token': this.token}}
             ).then(response => {
                 this.setState({server_message: response.data});

@@ -7,7 +7,7 @@
 }
     .field-tip .tip-content {
         position:absolute;
-        top:-22px; /* - top padding */
+        top:5px; /* - top padding */
         right:9999px;
         width:300px;
         margin-right:0px; /* width + left/right padding */

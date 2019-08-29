@@ -8,6 +8,7 @@ function comment_selection(opts={})
         liked_positive_points
         liked_negative_points
         root_comment
+        number_of_comments
         `
     if (opts['userID'] != null)
         selection+=`

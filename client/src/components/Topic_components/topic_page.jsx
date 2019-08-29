@@ -2,30 +2,24 @@ import React, { Component } from 'react';
 import './topic_page.css'
 import axios from 'axios';
 import Topics_topic_edges_component from './Topic_topic_edges_component';
-import Comments from '../Comments_components/Comments';
-import arrange_comments from '../Comments_components/arrange_comments';
+import Comments_loader from '../Comments_components/Comments_loader';
 import Cookies from 'universal-cookie';
 const cookies = new Cookies();
 
 class Topics_page extends Component {
     constructor(props) {
         super(props);
-        var temp_topic={
-          topic_topic_edges: []
-        };
 
         const {topic} = this.props.match.params
         this.state = {
-            topic: temp_topic,
-            add_comment_vars: {
-              object_id: "",
-              object_id_collection_name: '',
-              root_comment_id: null,
-              parrent_comments_array: null,
-              number_of_overall_comments: 0
-            },
-            comments:[]
-        };
+            topic: {
+              topic_topic_edges: [],
+              data_for_comments: {
+                object_id: "",
+                object_id_collection_name: '',
+                number_of_comments: 0
+              }
+        }};
         this.id=1;
         this.token=cookies.get('findel-auth-token') || "";
         axios.get("/api/topics_to_topics/retrieve_topic_and_connected_topics/?topicName="+topic,{
@@ -40,17 +34,13 @@ class Topics_page extends Component {
                   topic.id=this.id;
                   this.id++;
               });
-              /*
-              var number_of_overall_comments = data.comments.length;
-              data.comments = arrange_comments(data.comments);
-              data.add_comment_vars= {
-                object_id: data.topic._id,
+
+              topic.data_for_comments={
+                object_id: topic._id,
                 object_id_collection_name: 'topics',
-                root_comment_id: null,
-                parrent_comments_array: data.comments,
-                number_of_overall_comments: number_of_overall_comments
-                }
-              */
+                number_of_comments: topic.number_of_comments
+              }
+              
               this.setState({
                 topic: topic
               });
@@ -68,7 +58,7 @@ class Topics_page extends Component {
             </div>
             <div>
                 <h3 id="topic_headLine">{this.state.topic.topicName}</h3>
-                <Comments comments={this.state.comments} parrent_object_data={this.state.add_comment_vars}/> 
+                <Comments_loader data_for_comments={this.state.topic.data_for_comments}/> 
                 <Topics_topic_edges_component topic_topic_edges={this.state.topic.topic_topic_edges}/>
             </div>
         </div>

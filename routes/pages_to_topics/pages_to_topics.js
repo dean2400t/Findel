@@ -71,7 +71,7 @@ router.post('/connect_page_to_topic', auth, async function(req, res) {
   if (pageURL.length<10)
       return res.status(400).send("אתר חייב להכיל יותר מ10 אותיות");
   
-  return await connect_page_to_topic(topicName, pageURL, pageDescription, user._id, res)
+  return await connect_page_to_topic(topicName, pageURL, pageDescription, req.user._id, res)
 });
 
 router.get('/web_scrape', async function(req, res) {

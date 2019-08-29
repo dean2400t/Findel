@@ -12,6 +12,7 @@ import Cookies from 'universal-cookie';
 import rank_function from './rank_function';
 import {ProgressBar} from 'react-bootstrap';
 import make_bar_style from '../../common_functions/make_bar_style';
+import Comments_loader from '../../Comments_components/Comments_loader';
 
 const cookies = new Cookies();
 
@@ -106,7 +107,12 @@ class Page_ref extends Component {
       educational_bar_style: educational_bar_style,
       domain_liked_bar_style: domain_liked_bar_style,
       domain_credibility_bar_style: domain_credibility_bar_style,
-      domain_educational_bar_style: domain_educational_bar_style
+      domain_educational_bar_style: domain_educational_bar_style,
+      data_for_comments:{
+        object_id: this.props.page_ref.page._id,
+        object_id_collection_name: 'pages',
+        number_of_comments: this.props.page_ref.page.number_of_comments
+    }
     }
     this['last_ranking_timeStamp_liked'] = null;
     this['last_ranking_id_liked'] = null;
@@ -122,7 +128,7 @@ class Page_ref extends Component {
     return (
           <div className="a_page_ref">
             <text><a target="_blank" rel="noopener noreferrer" href={this.props.page_ref.page.pageURL}>{this.props.page_ref.page.pageURL}</a></text>
-            <br/><text>{this.props.page_ref.pageSnap}</text>
+            <br/><text>{this.props.page_ref.page.pageSnap}</text>
             <table>
             <tr>
               <td>
@@ -220,6 +226,7 @@ class Page_ref extends Component {
             </tr>
             </table>
             <text style={redText}>{this.state.rank_error}</text>
+            <Comments_loader data_for_comments={this.state.data_for_comments}/>
             <a target="_blank" rel="noopener noreferrer" style={more_on_page_textStyle} href={"/Page_page/"+encodeURIComponent(this.props.page_ref.page.pageURL)}>עוד על הדף...</a>
           </div>
     );

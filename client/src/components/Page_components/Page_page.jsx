@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import './Page_page.css'
 import axios from 'axios';
 import Connected_topics_edges_component from './connected_topics_edges_component';
-import Comments from '../Comments_components/Comments';
-import arrange_comments from '../Comments_components/arrange_comments';
+import Comments_loader from '../Comments_components/Comments_loader';
 import Cookies from 'universal-cookie';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faArrowAltCircleUp} from '@fortawesome/free-solid-svg-icons';
@@ -43,13 +42,11 @@ class Page_page extends Component {
             pageURL: pageURL,
             domain: domain,
             page_topic_edges: [],
-            add_comment_vars: {
+            data_for_comments: {
                 object_id: "",
                 object_id_collection_name: '',
-                root_comment_id: null,
-                parrent_comments_array: null
-            },
-            comments:[]
+                number_of_comments: 0
+            }
         };
         this.id=1;
         this.token=cookies.get('findel-auth-token') || "";
@@ -116,17 +113,6 @@ class Page_page extends Component {
                 page.domain.educational_positive_points,
                 page.domain.educational_negative_points,
                 )
-                
-                /*
-                data.comments = arrange_comments(data.comments);
-                data.add_comment_vars= {
-                    object_id: data.pageID,
-                    object_id_collection_name: 'pages',
-                    root_comment_id: null,
-                    parrent_comments_array: data.comments,
-                    number_of_overall_comments: number_of_overall_comments
-                    }
-                    */
                 page.credibility_upArrowColor= credibility_upArrow;
                 page.credibility_downArrowColor= credibility_downArrow;
                 page.educational_upArrowColor= educational_upArrow;
@@ -148,6 +134,11 @@ class Page_page extends Component {
                 this['last_ranking_id_credibility'] = null;
                 this['last_ranking_timeStamp_educational'] = null;
                 this['last_ranking_id_educational'] = null;
+                page.data_for_comments={
+                    object_id: page._id,
+                    object_id_collection_name: 'pages',
+                    number_of_comments: page.number_of_comments
+                }
 
                 page.page_loading=false;
                 this.setState(page);
@@ -267,7 +258,7 @@ class Page_page extends Component {
                         </tr>
                     </table>
                     <br/>
-                    <Comments comments={this.state.comments} parrent_object_data={this.state.add_comment_vars}/> 
+                    <Comments_loader data_for_comments={this.state.data_for_comments}/> 
                     <Connected_topics_edges_component connected_topics_edges={this.state.page_topic_edges}/>
                 </div>
             </div>

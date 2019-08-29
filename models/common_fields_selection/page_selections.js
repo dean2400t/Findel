@@ -12,6 +12,7 @@ function page_selection(opts={})
         credibility_negative_points
         educational_positive_points
         educational_negative_points
+        number_of_comments
         `
     if (opts['include_edges'])
         selection+=opts['include_edges'];

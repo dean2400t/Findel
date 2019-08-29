@@ -41,6 +41,13 @@ const comment_Scheme = new mongoose.Schema({
     ref: 'comments',
     required: true
   },
+
+  number_of_comments:{
+    type: Number,
+    required: true,
+    default: 0
+  },
+
   rankings:
     [{
       type: mongoose.Schema.ObjectId, 

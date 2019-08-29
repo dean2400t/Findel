@@ -5,6 +5,8 @@ const auth = require('../../middleware/security/auth');
 const search_for_connected_topics_in_db_and_wikipedia= require('./search_for_connected_topics_in_db_and_wikipedia')
 const retrieve_topic_and_connected_topics= require('./retrieve_topic_and_connected_topics');
 const rank_topic_to_topic_edge= require('./rank_topic_topic_edge');
+const connect_topic_to_topic= require('./connect_topic_to_topic');
+
 const checkAuthAndReturnUserID = require('../../middleware/checkAuthAndReturnUserID');
 const {Topic_topic_edge}= require('../../models/topic_topic_edges');
 
@@ -58,6 +60,14 @@ router.post('/insert_topic_topic_edges_Scores', function(req, res) {
   });
 
 router.post('/connect_topic_to_topic', auth, async function(req, res) {
+  var new_topicName=req.body.new_topicName;
+  var current_topicName = req.body.current_topicName;
+  if (!new_topicName)
+      return res.status(400).send("אין נושא חדש לחבר בגוף הבקשה");
+  if (current_topicName=="")
+      return res.status(400).send("אין נושא ישן לחבר בגוף הבקשה");
   
+  return await connect_topic_to_topic(new_topicName, current_topicName, req.user._id, res);
+    
 });
 module.exports = router;

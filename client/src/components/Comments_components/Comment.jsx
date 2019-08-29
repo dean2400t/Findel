@@ -8,6 +8,7 @@ import Cookies from 'universal-cookie';
 import Comments_functions from './comments_functions';
 import Add_comment from './add_comment';
 import Comments_Array_mapper from './Comments_Array_mapper'; 
+import Moment from 'react-moment';
 
 const cookies = new Cookies();
 const comments_functions=new Comments_functions();
@@ -17,16 +18,16 @@ class Comment extends Component {
     super(props);
     var liked_upArrow='black';
     var liked_downArrow='black';
-    var users_rankings = this.props.comment.usersRanking;
-    users_rankings.forEach(ranking => {
-        if (ranking.rank_type == "liked")
-        {
-          if (ranking.rankCode == 1)
-            liked_upArrow = 'green'
-          else if(ranking.rankCode == 2)
-            liked_downArrow = 'red'
-        }
-      });
+    if (this.props.comment.rankings)
+      this.props.comment.rankings.forEach(ranking => {
+          if (ranking.rank_type == "liked")
+          {
+            if (ranking.rank_code == 1)
+              liked_upArrow = 'green'
+            else if(ranking.rank_code == 2)
+              liked_downArrow = 'red'
+          }
+        });
     var user_name_color = "#0587c3";
     if (this.props.comment.user.position == "Teacher")
       user_name_color = "green";
@@ -41,8 +42,8 @@ class Comment extends Component {
         liked_downArrowColor: liked_downArrow,
         comment: this.props.comment,
         rank_error: "",
-        likedֹ_positive_points: this.props.comment.likedֹ_positive_points,
-        likedֹ_negative_points: this.props.comment.likedֹ_negative_points,
+        liked_positive_points: this.props.comment.liked_positive_points,
+        liked_negative_points: this.props.comment.liked_negative_points,
         add_comment_text: "הגב+",
         is_add_comment_hidden: true,
         add_comment_vars: {
@@ -71,14 +72,18 @@ class Comment extends Component {
       return (
         <div className="Comment" style={comment_style}>
             <text>
-              ({this.state.likedֹ_positive_points}) 
-              <FontAwesomeIcon icon={faArrowAltCircleUp} color={this.state.liked_upArrowColor} onClick={() => this.rank_click_up("liked")}/> 
-              
+              ({this.state.liked_negative_points}) 
               <FontAwesomeIcon icon={faArrowAltCircleDown} color={this.state.liked_downArrowColor} onClick={() => this.rank_click_down("liked")}/>
-              ({this.state.likedֹ_negative_points}) 
+              <FontAwesomeIcon icon={faArrowAltCircleUp} color={this.state.liked_upArrowColor} onClick={() => this.rank_click_up("liked")}/> 
+              ({this.state.liked_positive_points}) 
             </text>
             <text style={user_name_style}>&nbsp;&nbsp;{this.state.comment.user.userName}</text>
-            <span hidden={this.state.show_comment_time}><br/><text style={user_name_style}>הגיב ב: {this.props.comment.time_made}</text></span>
+            <span hidden={this.state.show_comment_time}><br/><text style={user_name_style}>
+              הגיב ב: 
+              <Moment format="DD/MM/YYYY HH:mm">
+                {this.props.comment.time_made}
+              </Moment>
+              </text></span>
             <br/><text>{this.state.comment.text}</text>
             <br/><text style={redText}>{this.state.rank_error}</text>
             <text onClick= {() => this.add_commnet_text_clicked()} style={add_comment_text_style}>{this.state.add_comment_text}</text>

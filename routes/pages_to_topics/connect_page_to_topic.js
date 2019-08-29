@@ -1,3 +1,4 @@
+const {User}= require('../../models/users');
 const {Topic} = require('../../models/topics');
 const {Page} = require('../../models/pages');
 const {Page_topic_edge}=require('../../models/page_topic_edges');
@@ -13,7 +14,7 @@ module.exports= async function connect_page_to_topic(topicName, pageURL, pageDes
         return res.status(400).send("User not found in database");
 
     var page= await Page.findOne({pageURL: pageURL})
-    .select('_id')
+    .select('_id pageURL')
     .lean();
     if (!page)
     {
@@ -23,7 +24,7 @@ module.exports= async function connect_page_to_topic(topicName, pageURL, pageDes
     }
 
     var topic= await Topic.findOne({topicName: topicName})
-    .select('_id')
+    .select('_id topicName')
     .lean();
     if (!topic)
     {

@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const auth = require('../../middleware/security/auth');
+const checkAuthAndReturnUserID= require('../../middleware/checkAuthAndReturnUserID');
 
 const retrieve_comments= require('./retrieve_comments');
 const add_comment= require('./add_comment');
