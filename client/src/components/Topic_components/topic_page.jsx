@@ -22,7 +22,7 @@ class Topics_page extends Component {
         }};
         this.id=1;
         this.token=cookies.get('findel-auth-token') || "";
-        axios.get("/api/topics_to_topics/retrieve_topic_and_connected_topics/?topicName="+topic,{
+        axios.get("/api/topic_topic_edges/retrieve_topic_and_connected_topics/?topicName="+topic,{
           headers: {'findel-auth-token': this.token}})
           .then((result) => {
               return result.data;

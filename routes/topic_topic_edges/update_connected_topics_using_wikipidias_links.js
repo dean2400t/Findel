@@ -1,6 +1,6 @@
 const {Topic} = require('../../models/topics');
 const {Topic_topic_edge} = require('../../models/topic_topic_edges');
-const {topic_save, topic_to_topic_edge_save}= require('../../middleware/save_securely_to_database');
+const {topic_save, topic_to_topic_edge_save}= require('../../models/common_functions_for_collections/save_securely_to_database');
 
 const retrieve_topic_and_connected_topics= require('./retrieve_topic_and_connected_topics');
 

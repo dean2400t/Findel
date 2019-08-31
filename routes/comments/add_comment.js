@@ -1,7 +1,7 @@
-const get_collection_from_collection_name = require('../../middleware/get_collection_from_collection_name');
+const get_collection_from_collection_name = require('../../models/common_functions_for_collections/get_collection_from_collection_name');
 const {User} = require('../../models/users');
 const {Comment} = require('../../models/comments');
-const {comment_save} = require('../../middleware/save_securely_to_database');
+const {comment_save} = require('../../models/common_functions_for_collections/save_securely_to_database');
 module.exports=async function add_comment(text, object_id, object_id_collection_name, root_comment_id, userID, res)
 {
     var user=await User.findById(userID)
@@ -20,6 +20,7 @@ module.exports=async function add_comment(text, object_id, object_id_collection_
     if (!object_to_comment)
         return res.status(400).send("Object with this ID does not exist in this collection");
 
+    //inserting comment to root of object commented
     if (!root_comment_id)
     {
         var comment = new Comment({
@@ -44,6 +45,7 @@ module.exports=async function add_comment(text, object_id, object_id_collection_
             return res.status(200).send(comment);
         }
     }
+    //entering comment under parent comment
     else
     {
         var root_comment = await Comment.findById(root_comment_id)
@@ -65,6 +67,11 @@ module.exports=async function add_comment(text, object_id, object_id_collection_
                     $addToSet: {comments_added: comment._id},
                     $inc: {number_of_comments: 1}
                 });
+
+            collection=  await get_collection_from_collection_name(root_comment.object_id_collection_name)
+            await collection.findOneAndUpdate({_id: root_comment.object_id}, 
+                {$inc: {number_of_comments: 1}}
+            );
             return res.status(200).send(comment);
         }
     }

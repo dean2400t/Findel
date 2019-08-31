@@ -5,7 +5,7 @@ const {Topic_topic_edge}= require('../../models/topic_topic_edges');
 const {topic_selection}= require('../../models/common_fields_selection/topic_selections');
 const {topic_topic_edges_selection}= require('../../models/common_fields_selection/topic_topic_edges_selections');
 
-const {topic_save, topic_to_topic_edge_save}= require('../../middleware/save_securely_to_database');
+const {topic_save, topic_to_topic_edge_save}= require('../../models/common_functions_for_collections/save_securely_to_database');
 
 module.exports= async function connect_topic_to_topic(new_topicName, current_topicName, userID, res)
 { 

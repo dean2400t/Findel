@@ -16,7 +16,7 @@ export default async function update_topic_topic_edges_results(this_of_searchPag
         var opts={
             edges: edges_to_update
         };
-        axios.post('/api/topics_to_topics/insert_topic_topic_edges_scores', opts
+        axios.post('/api/topic_topic_edges/insert_topic_topic_edges_scores', opts
             ).then(response => {
                 console.log(response.data);
             }).catch(error=> {

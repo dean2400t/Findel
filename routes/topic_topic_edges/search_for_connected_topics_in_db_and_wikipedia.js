@@ -1,12 +1,12 @@
 const {Topic} = require('../../models/topics');
 const {Search} = require('../../models/searches');
 const {User} =require('../../models/users');
-const {topic_save}= require('../../middleware/save_securely_to_database');
+const {topic_save}= require('../../models/common_functions_for_collections/save_securely_to_database');
 
 const {topic_selection}= require('../../models/common_fields_selection/topic_selections');
 
 var wtf = require('wtf_wikipedia');
-var extractAmbigiousFromText =require ("../../middleware/extractAmbigiousFromText");
+var extractAmbigiousFromText =require ("./extractAmbigiousFromText");
 
 const retrieve_topic_and_connected_topics= require('./retrieve_topic_and_connected_topics');
 const update_connected_topics_using_wikipidias_links= require('./update_connected_topics_using_wikipidias_links');

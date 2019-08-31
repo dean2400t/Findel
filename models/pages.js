@@ -61,7 +61,7 @@ const pageSchema = new mongoose.Schema({
   accumulate_rankings:
     [{
       type: mongoose.Schema.ObjectId, 
-      ref: 'page-topic-edges-ranking'
+      ref: 'accumulate_rankings'
     }],
 
     rankings:

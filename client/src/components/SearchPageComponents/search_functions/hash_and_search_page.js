@@ -16,7 +16,7 @@ export default async function hash_and_search_page(page_topic_edge, html, this_o
             jaccard_similarity: page_topic_edge.jaccard_similarity,
             num_of_links_in_page: page_topic_edge.num_of_links_in_page
           };
-        await axios.post('/api/pages_to_topics/insert_page_topic_edge_scores', opts, {
+        await axios.post('/api/page_topic_edges/insert_page_topic_edge_scores', opts, {
         headers: {'findel-auth-token': this_of_searchPage.token}}
             ).then(response => {
                 console.log("edge successfuly added");

@@ -6,7 +6,7 @@ export default async function search_for_expended_content(this_of_searchPage)
     var connected_topics_edges=this_of_searchPage.connected_topics_edges;
     var is_seach_needed=false;
     for (var index=0; index< connected_topics_edges.length; index++)
-        if (connected_topics_edges[index].is_search_required==true)
+        if (connected_topics_edges[index].is_search_required!=false)
             {
                 is_seach_needed=true;
                 break;
@@ -30,7 +30,7 @@ async function best_pages_results(this_of_searchPage, rk_results)
     for (var index=0; index<top_page_topic_edges.length && num_of_top_page_topic_edges_used<num_of_top_page_topic_edges_to_use; index++)
         if (top_page_topic_edges[index].was_page_searched!=true)
         {
-            await axios.get("/api/pages_to_topics/web_scrape/?pageID="+top_page_topic_edges[index].page._id + "&edgeID=" + top_page_topic_edges[index]._id + "&force_scrape=true",{
+            await axios.get("/api/page_topic_edges/web_scrape/?pageID="+top_page_topic_edges[index].page._id + "&edgeID=" + top_page_topic_edges[index]._id + "&force_scrape=true",{
             })
             .then(async (result) => {
                 await hash_and_search_page(top_page_topic_edges[index], result.data.pageHTML, this_of_searchPage); 

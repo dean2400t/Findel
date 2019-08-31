@@ -1,4 +1,4 @@
-const rank= require('../../middleware/rank');
+const rank= require('../../models/common_functions_for_collections/ranking_functions/rank');
 
 const {Page_topic_edge} = require('../../models/page_topic_edges');
 

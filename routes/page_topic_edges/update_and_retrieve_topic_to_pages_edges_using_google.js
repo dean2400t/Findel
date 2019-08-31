@@ -8,11 +8,11 @@ const {Topic, validate_topic} = require('../../models/topics');
 const {Page_topic_edge} = require('../../models/page_topic_edges');
 const {Page} = require('../../models/pages');
 const {Ranking}= require('../../models/rankings');
-const googleSearch=require('../../middleware/googleSearch');
+const googleSearch=require('./googleSearch');
 const {add_and_update_domain, 
        page_to_topic_edge_save,
        page_save,
-       topic_save} = require('../../middleware/save_securely_to_database');
+       topic_save} = require('../../models/common_functions_for_collections/save_securely_to_database');
 const {User} = require('../../models/users');
 const {Search}=require('../../models/searches');
 
@@ -123,7 +123,7 @@ Function searches google by topic and update database accordingly
 async function search_Google_and_orgenize(topic)
 {
   var search=topic.topicName;
-  var pages_from_google=await googleSearch(search);
+  var pages_from_google=await googleSearch(search, 2);
   pages_in_database = await add_new_pages_and_return_pages_from_database(pages_from_google);
   var pages_in_db_which_are_not_connected= await filter_already_connected_pages_in_database(topic, pages_in_database, pages_from_google, topic);
 

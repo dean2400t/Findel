@@ -2,3 +2,15 @@
     margin-top: 20px;
     text-align: right;
 }
+
+.progress_bar_td{
+    align-self: center;
+    width:150px;
+    max-width:10%;
+}
+
+.progress_bar_domain_td{
+    align-self: center;
+    width:100px;
+    max-width:7%;
+}

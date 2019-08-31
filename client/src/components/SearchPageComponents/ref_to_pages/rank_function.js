@@ -26,7 +26,7 @@ export default function rank_function(this_of_page_ref, rank_type, up_or_down)
             rank_type: rank_type,
             rank_code: rank_code
         };
-        var api_path= "/api/pages_to_topics/rank_page_topic_edge";
+        var api_path= "/api/page_topic_edges/rank_page_topic_edge";
     }
     else
     {

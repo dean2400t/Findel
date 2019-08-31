@@ -3,7 +3,7 @@ import axios from 'axios';
 export default async function request_topic_and_connected_topics_from_server(this_of_searchPage)
 {
     this_of_searchPage.topic=null;
-    await axios.get("/api/topics_to_topics/search_for_connected_topics_in_db_and_wikipedia/?search="+this_of_searchPage.curSearch,{
+    await axios.get("/api/topic_topic_edges/search_for_connected_topics_in_db_and_wikipedia/?search="+this_of_searchPage.curSearch,{
         headers: {'findel-auth-token': this_of_searchPage.token}
     })
     .then(async(result) => {

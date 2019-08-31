@@ -9,5 +9,4 @@ module.exports= function()
         var db_connection="mongodb://localhost/findel";
     mongoose.connect(db_connection)
     .then (()=> console.log("connected to mongodb"))
-    
 }

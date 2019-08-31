@@ -1,9 +1,9 @@
-const {Page} = require('../models/pages');
-const {Topic} = require('../models/topics');
-const {Page_topic_edge} = require('../models/page_topic_edges');
-const {Topic_topic_edge} = require('../models/topic_topic_edges');
-const {Domain} = require('../models/domains');
-const {Comment} = require('../models/comments');
+const {Page} = require('../pages');
+const {Topic} = require('../topics');
+const {Page_topic_edge} = require('../page_topic_edges');
+const {Topic_topic_edge} = require('../topic_topic_edges');
+const {Domain} = require('../domains');
+const {Comment} = require('../comments');
 module.exports=async function get_collection_from_collection_name(collection_name)
 {
     if (collection_name == "comments")

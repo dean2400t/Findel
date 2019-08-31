@@ -7,9 +7,12 @@ class Domains_component extends Component {
         return this.props.domains.map((domain)=>(
             <div className="domains_div">
                 <text>{domain.domainURL}: <br/></text>
-                <text>ניקוד מאנשים שאהבו דפים באתר: ({domain.likedֹ_positive_points}) ({domain.likedֹ_negative_points}) <br/></text>
-                <text>ניקוד מאנשים שאמרו שהאתר מכיל תכנים אמינים: ({domain.credibilityֹ_positive_points}) ({domain.credibilityֹ_negative_points})<br/></text>
-                <text>ניקוד מאנשים שאמרו שהאתר מכיל תכנים חינוכיים: ({domain.educational_positive_points}) ({domain.educational_negative_points})<br/></text>
+                אהבו: ({domain.liked_positive_points}) &nbsp;&nbsp;
+                לא אהבו: ({domain.liked_negative_points})<br/>
+                אמין: ({domain.credibility_positive_points}) &nbsp;&nbsp;
+                לא אמין: ({domain.credibility_negative_points}) <br/>
+                חינוכי({domain.educational_positive_points})&nbsp;&nbsp;
+                לא חינוכי({domain.educational_negative_points})<br/>
                 <Domain_component key={domain.id} domain={domain} />
                 <button onClick={domain.request_pages_of_domain_function} hidden={domain.is_more_pages_button_hidden}>אתרים...</button>
             </div>

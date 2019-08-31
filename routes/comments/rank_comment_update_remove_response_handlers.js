@@ -1,4 +1,4 @@
-const get_score_field_name= require('../../middleware/get_score_field_name');
+const get_score_field_name= require('../../models/common_functions_for_collections/get_score_field_name');
 
 const {Comment}= require('../../models/comments')
 const {Ranking}= require('../../models/rankings');

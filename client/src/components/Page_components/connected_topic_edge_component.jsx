@@ -76,16 +76,16 @@ class Connected_topic_edge_component extends Component {
             <br/>
             <table>
               <tr>
-              <td>
+              <td align='left'>
                   ({this.state.liked_negative_points}) 
                   <FontAwesomeIcon icon={faArrowAltCircleDown} color={this.state.liked_downArrowColor} onClick={() => this.rank_click_down("liked")}/>
               </td>
-              <td width='60%'>
+              <td className='progress_bar_td'>
                   <ProgressBar
                   variant={this.state.liked_bar_style[1]}
                   now={this.state.liked_bar_style[0]} />
               </td>
-              <td>
+              <td align='right'>
                   <FontAwesomeIcon icon={faArrowAltCircleUp} color={this.state.liked_upArrowColor} onClick={() => this.rank_click_up("liked")}/>
                   ({this.state.liked_positive_points})
                   <FontAwesomeIcon icon={faHeart}/>

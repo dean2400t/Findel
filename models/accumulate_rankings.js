@@ -8,7 +8,7 @@ const accumulate_ranking_Schema = new mongoose.Schema({
     required: true
   },
 
-  object_id_collection:{
+  object_collection_name:{
     type: String,
     required: true,
     minlength: 1,
@@ -21,23 +21,36 @@ const accumulate_ranking_Schema = new mongoose.Schema({
     required: true
   },
 
-  user_rankings:[
+  positive_rankings:{
+    type: Number,
+    required: true,
+    default: 0
+  },
+
+  negative_rankings:{
+    type: Number,
+    required: true,
+    default: 0
+  },
+
+  rankings:[
       {
         type: mongoose.Schema.ObjectId, 
         ref: 'rankings'
       }
   ],
 
+  user_score:{
+      type: Number,
+      required: true,
+      default: 0
+  },
+
   rank_type:{
     type: String,
     required: true,
     minlength: 3,
     maxlength: 255
-  },
-
-  scoreAdded:{
-    type: Number,
-    required: true
   }
 });
 accumulate_ranking_Schema.index({ object_id: 1, object_id_collection:1, user: 1, rank_type: 1}, { unique: true });
@@ -50,8 +63,8 @@ accumulate_ranking_Schema.index({ object_id: 1, object_id_collection:1, user: 1,
         object_id_collection: Joi.string.min(1).max(200),
         user: Joi.objectId().required(),
         rank_type: Joi.string.min(3).max(255).required(),
-        rankCode: Joi.Number().required(),
-        scoreAdded: Joi.Number().required()
+        rank_code: Joi.Number().required(),
+        score_added: Joi.Number().required()
     };
     return Joi.validate(accumulate_ranking_Schema, schema);
   }

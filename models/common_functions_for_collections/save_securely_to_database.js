@@ -1,9 +1,10 @@
 const parseDomain = require("parse-domain");
-const {Topic} = require('../models/topics');
-const {Topic_topic_edge} = require('../models/topic_topic_edges');
-const {Page_topic_edge} = require('../models/page_topic_edges');
-const {Domain} = require('../models/domains');
-const {Page} = require('../models/pages');
+const {Topic} = require('../../models/topics');
+const {Topic_topic_edge} = require('../../models/topic_topic_edges');
+const {Page_topic_edge} = require('../../models/page_topic_edges');
+const {Domain} = require('../../models/domains');
+const {Page} = require('../../models/pages');
+const {Accumulate_ranking}= require('../../models/accumulate_rankings');
 
 async function topic_save(topic)
 {
@@ -40,6 +41,29 @@ async function domain_save(domain)
         else return null;
     }
     return domain;
+}
+
+async function accumulate_ranking_save(accumulate_ranking)
+{
+    try{
+        await accumulate_ranking.save()
+    }catch(error){ 
+        if (error.code == 11000) 
+        {
+            accumulate_ranking = await Accumulate_ranking.findOne({
+                object_id: accumulate_ranking.object_id,
+                object_id_collection: accumulate_ranking.object_id_collection,
+                user: accumulate_ranking.user,
+                rank_type: accumulate_ranking.rank_type,
+            });
+            return accumulate_ranking;
+        }
+        else return {
+            error: error,
+            message: "can't save document"
+        };
+    }
+    return accumulate_ranking;
 }
 
 async function add_and_update_domain(new_page)
@@ -143,3 +167,4 @@ exports.add_and_update_domain = add_and_update_domain;
 exports.ranking_save = ranking_save;
 exports.comment_save = comment_save;
 exports.comment_ranking_save = comment_ranking_save;
+exports.accumulate_ranking_save = accumulate_ranking_save;

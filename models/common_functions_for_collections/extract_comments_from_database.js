@@ -1,4 +1,4 @@
-const {Comment} = require('../models/comments');
+const {Comment} = require('../comments');
 const {Comments_ranking} = require('../models/comments_rankings');
 
 var dateFromObjectId = function (objectId) {

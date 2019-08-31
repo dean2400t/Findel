@@ -1,6 +1,6 @@
-const {Ranking} = require('../models/rankings');
-const {User}= require('../models/users');
-const {ranking_save} = require('./save_securely_to_database');
+const {Ranking} = require('../../rankings');
+const {User}= require('../../users');
+const {ranking_save} = require('../save_securely_to_database');
   
 async function insert_ranking_to_database(object_id, object_collection_name, user, rank_type, rank_code)
 {
@@ -53,7 +53,7 @@ module.exports = async function rank(
         return res.status(400).send("Double request");
       
       if (await object_update_score_function(
-        ranking, object, rank_type) == true)
+        ranking, object, rank_type, user) == true)
           return res.status(200).send(object_ranking_response_function(ranking, object, rank_type, rank_code));
     }
   }
@@ -63,7 +63,7 @@ module.exports = async function rank(
       return res.status(200).send(object_ranking_response_function(ranking, object, rank_type, rank_code));
 
   if (await object_remove_score_function(
-    ranking, object, rank_type) == true)
+    ranking, object, rank_type, user) == true)
     {
       if (rank_code == 0)
         return res.status(200).send(object_ranking_response_function(ranking, object, rank_type, rank_code));
@@ -75,7 +75,7 @@ module.exports = async function rank(
       
       
       if (await object_update_score_function(
-        ranking, object, rank_type)==true)
+        ranking, object, rank_type, user)==true)
           return res.status(200).send(object_ranking_response_function(ranking, object, rank_type, rank_code));
     }
   return res.status(400).send("Failed to enter ranking");

@@ -24,7 +24,7 @@ export default function page_topic_edge_rank_function(this_of_edge, rank_type, u
         rank_type: rank_type,
         rank_code: rank_code
     };
-    axios.post("/api/pages_to_topics/rank_page_topic_edge", opts, {
+    axios.post("/api/page_topic_edges/rank_page_topic_edge", opts, {
         headers: {'findel-auth-token': this_of_edge.token}
     })
         .then((result) => {

@@ -1,5 +1,5 @@
 const {google} = require('googleapis');
-module.exports=async function googleSearch(search)
+module.exports=async function googleSearch(search, num_of_pages)
 {
     var cusSearch=google.customsearch({
     version:'v1'
@@ -11,16 +11,22 @@ module.exports=async function googleSearch(search)
     };
 
     results_array=[];
-    results_array.push(cusSearch.cse.list(params));
+    for (var cur_page=0; cur_page<num_of_pages; cur_page++)
+    {
+        params.start= cur_page*10+1;
+        results_array.push(cusSearch.cse.list(params));
+    }
     
-    params.start=11;
-    results_array.push(cusSearch.cse.list(params));
+    //results_array.push(cusSearch.cse.list(params));
     
-    params.start=21;
-    results_array.push(cusSearch.cse.list(params));
+    //params.start=11;
+    //results_array.push(cusSearch.cse.list(params));
     
-    params.start=31;
-    results_array.push(cusSearch.cse.list(params));
+    //params.start=21;
+    //results_array.push(cusSearch.cse.list(params));
+    
+    //params.start=31;
+    //results_array.push(cusSearch.cse.list(params));
     
     allRes= await Promise.all(results_array);
     var pages=[];

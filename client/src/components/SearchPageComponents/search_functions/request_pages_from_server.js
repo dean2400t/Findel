@@ -3,7 +3,7 @@ import sort_page_topic_edges from './sort_page_topic_edges';
 
 export default async function request_pages_from_server(search, this_of_searchPage)
 {
-    await axios.get("/api/pages_to_topics/update_and_retrieve_topic_to_pages_edges_using_google/?search="+search,{
+    await axios.get("/api/page_topic_edges/update_and_retrieve_topic_to_pages_edges_using_google/?search="+search,{
         headers: {'findel-auth-token': this_of_searchPage.token}
     })
         .then((result) => {

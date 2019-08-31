@@ -5,7 +5,7 @@ class Page_component extends Component {
   render() {
     return (
       <div>
-       <a target="_blank" rel="noopener noreferrer" href={this.props.page.pageURL}>{this.props.page.pageFormatedURL}</a><br/>
+       <a target="_blank" rel="noopener noreferrer" href={this.props.page.pageURL}>{this.props.page.pageURL}</a><br/>
       </div>
     );
   }

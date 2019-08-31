@@ -40,6 +40,9 @@ router.post('/rank_page', auth, async function(req, res) {
       return res.status(400).send("No pageID was sent");
     if (!rank_type)
       return res.status(400).send("No rank_type was sent");
+    if (rank_type != "credibility" &&
+      rank_type != "educational")
+      return res.status(400).send("this rank_type is not accepted for direct ranking");
     if (!rank_code && rank_code!==0)
       return res.status(400).send("No rank_code was sent");
     if (rank_code<0 || rank_code>2)

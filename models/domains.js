@@ -66,9 +66,6 @@ const domain_Schema = new mongoose.Schema({
     }]
   
 });
-  domain_Schema.index({
-    domainURL: 1
-    }, { unique: true });
   
   const Domain = mongoose.model('domains', domain_Schema);
   

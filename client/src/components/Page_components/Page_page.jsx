@@ -15,6 +15,7 @@ import {faCircle} from '@fortawesome/free-solid-svg-icons';
 import {ProgressBar} from 'react-bootstrap';
 import make_bar_style from '../common_functions/make_bar_style';
 import page_rank_function from './page_rank_function';
+import round from '../round_function';
 const cookies = new Cookies();
 
 class Page_page extends Component {
@@ -139,7 +140,6 @@ class Page_page extends Component {
                     object_id_collection_name: 'pages',
                     number_of_comments: page.number_of_comments
                 }
-
                 page.page_loading=false;
                 this.setState(page);
             }).catch((error) => {
@@ -163,41 +163,41 @@ class Page_page extends Component {
                     <text>ניקוד הדף:</text><br/>
                     <table>
                         <tr>
-                        <td>
-                            ({this.state.liked_negative_points})
+                        <td align='left'>
+                            ({round(this.state.liked_negative_points)})
                             <FontAwesomeIcon icon={faCircle} color='black'/>
                         </td>
-                        <td >
+                        <td className='progress_bar_td'>
                             <ProgressBar
                             variant={this.state.liked_bar_style[1]}
                             now={this.state.liked_bar_style[0]} />
                         </td>
-                        <td align='left'>
+                        <td align='right'>
                             <FontAwesomeIcon icon={faCircle} color='black'/>
-                            ({this.state.liked_positive_points})
+                            ({round(this.state.liked_positive_points)})
                             <FontAwesomeIcon icon={faHeart}/>
                         </td>
                         </tr>
                         <tr>
-                        <td>
-                        ({this.state.credibility_negative_points}) 
+                        <td align='left'>
+                        ({round(this.state.credibility_negative_points)}) 
                         <FontAwesomeIcon icon={faArrowAltCircleDown} color={this.state.credibility_downArrowColor} onClick={() => this.rank_click_down("credibility")}/>
                         </td>
-                        <td width='60%'>
+                        <td>
                         <ProgressBar
                             variant={this.state.credibility_bar_style[1]}
                             now={this.state.credibility_bar_style[0]} />
                         </td>
                         
-                        <td>
+                        <td align='right'>
                         <FontAwesomeIcon icon={faArrowAltCircleUp} color={this.state.credibility_upArrowColor} onClick={() => this.rank_click_up("credibility")}/> 
-                        ({this.state.credibility_positive_points}) 
+                        ({round(this.state.credibility_positive_points)}) 
                         <FontAwesomeIcon icon={faSearch}/>
                         </td>
                         </tr>
                         <tr>
-                        <td>
-                        ({this.state.educational_negative_points}) 
+                        <td align='left'>
+                        ({round(this.state.educational_negative_points)}) 
                         <FontAwesomeIcon icon={faArrowAltCircleDown} color={this.state.educational_downArrowColor} onClick={() => this.rank_click_down("educational")}/>
                         </td>
                         <td>
@@ -206,9 +206,9 @@ class Page_page extends Component {
                             now={this.state.educational_bar_style[0]} />
                         </td>
                         
-                        <td>
+                        <td align='right'>
                         <FontAwesomeIcon icon={faArrowAltCircleUp} color={this.state.educational_upArrowColor} onClick={() => this.rank_click_up("educational")}/> 
-                        ({this.state.educational_positive_points})
+                        ({round(this.state.educational_positive_points)})
                         <FontAwesomeIcon icon={faBook}/>
                         </td>
                         </tr>
@@ -216,42 +216,41 @@ class Page_page extends Component {
 
                         <table>
                         <tr>
-                        <td>({this.state.domain_liked_negative_points})</td>
-                        <td width='60%'>
+                        <td align='left'>({round(this.state.domain_liked_negative_points)})</td>
+                        <td className='progress_bar_domain_td'>
                         <ProgressBar
-                            alignItems='left'
                             variant={this.state.domain_liked_bar_style[1]}
                             now={this.state.domain_liked_bar_style[0]} />
                         </td>
-                        <td>
-                            ({this.state.domain_liked_positive_points})
+                        <td align='right'>
+                            ({round(this.state.domain_liked_positive_points)})
                             <FontAwesomeIcon icon={faGlobe}/>
                             <small><FontAwesomeIcon icon={faHeart}/></small>
                         </td>
                         </tr>
                         
                         <tr>
-                        <td>({this.state.domain_credibility_negative_points})</td>
+                        <td align='left'>({round(this.state.domain_credibility_negative_points)})</td>
                         <td>
                         <ProgressBar
                             variant={this.state.domain_credibility_bar_style[1]}
                             now={this.state.domain_credibility_bar_style[0]} />
                         </td>
-                        <td>
-                            ({this.state.domain_credibility_positive_points})
+                        <td align='right'>
+                            ({round(this.state.domain_credibility_positive_points)})
                             <FontAwesomeIcon icon={faGlobe}/>
                             <small><FontAwesomeIcon icon={faSearch}/></small>
                         </td>
                         </tr>
                         <tr>
-                        <td>({this.state.domain_educational_negative_points})</td>
+                        <td align='left'>({round(this.state.domain_educational_negative_points)})</td>
                         <td>
                         <ProgressBar
                             variant={this.state.domain_educational_bar_style[1]}
                             now={this.state.domain_educational_bar_style[0]} />
                         </td>
-                        <td>
-                            ({this.state.domain_educational_positive_points})
+                        <td align='right'>
+                            ({round(this.state.domain_educational_positive_points)})
                             <FontAwesomeIcon icon={faGlobe}/>
                             <small><FontAwesomeIcon icon={faBook}/></small>
                         </td>

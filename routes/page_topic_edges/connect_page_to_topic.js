@@ -5,7 +5,7 @@ const {Page_topic_edge}=require('../../models/page_topic_edges');
 const {page_save, 
     add_and_update_domain, 
     topic_save,
-    page_to_topic_edge_save} = require('../../middleware/save_securely_to_database');
+    page_to_topic_edge_save} = require('../../models/common_functions_for_collections/save_securely_to_database');
 module.exports= async function connect_page_to_topic(topicName, pageURL, pageDescription, userID, res){
     var user=await User.findById(userID)
     .select('_id')

@@ -1,9 +1,9 @@
-const get_score_field_name= require('../../middleware/get_score_field_name');
+const get_score_field_name= require('../../models/common_functions_for_collections/get_score_field_name');
 
 const {Topic_topic_edge}= require('../../models/topic_topic_edges')
 const {Ranking}= require('../../models/rankings');
 
-async function object_update_score_function(ranking, topic_topic_edge, rank_type)
+async function object_update_score_function(ranking, topic_topic_edge, rank_type, user)
 {
   var score_field_name = get_score_field_name(rank_type, ranking.rank_code);
   var field_and_score_in_json = {};
@@ -16,7 +16,7 @@ async function object_update_score_function(ranking, topic_topic_edge, rank_type
   return true;
 }
 
-async function object_remove_score_function(ranking, topic_topic_edge, rank_type)
+async function object_remove_score_function(ranking, topic_topic_edge, rank_type, user)
 {
   var delete_result = await Ranking.deleteOne({_id: ranking._id});
   if (delete_result != null)
@@ -41,17 +41,6 @@ function object_ranking_response_function(ranking, topic_topic_edge, rank_type, 
 
   var positive_points = topic_topic_edge[positive_score_field_name];
   var negative_points = topic_topic_edge[negative_score_field_name];
-
-  if (rank_code == 1)
-  {
-    positive_points -= ranking.score_added
-    positive_points += 1;
-  }
-  else if (rank_code == 2)
-  {
-    negative_points -= ranking.score_added
-    negative_points += 1;
-  }
 
   return {
     rank_code: rank_code,

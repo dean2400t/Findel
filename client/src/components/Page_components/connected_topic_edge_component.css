@@ -4,3 +4,9 @@
     border-bottom-color: black;
     border-style: dashed;
 }
+
+.progress_bar_td{
+    align-self: center;
+    width:150px;
+    max-width:10%;
+}
