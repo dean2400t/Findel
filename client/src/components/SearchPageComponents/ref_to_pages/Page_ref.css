@@ -1,14 +1,26 @@
 .a_page_ref {
     text-align: right;
-    margin: 10px;
+    margin-bottom: 20px;
   }
+
+.progress_bar_td{
+    align-self: center;
+    width:150px;
+    max-width:10%;
+}
+
+.progress_bar_domain_td{
+    align-self: center;
+    width:100px;
+    max-width:7%;
+}
 
 .field-tip {
     position:relative;
 }
     .field-tip .tip-content {
         position:absolute;
-        top:-22px; /* - top padding */
+        top:5px; /* - top padding */
         right:9999px;
         width:300px;
         margin-right:0px; /* width + left/right padding */

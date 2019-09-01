@@ -6,10 +6,11 @@ import Ambigous from './AmbigousContent/Ambigous';
 import 'font-awesome/css/font-awesome.min.css';
 import './SearchPage.css';
 import Cookies from 'universal-cookie';
-import Search_functions from './pages_in_search/search_functions';
-import Axios from 'axios';
+import main_search_function from './search_functions/main_search_function';
+import rank_pages from './search_functions/rank_pages';
+import axios from 'axios';
+import Comments_loader from '../Comments_components/Comments_loader';
 const cookies = new Cookies();
-const search_functions=new Search_functions();
 
 
 class SearchPage extends Component {
@@ -32,70 +33,52 @@ class SearchPage extends Component {
         this.wordsMatriciesByLength=[];
         this.id=1;
         
-
+        var search_text_box ='';
+        var is_deep_search_needed= false;
         if (this.history.location.state!=undefined)
         {
             var history=this.history.location.state;
-            if (history.ambigousData==undefined)
-                history.ambigousData=[];
-            if (history.expandedContents == undefined)
-                history.expandedContents=[];
-            if (history.pages_ref == undefined)
-                history.pages_ref=[];
-            this.state={
-                    inputValue: history.inputValue,
-                    pages_in_search: [],
-                    expandedContents: history.expandedContents,
-                    pages_ref: history.pages_ref,
-                    ambigousData: history.ambigousData,
-                    newID: history.newID,
-                    search_button_text: "חפש תכנים",
-                    search_button_iconClass: "",
-                    server_message:"",
-                    add_page_to_topic_input: history.add_page_to_topic_input,
-                    add_topic_to_topic_input: history.add_topic_to_topic_input,
-                    add_page_to_topic_description: history.add_page_to_topic_description,
-                    was_add_page_button_clicked: history.was_add_page_button_clicked,
-                    was_add_topic_button_clicked: history.was_add_topic_button_clicked,
-                    is_more_pages_button_hidden: history.is_more_pages_button_hidden,
-                    is_simple_search_selected: history.is_simple_search_selected,
-                    is_show_more_content_hidden: history.is_show_more_content_hidden,
-                    expandend_content_status: "",
-                    page_displayed_so_far_index: history.page_displayed_so_far_index,
-                    pages_from_server_to_use: history.pages_from_server_to_use,
-                    full_pages_list_from_server: history.full_pages_list_from_server
-                    
-            }
-            this.full_pages_list_from_server = history.full_pages_list_from_server
+            if (history.search_text_box!=null)
+                search_text_box= history.search_text_box
         }
-        else
+        else if (my_search != null)
         {
-            this.pages_from_server_to_use=[];
-            this.full_pages_list_from_server=[];
-            this.page_displayed_so_far_index=0;
-            this.state = {
-            inputValue: my_search,
-            pages_in_search:[],
-            expandedContents: [],
-            pages_ref: [],
-            ambigousData: [],
-            newID: 1,
-            search_button_text: "חפש תכנים",
-            search_button_iconClass: "",
-            server_message:"",
-            add_page_to_topic_input:"",
-            add_topic_to_topic_input:"",
-            add_page_to_topic_description: "",
-            was_add_page_button_clicked:false,
-            was_add_topic_button_clicked: false,
-            is_more_pages_button_hidden: true,
-            is_simple_search_selected: false,
-            is_show_more_content_hidden: true,
-            expandend_content_status: ""
-            };
-            if (my_search != null)
-                this.search_button_function();
+            search_text_box=my_search;
+            is_deep_search_needed= true;
         }
+        
+        this.page_topic_edges_from_server_to_use=[];
+        this.full_page_topic_edges_list_from_server=[];
+        this.page_displayed_so_far_index=0;
+        this.state = {
+        search_text_box: search_text_box,
+        pages_in_search:[],
+        expandedContents: [],
+        pages_ref: [],
+        ambigousData: [],
+        newID: 1,
+        search_button_text: "חפש תכנים",
+        search_button_iconClass: "",
+        server_message:"",
+        add_page_to_topic_input:"",
+        add_topic_to_topic_input:"",
+        add_page_to_topic_description: "",
+        was_add_page_button_clicked:false,
+        was_add_topic_button_clicked: false,
+        is_more_pages_button_hidden: true,
+        is_simple_search_selected: false,
+        is_show_more_content_hidden: true,
+        expandend_content_status: "",
+        is_topic_loaded: false,
+        data_for_comments: {
+            object_id: "",
+            object_collection_name: '',
+            number_of_comments: 0
+          }
+        };
+        
+        if (search_text_box != '')
+            main_search_function(this, is_deep_search_needed);
       }
     render() {
         var search_box_textStyle={color: '#F0F8FF', cursor: 'pointer'};
@@ -107,7 +90,7 @@ class SearchPage extends Component {
                 <div className="search_box_div">
                     <img id="findelTheme" src="/publicComponents/findelTheme"/>
                     <div>
-                        <input className="text_input" id="search_text_box" type="text" value={this.state.inputValue} onChange={evt => this.updateTXT(evt)} onKeyPress={this.handleKeyPress}></input>
+                        <input className="text_input" id="search_text_box" type="text" value={this.state.search_text_box} onChange={evt => this.updateTXT(evt)} onKeyPress={this.handleKeyPress}></input>
                         <button id="searchBTN" name="searchBTN" onClick={() => this.search_button_function()}>{this.state.search_button_text} <i className={this.state.search_button_iconClass}></i></button><br/>
                         <input type="radio" onClick={() => this.deep_search_radio_button_clicked()} checked={!this.state.is_simple_search_selected} value=''/> חיפוש עמוק
                         <input type="radio" id="simple_search_radio_button" onClick={() => this.simple_search_radio_button_clicked()} checked={this.state.is_simple_search_selected} value=''/> חיפוש פשוט
@@ -118,7 +101,7 @@ class SearchPage extends Component {
                     <div id="exContents">
                         <ExpandedContent expandedContents={this.state.expandedContents}/>
                         <text><i className={this.state.expandend_content_status}></i></text>
-                        <a target="_blank" rel="noopener noreferrer" style={more_content_textStyle} href={"/Topics_page/"+this.curSearch} hidden={this.state.is_show_more_content_hidden}>עוד...</a>
+                        <a target="_blank" rel="noopener noreferrer" style={more_content_textStyle} href={"/Topic_page/"+this.curSearch} hidden={this.state.is_show_more_content_hidden}>עוד...</a>
                     </div>
                 </div>
                 <div className="add_content_and_pages_div" style={{backgroundColor:'#0587c3'}}>
@@ -141,6 +124,10 @@ class SearchPage extends Component {
                     </div>
                 </div>
             </div>
+        <div hidden={!this.state.is_topic_loaded} style={{textAlign: 'right'}}>
+            <Comments_loader data_for_comments={this.state.data_for_comments}/> 
+            <br/>
+        </div>
         <div id="pages_ref">
             <Pages_ref pages_ref={this.state.pages_ref}/>
             <button onClick= {() => this.more_pages_clicked()} hidden={this.state.is_more_pages_button_hidden}>אתרים נוספים...</button>
@@ -165,7 +152,7 @@ class SearchPage extends Component {
     updateTXT(evt){
         this.setState(
             {
-                inputValue: evt.target.value
+                search_text_box: evt.target.value
             }
         );
         this.curSearch=evt.target.value;
@@ -218,11 +205,11 @@ class SearchPage extends Component {
     add_page()
     {
         var opts={
-            topicName: this.state.inputValue,
+            topicName: this.state.search_text_box,
             pageURL: this.state.add_page_to_topic_input,
             pageDescription: this.state.add_page_to_topic_description
           };
-        Axios.post('/api/addContent/add_page', opts, {
+        axios.post('/api/pages_to_topics/connect_page_to_topic', opts, {
         headers: {'findel-auth-token': this.token}}
             ).then(response => {
                 this.setState({server_message: response.data});
@@ -237,10 +224,10 @@ class SearchPage extends Component {
     connect_topic()
     {
         var opts={
-            current_topicName: this.state.inputValue,
+            current_topicName: this.state.search_text_box,
             new_topicName: this.state.add_topic_to_topic_input
           };
-        Axios.post('/api/addContent/connect_topic', opts, {
+        axios.post('/api/topics_to_topics/connect_topic_to_topic', opts, {
         headers: {'findel-auth-token': this.token}}
             ).then(response => {
                 this.setState({server_message: response.data});
@@ -270,11 +257,10 @@ class SearchPage extends Component {
     }
 
     more_pages_clicked(){
-        this.pages_from_server_to_use=[];
         var num_of_pages_to_add=10;
-        for (var index=this.page_displayed_so_far_index+1; index< this.page_displayed_so_far_index+1+num_of_pages_to_add && index<this.full_pages_list_from_server.length; index++)
-            this.pages_from_server_to_use.push(this.full_pages_list_from_server[index]);
-        search_functions.rank_pages(this);
+        for (var index=this.page_displayed_so_far_index+1; index< this.page_displayed_so_far_index+1+num_of_pages_to_add && index<this.full_page_topic_edges_list_from_server.length; index++)
+            this.page_topic_edges_from_server_to_use.push(this.full_page_topic_edges_list_from_server[index]);  
+        rank_pages(this);
     }
 
     search_button_function= async () => {
@@ -308,29 +294,9 @@ class SearchPage extends Component {
     {
         this.history.push({
             pathname: '/',
-            search: '?search='+this.state.inputValue,
+            search: '?search='+this.state.search_text_box,
             state: {
-                inputValue: this.state.inputValue,
-                pages_in_search: this.state.pages_in_search,
-                expandedContents: this.expandedCon_to_history,
-                pages_ref: this.ref_pages_for_histoty,
-                ambigousData: this.ambig_for_history,
-                newID: this.state.newID,
-                search_button_text: "חפש תכנים",
-                search_button_iconClass: "",
-                server_message:"",
-                add_page_to_topic_input: this.state.add_page_to_topic_input,
-                add_topic_to_topic_input: this.state.add_topic_to_topic_input,
-                add_page_to_topic_description: this.state.add_page_to_topic_description,
-                was_add_page_button_clicked: this.state.was_add_page_button_clicked,
-                was_add_topic_button_clicked: this.state.was_add_topic_button_clicked,
-                is_more_pages_button_hidden: this.state.is_more_pages_button_hidden,
-                is_simple_search_selected: this.state.is_simple_search_selected,
-                is_show_more_content_hidden: this.state.is_show_more_content_hidden,
-                expandend_content_status: "",
-                page_displayed_so_far_index: this.page_displayed_so_far_index,
-                pages_from_server_to_use:this.pages_from_server_to_use,
-                full_pages_list_from_server: this.full_pages_list_from_server
+                search_text_box: this.state.search_text_box
             }
         });
     }
@@ -341,58 +307,13 @@ class SearchPage extends Component {
             pages_ref: [],
             ambigousData: []
         });
-        Axios.get("/api/topics_to_topics_data/?search="+this.curSearch,{
-                headers: {'findel-auth-token': this.token}
-        })
-        .then(async(result) => {
-            if (result.data.wikiText!=null && this.state.is_simple_search_selected==false)
-            {
-                this.connected_topics_edges=result.data.connected_topics_edges;
-                await search_functions.search_using_wikipedia(result.data.wikiText, this);
-                this.save_to_history();
-            }
-            
-            else if (result.data.ambig!=null)
-            {
-                result.data.ambig.forEach(category => {
-                    category.id=this.id;
-                    this.id++;
-                    category.subID=this.id;
-                    this.id++;
-                    category["subjects"].forEach(subject => {
-                        subject.id=this.id;
-                        this.id++;
-                    });
-                });
-                this.setState({
-                    ambigousData: result.data.ambig
-                });
-                this.ambig_for_history=result.data.ambig;
-                this.search_button_function_stop_search();
-            }
-            else
-            {
-                this.connected_topics_edges=result.data.connected_topics_edges;
-                await search_functions.request_pages_from_Server_to_use(this.curSearch, this);
-                await search_functions.rank_pages(this);
-                await search_functions.display_expended_content(this);
-                this.search_button_function_stop_search();
-                this.save_to_history();
-            }
-            
-        }).catch( (error) => {
-            if (error.respnse!=null)
-                this.setState({
-                    server_message: error.respnse.data
-                });
-            else
-                this.setState({
-                    server_message: error.message
-                });
-            this.search_button_function_stop_search();
-        });
+
+        if (this.state.is_simple_search_selected)
+            var do_deep_search=false;
+        else
+            var do_deep_search=true;
+        main_search_function(this, do_deep_search);
     }
-          
 }
 
   export default SearchPage;

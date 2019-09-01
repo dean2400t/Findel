@@ -2,27 +2,25 @@ import React, { Component } from 'react';
 import Searches from './Searches';
 //import './UserSearchHistory.css';
 import Cookies from 'universal-cookie';
-import Axios from 'axios';
+import axios from 'axios';
 const cookies = new Cookies();
 
 
 class UserSearchHistory extends Component {
     constructor(props) {
         super(props);
-        var searchHistory=[];
         this.state = {
-          SearchHistory:searchHistory
+          searchHistory:[]
         };
         var token=cookies.get('findel-auth-token') || "";
-        Axios.get("/api/userData/searchHistory",{
+        axios.get("/api/user_data/search_history",{
           headers: {'findel-auth-token': token}
         })
           .then((result) => {
-              // Get the result
-              // If we want text, call result.text()
               return result.data;
           }).then((searchHistory) => {
-              // Do something with the result
+              
+              searchHistory.reverse();
               this.setHistory(searchHistory)
           }).catch((error) => {
               console.log(error);
@@ -35,7 +33,7 @@ class UserSearchHistory extends Component {
     setHistory(searchHistory)
     {
       this.setState({
-        SearchHistory:searchHistory
+        searchHistory: searchHistory
       });
     }
     render() {
@@ -48,7 +46,7 @@ class UserSearchHistory extends Component {
             היסטורית חיפוש</h1>
         </div>
         <div>
-            <Searches searches={this.state.SearchHistory}/>
+            <Searches searches={this.state.searchHistory}/>
         </div>
         </div>
       );

@@ -7,8 +7,8 @@ class Comments extends Component {
   constructor(props) {
     super(props);
     this.state={
-      are_comments_hidden: true,
-      show_hide_instruction: "+הצג תגובות"
+      are_comments_hidden: false,
+      show_hide_instruction: "-הצג תגובות"
     }
   }
   render() {
@@ -17,11 +17,13 @@ class Comments extends Component {
         <div>
           <div>
               <text onClick= {() => this.show_hide_comments_text_clicked()} style={show_hide_comments_text_style}>
-              {this.state.show_hide_instruction + " (" + this.props.parrent_object_data.number_of_overall_comments + ")"}
+              {this.state.show_hide_instruction}
               </text>
           </div>
           <div hidden={this.state.are_comments_hidden}>
               <Comments_Array_mapper comments={this.props.comments}/>
+              <br/>
+              <text>אוסף תגובה ראשית חדשה</text>
               <Add_comment parrent_object_data={this.props.parrent_object_data}/>
           </div>
         </div>

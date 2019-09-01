@@ -7,13 +7,6 @@ const pageSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    trim: true,
-    minlength: 4,
-    maxlength: 1024
-  },
-  pageFormatedURL:{
-    type: String,
-    required: true,
     minlength: 4,
     maxlength: 1024
   },
@@ -21,18 +14,73 @@ const pageSchema = new mongoose.Schema({
     type: String,
     maxlength: 1024
   },
+
+  liked_positive_points:{ 
+    type: Number,
+    required: true,
+    default: 0
+  },
+  liked_negative_points:{ 
+    type: Number,
+    required: true,
+    default: 0
+  },
+
+  credibility_positive_points:{ 
+    type: Number,
+    required: true,
+    default: 0
+  },
+  credibility_negative_points:{ 
+    type: Number,
+    required: true,
+    default: 0
+  },
+
+  educational_positive_points:{ 
+    type: Number,
+    required: true,
+    default: 0
+  },
+  educational_negative_points:{ 
+    type: Number,
+    required: true,
+    default: 0
+  },
+
   domain:{
     type: mongoose.Schema.ObjectId, 
     ref: 'domains'
   },
+
   page_topic_edges:[{
     type: mongoose.Schema.ObjectId, 
     ref: 'page-topic-edges'
   }],
-  root_comments:[{
-    type: mongoose.Schema.ObjectId, 
-    ref: 'comments'
-  }]
+
+  accumulate_rankings:
+    [{
+      type: mongoose.Schema.ObjectId, 
+      ref: 'accumulate_rankings'
+    }],
+
+    rankings:
+    [{
+      type: mongoose.Schema.ObjectId, 
+      ref: 'rankings'
+    }],
+  
+    accumulate_rankings:
+    [{
+      type: mongoose.Schema.ObjectId, 
+      ref: 'accumulate-rankings'
+    }],
+
+  number_of_comments:{
+    type: Number,
+    required: true,
+    default: 0
+  }
 });
   
   const Page = mongoose.model('pages', pageSchema);

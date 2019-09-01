@@ -10,7 +10,7 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/me', auth, async (req, res) => {
-  const user = await User.findById(req.user._id).select("_id userName position");
+  const user = await User.findById(req.user._id).select("_id userName position").lean();
   res.send(user);
 });
 //,[auth, isAdmin]
@@ -31,7 +31,7 @@ router.post('/createAdminAccount' , async (req, res) => {
   req.body.position="Admin";
   user = new User(_.pick(req.body, ['email', 'userName', 'firstName', 'lastName', 'password', 'position']));
   
-  user.userScore=50;
+  user.user_score=50;
 
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(user.password, salt);
@@ -59,7 +59,7 @@ router.post('/createStudentAccount', async (req, res) => {
   req.body.position="Student";
   user = new User(_.pick(req.body, ['email', 'userName', 'firstName', 'lastName', 'password', 'position']));
   
-  user.userScore=1;
+  user.user_score=1;
 
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(user.password, salt);
@@ -87,7 +87,7 @@ router.post('/createTeacherAccount', [auth, isTeacher],async (req, res) => {
   req.body.position="Teacher";
   user = new User(_.pick(req.body, ['email', 'userName', 'firstName', 'lastName', 'password', 'position']));
   
-  user.userScore=30;
+  user.user_score=30;
 
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(user.password, salt);

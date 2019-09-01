@@ -15,6 +15,11 @@ const page_topic_edge_Schema = new mongoose.Schema({
     required: true
   },
 
+  added_by:{
+    type: mongoose.Schema.ObjectId, 
+    ref: 'users'
+  },
+
   order_index_by_google:{ 
     type: Number,
   },
@@ -31,30 +36,28 @@ const page_topic_edge_Schema = new mongoose.Schema({
     type: Number
   },
   
-  liked_weight:{ 
+  liked_positive_points:{ 
     type: Number,
     required: true,
-    default: 1
+    default: 0
   },
-  credibility_weight:{ 
+  liked_negative_points:{ 
     type: Number,
     required: true,
-    default: 1
+    default: 0
   },
-  educational_weight:{
-    type: Number,
-    required: true,
-    default: 1
-  },
-  usersRanking:
+
+  rankings:
     [{
       type: mongoose.Schema.ObjectId, 
-      ref: 'page-topic-edges-ranking'
+      ref: 'rankings'
     }],
-  root_comments:[{
-    type: mongoose.Schema.ObjectId, 
-    ref: 'comments'
-    }]
+
+  number_of_comments:{
+    type: Number,
+    required: true,
+    default: 0
+  }
 });
 page_topic_edge_Schema.index({ page: 1, topic: 1}, { unique: true });
   
@@ -63,8 +66,7 @@ page_topic_edge_Schema.index({ page: 1, topic: 1}, { unique: true });
   function validate_page_topic_edge(page_topic_edge_Schema) {
     const schema = {
         site: Joi.objectId().required(),
-        topic: Joi.objectId().required(),
-        weight: Joi.number.required()
+        topic: Joi.objectId().required()
     };
     return Joi.validate(page_topic_edge_Schema, schema);
   }

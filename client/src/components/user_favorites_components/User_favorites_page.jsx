@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Favorites from './Favorites';
 import Cookies from 'universal-cookie';
-import Axios from 'axios';
+import axios from 'axios';
 const cookies = new Cookies();
 
 
@@ -13,7 +13,7 @@ class UserFavorites extends Component {
             favorites:favorites
         };
         var token=cookies.get('findel-auth-token') || "";
-        Axios.get("/api/userData/favorites",{
+        axios.get("/api/user_data/favorites",{
           headers: {'findel-auth-token': token}
         })
           .then((result) => {

@@ -13,13 +13,13 @@ class DomainsPage extends Component {
             all_positive_domains: []
         };
         this.id=1;
-        axios.get("/api/present_data/domains")
+        axios.get("/api/domains/request_domains")
           .then((result) => {
               return result.data;
           }).then((domains) => {
-              domains.sort((domain_a, domain_b) => {return domain_b.educational_weight-domain_a.educational_weight;});
-              domains.sort((domain_a, domain_b) => {return domain_b.credibility_weight-domain_a.credibility_weight;});
-              domains.sort((domain_a, domain_b) => {return domain_b.liked_weight-domain_a.liked_weight;});
+              domains.sort((domain_a, domain_b) => {return domain_b.educational_positive_points-domain_a.educational_positive_points;});
+              domains.sort((domain_a, domain_b) => {return domain_b.credibility_positive_points-domain_a.credibility_positive_points;});
+              domains.sort((domain_a, domain_b) => {return domain_b.liked_positive_points-domain_a.liked_positive_points;});
               var not_educational_or_credibal_domains = [];
               var all_positive_domains = [];
               domains.forEach(domain => {
@@ -28,12 +28,12 @@ class DomainsPage extends Component {
                 domain.request_pages_of_domain_function= () => this.request_pages_of_domain(domain._id);
                 domain.is_more_pages_button_hidden=false;
                 this.id++;
-                if (domain.educational_weight >= 2 &&
-                    domain.credibility_weight >= 2 &&
-                    domain.liked_weight >= 2)
+                if (domain.educational_positive_points - domain.educational_negative_points >= 1 &&
+                    domain.credibility_positive_points - domain.credibility_negative_points >= 1 &&
+                    domain.liked_positive_points - domain.liked_negative_points >= 1)
                     all_positive_domains.push(domain);
-                if (domain.credibility_weight < 1 ||
-                    domain.educational_weight < 1)
+                if (domain.credibility_positive_points - domain.credibility_negative_points < 0 ||
+                    domain.educational_positive_points - domain.educational_negative_points < 0)
                     not_educational_or_credibal_domains.push(domain);
               });
               this.setState({
@@ -75,13 +75,10 @@ class DomainsPage extends Component {
     }
     request_pages_of_domain = (domain_id) =>
     {
-      axios.get("/api/present_data/domain_pages/?id="+domain_id)
+      axios.get("/api/domains/domain_pages/?id="+domain_id)
           .then((result) => {
-              // Get the result
-              // If we want text, call result.text()
               return result.data;
           }).then((domain) => {
-              // Do something with the result
                 domain.pages.forEach(page => {
                   page.id=this.id;
                   this.id++;
@@ -99,10 +96,6 @@ class DomainsPage extends Component {
               });
           }).catch((error) => {
               console.log(error);
-              var domains=[];
-              this.setState({
-                domains: domains
-              });
           });
     }
 }

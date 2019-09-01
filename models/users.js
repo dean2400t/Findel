@@ -6,17 +6,17 @@ const config = require('config');
 const {search_Schema} = require('./searches');
 
 const userSchema = new mongoose.Schema({
-  email: {
-    type: String,
-    minlength: 5,
-    maxlength: 255
-  },
   userName:{
     type: String,
     required: true,
     unique: true,
     trim: true,
     minlength: 2,
+    maxlength: 255
+  },
+  email: {
+    type: String,
+    minlength: 5,
     maxlength: 255
   },
   firstName: {
@@ -37,52 +37,19 @@ const userSchema = new mongoose.Schema({
     minlength: 6,
     maxlength: 1024
   },
-  password: {
-    type: String,
-    required: true,
-    minlength: 6,
-    maxlength: 1024
-  },
   position:
   {
     type: String,
     minlength: 3,
     maxlength: 20
   },
-  userScore:
+  user_score:
   {
     type: Number,
     default: 1,
     required: true
   },
-  searches:[search_Schema],
-
-  page_topic_edges_ranking: [{
-    type: mongoose.Schema.ObjectId, 
-    ref: 'page-topic-edges-ranking'}],
-  
-  topic_topic_edges_ranking: [{
-    type: mongoose.Schema.ObjectId, 
-    ref: 'topic-topic-edges-ranking'}],
-
-  page_topic_edges_added: [{
-    type: mongoose.Schema.ObjectId, 
-    ref: 'page-topic-edges'
-  }],
-  
-  topic_topic_edges_added: [{
-    type: mongoose.Schema.ObjectId, 
-    ref: 'topic-topic-edges'
-  }],
-
-  comments_added: [{
-    type: mongoose.Schema.ObjectId, 
-    ref: 'comments'
-  }],
-  
-  comments_ranking: [{
-    type: mongoose.Schema.ObjectId, 
-    ref: 'topic-topic-edges-ranking'}]
+  searches:[search_Schema]
   });
   
   
