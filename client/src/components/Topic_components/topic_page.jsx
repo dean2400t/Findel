@@ -16,7 +16,7 @@ class Topics_page extends Component {
               topic_topic_edges: [],
               data_for_comments: {
                 object_id: "",
-                object_id_collection_name: '',
+                object_collection_name: '',
                 number_of_comments: 0
               }
         }};
@@ -37,7 +37,7 @@ class Topics_page extends Component {
 
               topic.data_for_comments={
                 object_id: topic._id,
-                object_id_collection_name: 'topics',
+                object_collection_name: 'topics',
                 number_of_comments: topic.number_of_comments
               }
               

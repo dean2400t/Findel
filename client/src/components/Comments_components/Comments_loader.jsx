@@ -27,7 +27,7 @@ class Comments_loader extends Component {
           <div hidden={!this.state.are_comments_loaded}>
               <Comments comments={this.state.comments} parrent_object_data={{
                   object_id: this.props.data_for_comments.object_id,
-                  object_id_collection_name: this.props.data_for_comments.object_id_collection_name,
+                  object_collection_name: this.props.data_for_comments.object_collection_name,
                   root_comment_id: null,
                   parrent_comments_array: null
                   }
@@ -40,9 +40,9 @@ class Comments_loader extends Component {
     {
         var opts={
           object_id: this.props.data_for_comments.object_id,
-          object_id_collection_name: this.props.data_for_comments.object_id_collection_name
+          object_collection_name: this.props.data_for_comments.object_collection_name
         }
-        axios.get("/api/comments/retrieve_comments/?object_id="+opts.object_id+"&object_id_collection_name="+opts.object_id_collection_name, {
+        axios.get("/api/comments/retrieve_comments/?object_id="+opts.object_id+"&object_collection_name="+opts.object_collection_name, {
             headers: {'findel-auth-token': this.token}
         })
             .then((result) => {

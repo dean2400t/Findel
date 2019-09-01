@@ -110,7 +110,7 @@ class Page_ref extends Component {
       domain_educational_bar_style: domain_educational_bar_style,
       data_for_comments:{
         object_id: this.props.page_ref.page._id,
-        object_id_collection_name: 'pages',
+        object_collection_name: 'pages',
         number_of_comments: this.props.page_ref.page.number_of_comments
     }
     }

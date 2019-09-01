@@ -45,7 +45,7 @@ class Page_page extends Component {
             page_topic_edges: [],
             data_for_comments: {
                 object_id: "",
-                object_id_collection_name: '',
+                object_collection_name: '',
                 number_of_comments: 0
             }
         };
@@ -137,7 +137,7 @@ class Page_page extends Component {
                 this['last_ranking_id_educational'] = null;
                 page.data_for_comments={
                     object_id: page._id,
-                    object_id_collection_name: 'pages',
+                    object_collection_name: 'pages',
                     number_of_comments: page.number_of_comments
                 }
                 page.page_loading=false;

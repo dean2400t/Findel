@@ -42,10 +42,6 @@ const topic_topic_edge_Schema = new mongoose.Schema({
       type: mongoose.Schema.ObjectId, 
       ref: 'rankings'
     }],
-  root_comments:[{
-      type: mongoose.Schema.ObjectId, 
-      ref: 'comments'
-    }],
 
   number_of_comments:{
     type: Number,

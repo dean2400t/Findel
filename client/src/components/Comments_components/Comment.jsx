@@ -48,7 +48,7 @@ class Comment extends Component {
         is_add_comment_hidden: true,
         add_comment_vars: {
           object_id: this.props.comment._id,
-          object_id_collection_name: 'comments',
+          object_collection_name: 'comments',
           root_comment_id: this.props.comment.root_comment
           },
         user_name_color: user_name_color,

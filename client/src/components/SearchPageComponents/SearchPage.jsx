@@ -72,7 +72,7 @@ class SearchPage extends Component {
         is_topic_loaded: false,
         data_for_comments: {
             object_id: "",
-            object_id_collection_name: '',
+            object_collection_name: '',
             number_of_comments: 0
           }
         };

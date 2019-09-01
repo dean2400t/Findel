@@ -23,7 +23,7 @@ export default function display_expended_content(this_of_searchPage)
         is_topic_loaded: true,
         data_for_comments: {
             object_id: this_of_searchPage.topic._id,
-            object_id_collection_name: 'topics',
+            object_collection_name: 'topics',
             number_of_comments: this_of_searchPage.topic.number_of_comments
           }
     });

@@ -6,17 +6,17 @@ const config = require('config');
 const {search_Schema} = require('./searches');
 
 const userSchema = new mongoose.Schema({
-  email: {
-    type: String,
-    minlength: 5,
-    maxlength: 255
-  },
   userName:{
     type: String,
     required: true,
     unique: true,
     trim: true,
     minlength: 2,
+    maxlength: 255
+  },
+  email: {
+    type: String,
+    minlength: 5,
     maxlength: 255
   },
   firstName: {

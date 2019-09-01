@@ -4267,3 +4267,6 @@
 {"message":"Cannot read property '_id' of undefined","stack":"TypeError: Cannot read property '_id' of undefined\n    at add_comment (c:\\Projects\\findel\\routes\\comments\\add_comment.js:72:84)\n    at process._tickCallback (internal/process/next_tick.js:68:7)","level":"error","timestamp":"2019-08-31T18:48:49.644Z"}
 {"level":"info","message":"Listening on port 1337...","timestamp":"2019-08-31T18:49:13.611Z"}
 {"level":"info","message":"Listening on port 1337...","timestamp":"2019-08-31T21:18:29.391Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-09-01T14:19:17.462Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-09-01T14:22:40.298Z"}
+{"level":"info","message":"Listening on port 1337...","timestamp":"2019-09-01T14:26:32.104Z"}

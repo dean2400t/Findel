@@ -120,7 +120,7 @@ async function filter_already_connected_pages_in_database(topic, pages_in_databa
 /*
 Function searches google by topic and update database accordingly
 */
-async function search_Google_and_orgenize(topic)
+async function search_Google_and_organize(topic)
 {
   var search=topic.topicName;
   var pages_from_google=await googleSearch(search, 2);
@@ -187,7 +187,7 @@ module.exports = async function update_and_retrieve_topic_to_pages_edges(search,
         return res.status(200).send(await retrieve_topic_to_pages_edges_from_topic(topic, userID));
   
       //Topic needs to be google searched again
-      await search_Google_and_orgenize(topic);
+      await search_Google_and_organize(topic);
       return res.status(200).send(await retrieve_topic_to_pages_edges_from_topic(topic, userID));
     }
   
@@ -202,6 +202,6 @@ module.exports = async function update_and_retrieve_topic_to_pages_edges(search,
         var search=new Search({topic: topic._id})
         await User.updateOne({_id: userID}, {$push: {searches: search}});
       }
-    await search_Google_and_orgenize(topic);
+    await search_Google_and_organize(topic);
     return res.status(200).send(await retrieve_topic_to_pages_edges_from_topic(topic, userID));
 }

@@ -7,7 +7,7 @@ const comment_Scheme = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     required: true
   },
-  object_id_collection_name:{
+  object_collection_name:{
     type: String,
     required: true,
     minlength: 1,
@@ -35,6 +35,11 @@ const comment_Scheme = new mongoose.Schema({
     required: true,
     default: 0
   },
+  rankings:
+    [{
+      type: mongoose.Schema.ObjectId, 
+      ref: 'rankings'
+    }],
 
   root_comment: {
     type: mongoose.Schema.ObjectId, 
@@ -46,21 +51,14 @@ const comment_Scheme = new mongoose.Schema({
     type: Number,
     required: true,
     default: 0
-  },
-
-  rankings:
-    [{
-      type: mongoose.Schema.ObjectId, 
-      ref: 'rankings'
-    }]
-  
+  }
 });
 comment_Scheme.index({
   text: 1, 
   user: 1, 
   root_comment: 1,
   object_id: 1,
-  object_id_collection_name: 1
+  object_collection_name: 1
   }, { unique: true });
 
   const Comment = mongoose.model('comments', comment_Scheme);

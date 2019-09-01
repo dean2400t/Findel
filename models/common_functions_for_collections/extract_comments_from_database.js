@@ -45,7 +45,7 @@ module.exports=async function extract_comments_from_database(root_comments_IDs_a
             _id: comment._id,
             id: comment.id,
             object_id: comment.object_id,
-            object_id_collection_name: comment.object_id_collection_name,
+            object_collection_name: comment.object_collection_name,
             user: user_data,
             usersRanking: usersRanking_to_return,
             text: comment.text,

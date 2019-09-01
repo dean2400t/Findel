@@ -2,7 +2,7 @@ function comment_selection(opts={})
 { 
     var selection = `
         object_id
-        object_id_collection_name
+        object_collection_name
         user
         text
         liked_positive_points

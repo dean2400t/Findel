@@ -25,11 +25,11 @@ async function extract_comments_from_database(root_comments_IDs_array, userID)
     return comments;
 }
 
-module.exports= async function retrieve_comments(object_id, object_id_collection_name, userID, res)
+module.exports= async function retrieve_comments(object_id, object_collection_name, userID, res)
 {
     var root_comments  = await Comment.find({
         object_id: object_id,
-        object_id_collection_name: object_id_collection_name
+        object_collection_name: object_collection_name
     })
     .select(
         '_id'

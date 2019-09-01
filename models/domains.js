@@ -60,11 +60,11 @@ const domain_Schema = new mongoose.Schema({
     ref: 'accumulate-rankings'
   }],
 
-  root_comments:[{
-      type: mongoose.Schema.ObjectId, 
-      ref: 'comments'
-    }]
-  
+  number_of_comments:{
+    type: Number,
+    required: true,
+    default: 0
+  }
 });
   
   const Domain = mongoose.model('domains', domain_Schema);

@@ -75,11 +75,6 @@ const pageSchema = new mongoose.Schema({
       type: mongoose.Schema.ObjectId, 
       ref: 'accumulate-rankings'
     }],
-    
-  root_comments:[{
-    type: mongoose.Schema.ObjectId, 
-    ref: 'comments'
-  }],
 
   number_of_comments:{
     type: Number,

@@ -21,6 +21,13 @@ const accumulate_ranking_Schema = new mongoose.Schema({
     required: true
   },
 
+  rank_type:{
+    type: String,
+    required: true,
+    minlength: 3,
+    maxlength: 255
+  },
+  
   positive_rankings:{
     type: Number,
     required: true,
@@ -44,14 +51,8 @@ const accumulate_ranking_Schema = new mongoose.Schema({
       type: Number,
       required: true,
       default: 0
-  },
-
-  rank_type:{
-    type: String,
-    required: true,
-    minlength: 3,
-    maxlength: 255
   }
+
 });
 accumulate_ranking_Schema.index({ object_id: 1, object_id_collection:1, user: 1, rank_type: 1}, { unique: true });
   

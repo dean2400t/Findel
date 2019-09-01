@@ -44,13 +44,13 @@ class Add_comment extends Component {
         var opts={
             text: this.state.comment_text,
             object_id: this.props.parrent_object_data.object_id,
-            object_id_collection_name: this.props.parrent_object_data.object_id_collection_name,
+            object_collection_name: this.props.parrent_object_data.object_collection_name,
             root_comment_id: this.props.parrent_object_data.root_comment_id
           };
         axios.post('/api/comments/add_comment', opts, {
         headers: {'findel-auth-token': this.token}}
             ).then(response => {
-                response.data.collection_name=response.data.object_id_collection_name;
+                response.data.collection_name=response.data.object_collection_name;
                 response.data.id=response.data._id;
                 response.data.sub_comments=[];
                 var comments_added= this.state.comments_added;

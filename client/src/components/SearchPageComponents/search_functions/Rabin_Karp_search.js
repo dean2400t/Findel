@@ -4,7 +4,8 @@ class rabinKarpSearch {
 	numOfChars;
 	RMarray;
 	constructor(primeQ, numOfPatternsLength, num_of_pages) {
-	  var R = 65536;
+	  //var R = 65536;
+	  var R= 10176;
 	  var Q = primeQ;
 	  var numOfChars = numOfPatternsLength;
 	  var RMarray=[];

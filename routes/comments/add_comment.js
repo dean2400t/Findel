@@ -2,7 +2,7 @@ const get_collection_from_collection_name = require('../../models/common_functio
 const {User} = require('../../models/users');
 const {Comment} = require('../../models/comments');
 const {comment_save} = require('../../models/common_functions_for_collections/save_securely_to_database');
-module.exports=async function add_comment(text, object_id, object_id_collection_name, root_comment_id, userID, res)
+module.exports=async function add_comment(text, object_id, object_collection_name, root_comment_id, userID, res)
 {
     var user=await User.findById(userID)
     .select('_id')
@@ -10,7 +10,7 @@ module.exports=async function add_comment(text, object_id, object_id_collection_
     if (!user)
         return res.status(400).send("User not found in database");
 
-    var collection = await get_collection_from_collection_name(object_id_collection_name);
+    var collection = await get_collection_from_collection_name(object_collection_name);
     if (!collection)
         return res.status(400).send("collection name is incorrect");
 
@@ -26,7 +26,7 @@ module.exports=async function add_comment(text, object_id, object_id_collection_
         var comment = new Comment({
             text: text,
             object_id: object_id,
-            object_id_collection_name: object_id_collection_name,
+            object_collection_name: object_collection_name,
             user: user._id
         });
         comment.root_comment=comment._id;
@@ -34,12 +34,10 @@ module.exports=async function add_comment(text, object_id, object_id_collection_
         {
             await collection.findOneAndUpdate({_id: object_id}, 
                 {
-                    $addToSet: {root_comments: comment._id},
                     $inc: {number_of_comments: 1}
                 });
             await User.findOneAndUpdate({_id: user._id}, 
                 {
-                    $addToSet: {comments_added: comment._id},
                     $inc: {number_of_comments: 1}
                 });
             return res.status(200).send(comment);
@@ -55,7 +53,7 @@ module.exports=async function add_comment(text, object_id, object_id_collection_
         var comment = new Comment({
             text: text,
             object_id: object_id,
-            object_id_collection_name: object_id_collection_name,
+            object_collection_name: object_collection_name,
             user: user._id,
             root_comment: root_comment_id
         });
@@ -64,11 +62,10 @@ module.exports=async function add_comment(text, object_id, object_id_collection_
         {
             await User.findOneAndUpdate({_id: user._id}, 
                 {
-                    $addToSet: {comments_added: comment._id},
                     $inc: {number_of_comments: 1}
                 });
 
-            collection=  await get_collection_from_collection_name(root_comment.object_id_collection_name)
+            collection=  await get_collection_from_collection_name(root_comment.object_collection_name)
             await collection.findOneAndUpdate({_id: root_comment.object_id}, 
                 {$inc: {number_of_comments: 1}}
             );
