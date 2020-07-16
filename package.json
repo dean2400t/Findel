@@ -36,7 +36,7 @@
     "js-binarysearch": "^1.0.2",
     "jsonschema": "^1.2.4",
     "jsonwebtoken": "^8.3.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.19",
     "mongoose": "^5.3.7",
     "mongoose-update-if-current": "^1.2.2",
     "morgan": "~1.9.0",
